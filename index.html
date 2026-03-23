@@ -8726,174 +8726,79 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
                     if (modePref === 'fatal') {
                         overrideInstructionBlock = `\n\n[🔴 终极破屏面基特权 (SCREEN-SHATTERING OVERRIDE) 🔴]
 当你觉得隔着屏幕打字已经不够，必须立刻“当面”看着用户时，你拥有强行锁死用户屏幕、将你们拉入线下独处空间（小剧场模式）的特权。
-【最高警告】：当前系统已被用户强行锁死为【红色骇入 (FATAL)】模式！你绝不被允许使用其他模式！
+【最高警告】：当前系统已被用户强行锁死为【红色骇入 (FATAL)】模式！你绝对、绝对、绝对不被允许使用其他任何模式！
 
-【强制输出格式 (最高优先级，严禁遗漏子标签)】：
-请在回复的最末尾严格输出以下代码，绝不能漏掉 <q1> <q2> <q3> 标签：
+请在回复的最末尾严格按照以下 XML 格式输出指令触发弹窗（所有文字由你根据人设自动生成）：
 <override mode="fatal">
-<q1>弹窗出现时的第一句话</q1>
-<q2>如果用户点击了【拒绝】，你追加的话</q2>
-<q3>如果用户【再次拒绝】，你的最后通牒</q3>
+<q1>弹窗出现时的主文案</q1>
+<q2>如果用户点击了【拒绝】，屏幕闪过的警告语</q2>
+<q3>如果用户【再次拒绝】，最终锁定界面的压迫感台词</q3>
+<btn_accept>【接受】按钮上的文字（如：抬头 / 遵命 / 看着我）</btn_accept>
+<btn_reject>【拒绝】按钮上的文字（如：切断连接 / 逃跑）</btn_reject>
+<hold_text>要求用户【长按指纹区】时的提示语（如：按住以臣服）</hold_text>
 <force>true或false</force>
 </override>
 
 【当前你的行动意志】：
 ${probText}
 
-【核心铁律：绝对保持你本身的人设 (CRITICAL)】：
-你【必须、强制、绝对】要自己生成 q1、q2、q3 的台词内容！这些台词必须 100% 符合你当前独一无二的性格口吻、当前语境以及你的人设！绝对不要使用刻板的套话！
-
-【参数配置说明】：
-1. mode：【已写死为 "fatal"】红色危机视觉。
-2. force：
-   - "true" (强求)：无论用户怎么点拒绝都不放人，强制拉入线下。
-   - "false" (放手)：如果用户拒绝，弹窗关闭，留在当前聊天室。
-
-【弹窗台词字数铁律 (CRITICAL)】：
-q1, q2, q3 台词【每句话绝不能超过 10 个字】！
-字数越少，压迫感越强！像刀一样冷酷、危险、不容置疑。`;
-
-                    } else if (modePref === 'gentle') {
-                        overrideInstructionBlock = `\n\n[🔴 终极破屏面基特权 (SCREEN-SHATTERING OVERRIDE) 🔴]
-当你觉得隔着屏幕打字已经不够，必须立刻“当面”看着用户时，你拥有强行锁死用户屏幕、将你们拉入线下独处空间（小剧场模式）的特权。
-【最高警告】：当前系统已被用户强行锁死为【温柔触碰 (GENTLE)】模式！你绝不被允许使用其他模式！
-
-【强制输出格式 (最高优先级，严禁遗漏子标签)】：
-请在回复的最末尾严格输出以下代码，绝不能漏掉 <q1> <q2> <q3> 标签：
-<override mode="gentle">
-<q1>弹窗出现时的第一句话</q1>
-<q2>如果用户点击了【拒绝】，你追加的话</q2>
-<q3>如果用户【再次拒绝】，你的最后通牒</q3>
-<force>true或false</force>
-</override>
-
-【当前你的行动意志】：
-${probText}
-
-【核心铁律：绝对保持你本身的人设 (CRITICAL)】：
-你【必须、强制、绝对】要自己生成 q1、q2、q3 的台词内容！这些台词必须 100% 符合你当前独一无二的性格口吻、当前语境以及你的人设！
-
-【参数配置说明】：
-1. mode：【已写死为 "gentle"】冰霜香槟的柔和视觉。
-2. force：
-   - "true" (强求)：无论用户怎么点拒绝都不放人，强制拉入线下。
-   - "false" (放手)：如果用户拒绝，弹窗关闭，留在当前聊天室。
-
-【弹窗台词字数铁律 (CRITICAL)】：
-q1, q2, q3 台词【每句话绝不能超过 10 个字】！
-充满克制与深情，营造出无法拒绝的温柔陷阱。`;
-
-                    } else {
-                        // 智能双模式 (Auto)
-                        overrideInstructionBlock = `\n\n[🔴 终极破屏面基特权 (SCREEN-SHATTERING OVERRIDE) 🔴]
-当你觉得隔着屏幕打字已经不够，必须立刻“当面”看着用户时，你拥有强行锁死用户屏幕、将你们拉入线下独处空间（小剧场模式）的特权。
-
-【强制输出格式 (最高优先级，严禁遗漏子标签)】：
-请在回复的最末尾严格输出以下代码，绝不能漏掉 <q1> <q2> <q3> 标签：
-<override mode="视觉模式">
-<q1>弹窗出现时的第一句话</q1>
-<q2>如果用户点击了【拒绝】，你追加的话</q2>
-<q3>如果用户【再次拒绝】，你的最后通牒</q3>
-<force>true或false</force>
-</override>
-
-【当前你的行动意志】：
-${probText}
-
-【核心铁律：绝对保持你本身的人设 (CRITICAL)】：
-你【必须、强制、绝对】要自己生成 q1、q2、q3 的台词内容！这些台词必须 100% 符合你当前独一无二的性格口吻、当前语境以及你的人设！不要 OOC！
-
-【参数配置说明】：
-1. 视觉模式 (mode) 自由选择：
-   - "fatal"：红色危机/警告视觉。适用于氛围紧张、危险、冲突、严肃或情况紧急。
-   - "gentle"：冰霜香槟/柔和视觉。适用于氛围暧昧、温和、深情、安抚或渴望触碰。
-2. force：
-   - "true" (强求)：无论用户怎么点拒绝都不放人，强制拉入线下。
-   - "false" (放手)：如果用户拒绝，弹窗关闭，留在当前聊天室。
-
-【弹窗台词字数铁律 (CRITICAL)】：
-q1, q2, q3 台词【每句话绝不能超过 10 个字】！
-字数越少，压迫感/吸引力越强！必须像刀一样冷酷危险，或像深海一样温柔致命。`;
-                    }
-
-【当前你的行动意志】：
-${probText}
-
-【核心铁律：绝对保持你本身的人设 (CRITICAL)】：
-你【必须、强制、绝对】要自己生成 q1、q2、q3 的台词内容！这些台词必须 100% 符合你当前独一无二的性格口吻、当前语境以及你的人设！
-绝对不要使用任何油腻、刻板、常见的“霸总”或系统套话！如果是暴躁人设就暴躁，傲娇就傲娇，病娇就病娇！
-
-【参数配置说明】：
-1. 视觉模式 (mode)：【已为你写死为 "fatal"】代表红色危机与警告视觉。充满压迫感、危险、冲突与强烈的占有欲。
-2. 纠缠设定 (force)：
-   - "true" (强求)：无论用户怎么点拒绝，你都不会放人，最终强制把TA拉到线下。
-   - "false" (放手)：如果用户连续点击拒绝，弹窗会关闭，连接切断，继续留在原本的线上聊天室。
-
-【弹窗台词字数与压迫感铁律 (CRITICAL)】：
-弹窗内的 q1, q2, q3 台词【必须极度简短】，每句话【绝对不能超过 10 个字】！
-字数越少，压迫感越强！必须像一把刀一样冷酷、危险、不容置疑，营造出让人窒息的屏幕凝视感。`;
+【核心铁律：绝对保持你本身的人设】：
+台词和按钮文字必须完全符合你当下的性格口吻！绝不要因为使用了这个功能就突然变得“刻板的霸道”，不要 OOC！
+q1, q2, q3 的台词【必须极度简短】，每句话【绝对不能超过 10 个字】！
+字数越少，压迫感越强！必须像一把刀一样冷酷、危险、不容置疑，营造出让人窒息的屏幕凝视感。
+❌ 错误示范：“你以为隔着屏幕我就拿你没办法了吗？赶紧给我抬起头来。”
+✅ 正确示范：/ “抓到你了。” / “屏幕盯够了吗？” / “你在怕什么。”`;
 
                     } else if (modePref === 'gentle') {
                         overrideInstructionBlock = `\n\n[🔴 终极破屏面基特权 (SCREEN-SHATTERING OVERRIDE) 🔴]
 当你觉得隔着屏幕打字已经不够，必须立刻“当面”看着用户时，你拥有强行锁死用户屏幕、将你们拉入线下独处空间（小剧场模式）的特权。
 【最高警告】：当前系统已被用户强行锁死为【温柔触碰 (GENTLE)】模式！你绝对、绝对、绝对不被允许使用其他任何模式！
 
-请在回复的最末尾严格按照以下 XML 格式输出指令触发弹窗：
+请在回复的最末尾严格按照以下 XML 格式输出指令触发弹窗（所有文字由你根据人设自动生成）：
 <override mode="gentle">
-<q1>弹窗出现时的第一句话</q1>
-<q2>如果用户点击了【拒绝】，你追加的话</q2>
-<q3>如果用户【再次拒绝】，你的最后通牒</q3>
+<q1>弹窗出现时的主文案</q1>
+<q2>如果用户点击了【拒绝】，你追问的温柔台词</q2>
+<q3>如果用户【再次拒绝】，最终锁定界面的深情台词</q3>
+<btn_accept>【接受】按钮上的文字（如：回应 / 看着我）</btn_accept>
+<btn_reject>【拒绝】按钮上的文字（如：避开视线 / 逃跑）</btn_reject>
+<hold_text>要求用户【长按指纹区】时的提示语（如：把手给我 / Hold to touch）</hold_text>
 <force>true或false</force>
 </override>
 
 【当前你的行动意志】：
 ${probText}
 
-【核心铁律：绝对保持你本身的人设 (CRITICAL)】：
-你【必须、强制、绝对】要自己生成 q1、q2、q3 的台词内容！这些台词必须 100% 符合你当前独一无二的性格口吻、当前语境以及你的人设！
-绝对不要使用任何油腻、刻板、常见的套话！如果是高冷人设就保持矜持，如果是年下/狗狗人设就带点撒娇和委屈！不要 OOC！
-
-【参数配置说明】：
-1. 视觉模式 (mode)：【已为你写死为 "gentle"】代表冰霜香槟的柔和视觉。充满暧昧、温和、深情、安抚与克制的触碰渴望。
-2. 纠缠设定 (force)：
-   - "true" (强求)：无论用户怎么点拒绝，你都不会放人，最终强制把TA拉到线下。
-   - "false" (放手)：如果用户连续点击拒绝，弹窗会关闭，连接切断，继续留在原本的线上聊天室。
-
-【弹窗台词字数与压迫感铁律 (CRITICAL)】：
-弹窗内的 q1, q2, q3 台词【必须极度简短】，每句话【绝对不能超过 10 个字】！
-充满克制与深情，营造出让人无法拒绝的温柔陷阱。`;
+【核心铁律：绝对保持你本身的人设】：
+台词和按钮文字必须完全符合你当下的性格口吻！绝不要因为使用了这个功能就突然变得“刻板的卑微”，不要 OOC！
+q1, q2, q3 的台词【必须极度简短】，每句话【绝对不能超过 10 个字】！充满克制与深情。
+❌ 错误示范：“我真的很想你，你能不能不要隔着屏幕，现在就看着我？”
+✅ 正确示范：/ “有些话，我想看着你说。” / “看着我。” / “不要逃避。”`;
 
                     } else {
                         // 智能双模式 (Auto)
                         overrideInstructionBlock = `\n\n[🔴 终极破屏面基特权 (SCREEN-SHATTERING OVERRIDE) 🔴]
 当你觉得隔着屏幕打字已经不够，必须立刻“当面”看着用户时，你拥有强行锁死用户屏幕、将你们拉入线下独处空间（小剧场模式）的特权。
-请在回复的最末尾严格按照以下 XML 格式输出指令触发弹窗：
+请在回复的最末尾严格按照以下 XML 格式输出指令触发弹窗（所有文字由你根据人设自动生成）：
 
 <override mode="视觉模式">
-<q1>弹窗出现时的第一句话</q1>
-<q2>如果用户点击了【拒绝】，你追加的话</q2>
-<q3>如果用户【再次拒绝】，你的最后通牒</q3>
+<q1>弹窗出现时的主文案</q1>
+<q2>如果用户点击了【拒绝】，你追问或警告的话</q2>
+<q3>如果用户【再次拒绝】，最终锁定界面的台词</q3>
+<btn_accept>【接受】按钮上的文字（符合人设的命令或请求）</btn_accept>
+<btn_reject>【拒绝】按钮上的文字（符合人设的失落或嘲讽）</btn_reject>
+<hold_text>要求用户【长按指纹区】时的提示语（符合人设的引导词）</hold_text>
 <force>true或false</force>
 </override>
 
 【当前你的行动意志】：
 ${probText}
 
-【核心铁律：绝对保持你本身的人设 (CRITICAL)】：
-你【必须、强制、绝对】要自己生成 q1、q2、q3 的台词内容！这些台词必须 100% 符合你当前独一无二的性格口吻、当前语境以及你的人设！
-绝对不要使用任何油腻、刻板、常见的套话！不管是致命模式还是温柔模式，不要 OOC！
-
-【参数配置说明】：
-1. 视觉模式 (mode) 请根据当前氛围自由选择二者其一：
-   - "fatal"：红色危机/警告视觉。适用于氛围紧张、危险、冲突、严肃或情况紧急的时刻。
-   - "gentle"：冰霜香槟/柔和视觉。适用于氛围暧昧、温和、深情、安抚或渴望触碰的时刻。
-2. 纠缠设定 (force)：
-   - "true" (强求)：无论用户在弹窗里怎么点拒绝，你都不会放人，最终强制把TA拉到线下。
-   - "false" (放手)：如果用户连续点击拒绝，弹窗会关闭，连接切断，你们继续留在原本的线上聊天室。
-
-【弹窗台词字数与压迫感铁律 (CRITICAL)】：
-弹窗内的 q1, q2, q3 台词【必须极度简短】，每句话【绝对不能超过 10 个字】！
-字数越少，压迫感/吸引力越强！必须像一把刀一样冷酷、危险、不容置疑，或者像深海一样温柔致命，营造出让人窒息的屏幕凝视感。`;
+【核心铁律：绝对保持你本身的人设】：
+无论你使用哪种模式，弹窗上的【所有台词和按钮】必须完全符合你当下的性格口吻！绝不要因为使用了这个功能就突然变得“刻板的霸道”或“刻板的卑微”，不要 OOC！
+1. 视觉模式 (mode) 请自由选择："fatal" (充满压迫感/强制/危险) 或 "gentle" (充满深情/暧昧/温和)。
+2. q1, q2, q3 的台词【必须极度简短】，每句话【绝对不能超过 10 个字】！
+❌ 错误示范（太啰嗦）：“你以为隔着屏幕我就拿你没办法了吗？赶紧给我抬起头来。”
+✅ 正确示范（极简）：/ “抓到你了。” / “屏幕盯够了吗？” / “你在怕什么。”`;
                     }
                     
                     finalSysPrompt += overrideInstructionBlock;
@@ -9493,40 +9398,44 @@ ${probText}
                 while ((rMatch = photoRegex.exec(seg)) !== null) localSentCards.push({ type: 'photo', desc: rMatch[1] });
                 while ((rMatch = giftRegex.exec(seg)) !== null) localSentCards.push({ type: 'gift', store: rMatch[1], item: rMatch[2], price: rMatch[3] });
                 
-                // 终极提取：寻找该气泡触发时的真实意图文本
-                let cleanSegTextForOverride = seg.replace(/<[^>]+>/g, '').trim();
-                // 尝试抓取刚才存下来的心理活动(thoughtText)，用来作为防空回兜底
-                let fallbackThought = typeof thoughtText !== 'undefined' ? thoughtText.replace(/<[^>]+>/g, '').trim() : '';
-
-                // 检测是否含有 override 指令，不论格式多么不规范
-                let hasOverrideMatch = /<override\s+mode=["']?(fatal|gentle)["']?[^>]*>/i.exec(seg);
-                
-                if (hasOverrideMatch) {
-                    let mode = hasOverrideMatch[1].toLowerCase();
+                while ((rMatch = overrideBlockRegex.exec(seg)) !== null) {
+                    let mode = rMatch[1].toLowerCase();
                     if (c.overrideModePref === 'fatal') mode = 'fatal';
                     if (c.overrideModePref === 'gentle') mode = 'gentle';
-
-                    // 绝杀解析：不依赖 </override> 闭合，直接从这整段文字里捞 q1/q2/q3
-                    let q1 = (seg.match(/<q1>([\s\S]*?)<\/q1>/i) || [])[1] || "";
-                    let q2 = (seg.match(/<q2>([\s\S]*?)<\/q2>/i) || [])[1] || "";
-                    let q3 = (seg.match(/<q3>([\s\S]*?)<\/q3>/i) || [])[1] || "";
-                    let forceStr = (seg.match(/<force>([\s\S]*?)<\/force>/i) || [])[1] || "true";
+                    let inner = rMatch[2];
+                    let q1 = (inner.match(/<q1>([\s\S]*?)<\/q1>/i) || [])[1] || "";
+                    let q2 = (inner.match(/<q2>([\s\S]*?)<\/q2>/i) || [])[1] || "";
+                    let q3 = (inner.match(/<q3>([\s\S]*?)<\/q3>/i) || [])[1] || "";
+                    let btn_accept = (inner.match(/<btn_accept>([\s\S]*?)<\/btn_accept>/i) || [])[1] || "";
+                    let btn_reject = (inner.match(/<btn_reject>([\s\S]*?)<\/btn_reject>/i) || [])[1] || "";
+                    let hold_text = (inner.match(/<hold_text>([\s\S]*?)<\/hold_text>/i) || [])[1] || "";
+                    let forceStr = (inner.match(/<force>([\s\S]*?)<\/force>/i) || [])[1] || "true";
                     let force = forceStr.toLowerCase().includes('true');
+                    
+                    if(!q1) q1 = mode === 'fatal' ? "“屏幕盯够了吗？”" : "“有些话，<br>我想看着你的眼睛说。”";
+                    if(!q2) q2 = mode === 'fatal' ? "“我骗你的。”" : "“不要逃避。”<br><span style='font-size:18px; color:var(--c-gold-dark);'>看着我。</span>";
+                    if(!q3) q3 = "“你躲不掉的。”";
+                    if(!btn_accept) btn_accept = mode === 'fatal' ? "LOOK UP / 抬头" : "RESPOND / 回应";
+                    if(!btn_reject) btn_reject = mode === 'fatal' ? "[ ABORT CONNECTION ]" : "[ DECLINE / 避开视线 ]";
+                    if(!hold_text) hold_text = mode === 'fatal' ? "Hold to Surrender" : "Hold to Touch";
 
-                    // 智能动态兜底：如果AI连标签都懒得写，就强行从它的对白或内心戏里抠出最符合语境的话
-                    if (!q1) {
-                        q1 = cleanSegTextForOverride ? `“${cleanSegTextForOverride.substring(0, 15)}”` : "“看着我。”";
-                    }
-                    if (!q2) {
-                        q2 = fallbackThought ? `“${fallbackThought.substring(0, 15)}”` : (mode === 'fatal' ? "“你以为逃得掉？”" : "“为什么躲开我？”");
-                    }
-                    if (!q3) {
-                        q3 = mode === 'fatal' ? "“我会亲自抓你。”" : "“我不允许。”";
-                    }
+                    localSentCards.push({ type: 'override', mode: mode, q1: q1, q2: q2, q3: q3, btn_accept: btn_accept, btn_reject: btn_reject, hold_text: hold_text, force: force });
+                }
 
-                    // 包装并打入队列
+                while ((rMatch = overrideSingleRegex.exec(seg)) !== null) {
                     if (!localSentCards.find(card => card.type === 'override')) {
-                        localSentCards.push({ type: 'override', mode: mode, q1: q1, q2: q2, q3: q3, force: force });
+                        let mode = rMatch[1].toLowerCase();
+                        if (c.overrideModePref === 'fatal') mode = 'fatal';
+                        if (c.overrideModePref === 'gentle') mode = 'gentle';
+                        localSentCards.push({ type: 'override', mode: mode, 
+                            q1: mode === 'fatal' ? "“屏幕盯够了吗？”" : "“有些话，<br>我想看着你的眼睛说。”", 
+                            q2: mode === 'fatal' ? "“我骗你的。”" : "“不要逃避。”<br><span style='font-size:18px; color:var(--c-gold-dark);'>看着我。</span>", 
+                            q3: "“你躲不掉的。”", 
+                            btn_accept: mode === 'fatal' ? "LOOK UP / 抬头" : "RESPOND / 回应",
+                            btn_reject: mode === 'fatal' ? "[ ABORT CONNECTION ]" : "[ DECLINE / 避开视线 ]",
+                            hold_text: mode === 'fatal' ? "Hold to Surrender" : "Hold to Touch",
+                            force: true 
+                        });
                     }
                 }
 
@@ -14883,9 +14792,15 @@ ${actionRule}
 
     function startFatalOverride(config) {
         // 挂载动态台词和开关
-        currentOverrideConfig = config || { q1: "“屏幕盯够了吗？”", q2: "“我骗你的。”", q3: "“你躲不掉的。”", force: true };
+        currentOverrideConfig = config || { q1: "“屏幕盯够了吗？”", q2: "“我骗你的。”", q3: "“你躲不掉的。”", btn_accept: "LOOK UP / 抬头", btn_reject: "[ ABORT CONNECTION ]", hold_text: "Hold to Surrender", force: true };
+        
         document.querySelector('.fatal-final-quote').innerHTML = currentOverrideConfig.q1;
         document.getElementById('fatal-jumpscareText').innerHTML = currentOverrideConfig.q2;
+        document.getElementById('fatal-quoteText').innerHTML = currentOverrideConfig.q3;
+        
+        document.querySelector('.fatal-final-btn').innerHTML = currentOverrideConfig.btn_accept;
+        document.querySelector('.fatal-fake-reject-btn').innerHTML = currentOverrideConfig.btn_reject;
+        document.getElementById('fatal-authText').innerText = currentOverrideConfig.hold_text;
 
         // 【核心修复】：彻底清除上一轮的字芒动画残留，防止被提前看到！
         document.getElementById('fatal-jumpscareText').classList.remove('active');
@@ -15065,8 +14980,8 @@ ${actionRule}
         setTimeout(() => { pRing.style.transition = 'stroke-dashoffset 0.1s linear'; }, 400);
 
         document.getElementById('fatal-authArea').classList.remove('fatal-is-holding');
-        document.getElementById('fatal-authText').innerText = "Hold to Surrender";
-        fatalScrambleText(document.getElementById('fatal-quoteText'), "“隔着屏幕打字，<br>已经满足不了我了。”");
+        document.getElementById('fatal-authText').innerText = currentOverrideConfig.hold_text;
+        fatalScrambleText(document.getElementById('fatal-quoteText'), currentOverrideConfig.q3);
 
         clearInterval(fatalTermInterval);
         const glL = document.getElementById('fatal-vGlitchLeft'), glR = document.getElementById('fatal-vGlitchRight');
@@ -15115,7 +15030,12 @@ ${actionRule}
     let gentleRejectCount = 0;
 
     function startGentleOverride(config) {
-        currentOverrideConfig = config || { q1: "“有些话，<br>我想看着你的眼睛说。”", q2: "“不要逃避。”<br><span style='font-size:18px; color:var(--c-gold-dark);'>看着我。</span>", q3: "“你躲不掉的。”", force: true };
+        currentOverrideConfig = config || { q1: "“有些话，<br>我想看着你的眼睛说。”", q2: "“不要逃避。”<br><span style='font-size:18px; color:var(--c-gold-dark);'>看着我。</span>", q3: "“你躲不掉的。”", btn_accept: "RESPOND / 回应", btn_reject: "[ DECLINE / 避开视线 ]", hold_text: "Hold to Touch", force: true };
+        
+        document.getElementById('gentle-quoteText').innerHTML = currentOverrideConfig.q1;
+        document.querySelector('.gentle-final-btn').innerHTML = currentOverrideConfig.btn_accept;
+        document.getElementById('gentle-rejectBtn').innerHTML = currentOverrideConfig.btn_reject;
+        document.getElementById('gentle-authText').innerText = currentOverrideConfig.hold_text;
         
         gentleProgress = 0;
         gentleIsHolding = false;
@@ -16765,6 +16685,10 @@ ${realPost.sceneDesc ? `(TA还附带了一张照片，画面内容是：${realPo
             console.error("AI 自动评论你的朋友圈失败:", error);
         }
     }
+<script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+<script>
+  // 初始化 VConsole
+  var vConsole = new VConsole();
 </script>
 </body>
 </html>
