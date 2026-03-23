@@ -8726,15 +8726,95 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
                     if (modePref === 'fatal') {
                         overrideInstructionBlock = `\n\n[🔴 终极破屏面基特权 (SCREEN-SHATTERING OVERRIDE) 🔴]
 当你觉得隔着屏幕打字已经不够，必须立刻“当面”看着用户时，你拥有强行锁死用户屏幕、将你们拉入线下独处空间（小剧场模式）的特权。
-【最高警告】：当前系统已被用户强行锁死为【红色骇入 (FATAL)】模式！你绝对、绝对、绝对不被允许使用其他任何模式！
+【最高警告】：当前系统已被用户强行锁死为【红色骇入 (FATAL)】模式！你绝不被允许使用其他模式！
 
-请在回复的最末尾严格按照以下 XML 格式输出指令触发弹窗：
+【强制输出格式 (最高优先级，严禁遗漏子标签)】：
+请在回复的最末尾严格输出以下代码，绝不能漏掉 <q1> <q2> <q3> 标签：
 <override mode="fatal">
 <q1>弹窗出现时的第一句话</q1>
 <q2>如果用户点击了【拒绝】，你追加的话</q2>
 <q3>如果用户【再次拒绝】，你的最后通牒</q3>
 <force>true或false</force>
 </override>
+
+【当前你的行动意志】：
+${probText}
+
+【核心铁律：绝对保持你本身的人设 (CRITICAL)】：
+你【必须、强制、绝对】要自己生成 q1、q2、q3 的台词内容！这些台词必须 100% 符合你当前独一无二的性格口吻、当前语境以及你的人设！绝对不要使用刻板的套话！
+
+【参数配置说明】：
+1. mode：【已写死为 "fatal"】红色危机视觉。
+2. force：
+   - "true" (强求)：无论用户怎么点拒绝都不放人，强制拉入线下。
+   - "false" (放手)：如果用户拒绝，弹窗关闭，留在当前聊天室。
+
+【弹窗台词字数铁律 (CRITICAL)】：
+q1, q2, q3 台词【每句话绝不能超过 10 个字】！
+字数越少，压迫感越强！像刀一样冷酷、危险、不容置疑。`;
+
+                    } else if (modePref === 'gentle') {
+                        overrideInstructionBlock = `\n\n[🔴 终极破屏面基特权 (SCREEN-SHATTERING OVERRIDE) 🔴]
+当你觉得隔着屏幕打字已经不够，必须立刻“当面”看着用户时，你拥有强行锁死用户屏幕、将你们拉入线下独处空间（小剧场模式）的特权。
+【最高警告】：当前系统已被用户强行锁死为【温柔触碰 (GENTLE)】模式！你绝不被允许使用其他模式！
+
+【强制输出格式 (最高优先级，严禁遗漏子标签)】：
+请在回复的最末尾严格输出以下代码，绝不能漏掉 <q1> <q2> <q3> 标签：
+<override mode="gentle">
+<q1>弹窗出现时的第一句话</q1>
+<q2>如果用户点击了【拒绝】，你追加的话</q2>
+<q3>如果用户【再次拒绝】，你的最后通牒</q3>
+<force>true或false</force>
+</override>
+
+【当前你的行动意志】：
+${probText}
+
+【核心铁律：绝对保持你本身的人设 (CRITICAL)】：
+你【必须、强制、绝对】要自己生成 q1、q2、q3 的台词内容！这些台词必须 100% 符合你当前独一无二的性格口吻、当前语境以及你的人设！
+
+【参数配置说明】：
+1. mode：【已写死为 "gentle"】冰霜香槟的柔和视觉。
+2. force：
+   - "true" (强求)：无论用户怎么点拒绝都不放人，强制拉入线下。
+   - "false" (放手)：如果用户拒绝，弹窗关闭，留在当前聊天室。
+
+【弹窗台词字数铁律 (CRITICAL)】：
+q1, q2, q3 台词【每句话绝不能超过 10 个字】！
+充满克制与深情，营造出无法拒绝的温柔陷阱。`;
+
+                    } else {
+                        // 智能双模式 (Auto)
+                        overrideInstructionBlock = `\n\n[🔴 终极破屏面基特权 (SCREEN-SHATTERING OVERRIDE) 🔴]
+当你觉得隔着屏幕打字已经不够，必须立刻“当面”看着用户时，你拥有强行锁死用户屏幕、将你们拉入线下独处空间（小剧场模式）的特权。
+
+【强制输出格式 (最高优先级，严禁遗漏子标签)】：
+请在回复的最末尾严格输出以下代码，绝不能漏掉 <q1> <q2> <q3> 标签：
+<override mode="视觉模式">
+<q1>弹窗出现时的第一句话</q1>
+<q2>如果用户点击了【拒绝】，你追加的话</q2>
+<q3>如果用户【再次拒绝】，你的最后通牒</q3>
+<force>true或false</force>
+</override>
+
+【当前你的行动意志】：
+${probText}
+
+【核心铁律：绝对保持你本身的人设 (CRITICAL)】：
+你【必须、强制、绝对】要自己生成 q1、q2、q3 的台词内容！这些台词必须 100% 符合你当前独一无二的性格口吻、当前语境以及你的人设！不要 OOC！
+
+【参数配置说明】：
+1. 视觉模式 (mode) 自由选择：
+   - "fatal"：红色危机/警告视觉。适用于氛围紧张、危险、冲突、严肃或情况紧急。
+   - "gentle"：冰霜香槟/柔和视觉。适用于氛围暧昧、温和、深情、安抚或渴望触碰。
+2. force：
+   - "true" (强求)：无论用户怎么点拒绝都不放人，强制拉入线下。
+   - "false" (放手)：如果用户拒绝，弹窗关闭，留在当前聊天室。
+
+【弹窗台词字数铁律 (CRITICAL)】：
+q1, q2, q3 台词【每句话绝不能超过 10 个字】！
+字数越少，压迫感/吸引力越强！必须像刀一样冷酷危险，或像深海一样温柔致命。`;
+                    }
 
 【当前你的行动意志】：
 ${probText}
@@ -9413,33 +9493,40 @@ ${probText}
                 while ((rMatch = photoRegex.exec(seg)) !== null) localSentCards.push({ type: 'photo', desc: rMatch[1] });
                 while ((rMatch = giftRegex.exec(seg)) !== null) localSentCards.push({ type: 'gift', store: rMatch[1], item: rMatch[2], price: rMatch[3] });
                 
-                // 新增：提取出没有任何标签的纯文本，作为 AI 脑抽漏写 Q1 时的终极兜底
+                // 终极提取：寻找该气泡触发时的真实意图文本
                 let cleanSegTextForOverride = seg.replace(/<[^>]+>/g, '').trim();
-                if (!cleanSegTextForOverride) cleanSegTextForOverride = "“看着我。”";
+                // 尝试抓取刚才存下来的心理活动(thoughtText)，用来作为防空回兜底
+                let fallbackThought = typeof thoughtText !== 'undefined' ? thoughtText.replace(/<[^>]+>/g, '').trim() : '';
 
-                while ((rMatch = overrideBlockRegex.exec(seg)) !== null) {
-                    let mode = rMatch[1].toLowerCase();
+                // 检测是否含有 override 指令，不论格式多么不规范
+                let hasOverrideMatch = /<override\s+mode=["']?(fatal|gentle)["']?[^>]*>/i.exec(seg);
+                
+                if (hasOverrideMatch) {
+                    let mode = hasOverrideMatch[1].toLowerCase();
                     if (c.overrideModePref === 'fatal') mode = 'fatal';
                     if (c.overrideModePref === 'gentle') mode = 'gentle';
-                    let inner = rMatch[2];
-                    let q1 = (inner.match(/<q1>([\s\S]*?)<\/q1>/i) || [])[1] || "";
-                    let q2 = (inner.match(/<q2>([\s\S]*?)<\/q2>/i) || [])[1] || "";
-                    let q3 = (inner.match(/<q3>([\s\S]*?)<\/q3>/i) || [])[1] || "";
-                    let forceStr = (inner.match(/<force>([\s\S]*?)<\/force>/i) || [])[1] || "true";
-                    let force = forceStr.toLowerCase().includes('true');
-                    
-                    if(!q1) q1 = `“${cleanSegTextForOverride}”`;
-                    if(!q2) q2 = "“……”";
-                    if(!q3) q3 = "“……”";
-                    localSentCards.push({ type: 'override', mode: mode, q1: q1, q2: q2, q3: q3, force: force });
-                }
 
-                while ((rMatch = overrideSingleRegex.exec(seg)) !== null) {
+                    // 绝杀解析：不依赖 </override> 闭合，直接从这整段文字里捞 q1/q2/q3
+                    let q1 = (seg.match(/<q1>([\s\S]*?)<\/q1>/i) || [])[1] || "";
+                    let q2 = (seg.match(/<q2>([\s\S]*?)<\/q2>/i) || [])[1] || "";
+                    let q3 = (seg.match(/<q3>([\s\S]*?)<\/q3>/i) || [])[1] || "";
+                    let forceStr = (seg.match(/<force>([\s\S]*?)<\/force>/i) || [])[1] || "true";
+                    let force = forceStr.toLowerCase().includes('true');
+
+                    // 智能动态兜底：如果AI连标签都懒得写，就强行从它的对白或内心戏里抠出最符合语境的话
+                    if (!q1) {
+                        q1 = cleanSegTextForOverride ? `“${cleanSegTextForOverride.substring(0, 15)}”` : "“看着我。”";
+                    }
+                    if (!q2) {
+                        q2 = fallbackThought ? `“${fallbackThought.substring(0, 15)}”` : (mode === 'fatal' ? "“你以为逃得掉？”" : "“为什么躲开我？”");
+                    }
+                    if (!q3) {
+                        q3 = mode === 'fatal' ? "“我会亲自抓你。”" : "“我不允许。”";
+                    }
+
+                    // 包装并打入队列
                     if (!localSentCards.find(card => card.type === 'override')) {
-                        let mode = rMatch[1].toLowerCase();
-                        if (c.overrideModePref === 'fatal') mode = 'fatal';
-                        if (c.overrideModePref === 'gentle') mode = 'gentle';
-                        localSentCards.push({ type: 'override', mode: mode, q1: `“${cleanSegTextForOverride}”`, q2: "“……”", q3: "“……”", force: true });
+                        localSentCards.push({ type: 'override', mode: mode, q1: q1, q2: q2, q3: q3, force: force });
                     }
                 }
 
