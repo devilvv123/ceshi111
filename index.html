@@ -9463,8 +9463,10 @@ ${probText}
                     seg = segQuoteHtml + seg;
                 }
 
-                // 绝对防空回兜底：如果这行里只有卡片，没有文字，则无需作为普通气泡发出
-                if (seg && seg !== "…") {
+                // 绝对防空回兜底：如果这行里只有卡片或无意义的空标签，没有实质文字，则无需作为普通气泡发出
+                let textOnlyCheck = seg.replace(/<img[^>]*>/gi, 'IMAGE_PLACEHOLDER').replace(/<[^>]+>/g, '').trim();
+                
+                if (textOnlyCheck && seg !== "…") {
                     c.history.push({ role: 'assistant', content: seg, isRevoked: false, thought: i === 0 ? thoughtText : "", bpm: currentBpm, affection: currentAff, mood: currentMood, timestamp: ts });
                 } else if (localSentCards.length === 0 && splits.length === 1) {
                     // 如果什么都没发，且是唯一的切割块，才给兜底
