@@ -8786,16 +8786,20 @@ ${probText}
                 } else if (m.content.includes('stamp-wrapper') || m.photoDesc) {
                     let desc = m.photoDesc || "一张未知的定格画面";
                     pushContent = `[消息ID: ${m._oid}] ${m.role === 'user' ? '【用户】' : '【你】'} 发送了一张实体相片！照片上的画面内容是："${desc}"。请务必在心里把它当做一张真实的视觉照片来给出反应！`;
+                } else if (m.content.includes('maison-gift-card')) {
+                    // 🌟 新增：礼物卡片的状态精准翻译
+                    let isAccepted = m.content.includes('ACCEPTED');
+                    let isRejected = m.content.includes('DENIED');
+                    let statusText = isAccepted ? '用户已开心收下并开始物流配送' : (isRejected ? '用户已无情拒收' : '等待用户决定是否收下');
+                    let itemNameMatch = m.content.match(/data-item=["']?([^"'>]+)["']?/);
+                    let itemName = itemNameMatch ? itemNameMatch[1] : '礼物';
+                    pushContent = `[消息ID: ${m._oid}] ${m.role === 'user' ? '【用户】' : '【你】'} 发送了一份礼物订单（商品：${itemName}，状态：${statusText}）。`;
                 } else if (m.content.includes('maison-proxy-card')) {
-                    // 🌟 核心修复：拦截代付/礼物卡片，将其翻译为极简状态描述
-                    if (m.content.includes('GIFT RECEIPT')) {
-                        pushContent = `[消息ID: ${m._oid}] ${m.role === 'user' ? '【用户】' : '【你】'} 发送了一份已付款的礼物订单（等待物流配送）。`;
-                    } else {
-                        let isPaid = m.content.includes('PAID IN FULL') || m.content.includes('mp-badge-status" style="font-family:\'Courier New\',monospace; font-size:8px; font-weight:800; padding:2px 4px; border:1px solid #34C759');
-                        let isRejected = m.content.includes('REQUEST DENIED') || m.content.includes('DECLINED');
-                        let statusText = isPaid ? '已付款' : (isRejected ? '已被拒绝' : '等待代付！你可以随时回复 <accept> 同意付款，或 <reject> 残忍拒绝。');
-                        pushContent = `[消息ID: ${m._oid}] ${m.role === 'user' ? '【用户】' : '【你】'} 发出的高定商店商品代付账单（状态：${statusText}）。`;
-                    }
+                    // 🌟 核心修复：拦截代付卡片，将其翻译为极简状态描述
+                    let isPaid = m.content.includes('PAID IN FULL') || m.content.includes('mp-badge-status" style="font-family:\'Courier New\',monospace; font-size:8px; font-weight:800; padding:2px 4px; border:1px solid #34C759');
+                    let isRejected = m.content.includes('REQUEST DENIED') || m.content.includes('DECLINED');
+                    let statusText = isPaid ? '已付款' : (isRejected ? '已被拒绝' : '等待代付！你可以随时回复 <accept> 同意付款，或 <reject> 残忍拒绝。');
+                    pushContent = `[消息ID: ${m._oid}] ${m.role === 'user' ? '【用户】' : '【你】'} 发出的高定商店商品代付账单（状态：${statusText}）。`;
                 } else if (m.content.includes('soap-bill-wrapper')) {
                     pushContent = `[消息ID: ${m._oid}] ${m.role === 'user' ? '【用户】' : '【你】'} 分享了一张外卖小票记录。`;
                 } else if (m.content.includes('sync-invite-wrap')) {
@@ -9439,12 +9443,12 @@ ${probText}
                         } else if (card.type === 'gift') {
                             let formattedPrice = isNaN(parseFloat(card.price)) ? card.price : parseFloat(card.price).toLocaleString();
                             let giftHtml = `
-                            <div class="maison-proxy-card" style="width:240px; background:linear-gradient(135deg, #111 0%, #1A1A1D 100%); border:0.5px solid rgba(195,167,114,0.3); border-radius:12px; box-shadow:0 15px 30px rgba(0,0,0,0.5); position:relative; overflow:hidden; display:flex; flex-direction:column; color:#EAE6DE; margin:5px 0;">
+                            <div class="maison-gift-card" data-store="${card.store}" data-item="${card.item}" data-price="${card.price}" style="width:240px; background:linear-gradient(135deg, #111 0%, #1A1A1D 100%); border:0.5px solid rgba(195,167,114,0.3); border-radius:12px; box-shadow:0 15px 30px rgba(0,0,0,0.5); position:relative; overflow:hidden; display:flex; flex-direction:column; color:#EAE6DE; margin:5px 0;">
                                 <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%) rotate(-15deg); font-family:'Didot',serif; font-size:40px; font-weight:900; font-style:italic; color:rgba(195,167,114,0.03); z-index:1; pointer-events:none;">GIFT</div>
                                 <div style="position:relative; z-index:2; padding:20px 15px;">
                                     <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px;">
                                         <div style="font-family:'Didot',serif; font-size:14px; font-weight:900; letter-spacing:1px; color:#C3A772; max-width:130px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${card.store}</div>
-                                        <div class="mp-badge-status" style="font-family:'Courier New',monospace; font-size:8px; font-weight:800; padding:2px 4px; border:1px solid #34C759; color:#34C759; border-radius:4px;">PAID</div>
+                                        <div class="mg-badge-status" style="font-family:'Courier New',monospace; font-size:8px; font-weight:800; padding:2px 4px; border:1px solid #C3A772; color:#C3A772; border-radius:4px;">WAITING</div>
                                     </div>
                                     <div class="mp-title-text" style="font-size:9px; color:#858078; font-weight:700; letter-spacing:1px; margin-bottom:10px;">GIFT RECEIPT // 礼物订单</div>
                                     <div style="display:flex; flex-direction:column; gap:6px;">
@@ -9456,12 +9460,13 @@ ${probText}
                                         <span style="font-family:'Didot',serif; font-size:20px; font-weight:900; color:#C3A772;">¥ ${formattedPrice}</span>
                                     </div>
                                 </div>
-                                <div style="background:rgba(0,0,0,0.4); border-top:1px solid rgba(195,167,114,0.1); padding:12px 15px; position:relative; z-index:2;">
-                                    <button style="width:100%; background:transparent; color:#C3A772; border:1px dashed rgba(195,167,114,0.4); padding:10px 0; border-radius:6px; font-family:'Courier New',monospace; font-size:10px; font-weight:800; pointer-events:none;">DISPATCHED TO YOU</button>
+                                <div class="mg-action-bar" style="background:rgba(0,0,0,0.4); border-top:1px solid rgba(195,167,114,0.1); padding:12px 15px; position:relative; z-index:2; display:flex; gap:10px;">
+                                    <button class="mg-btn-accept" onclick="handleGiftAction(this, 'accept')" style="flex:1; background:#C3A772; color:#000; border:none; padding:10px 0; border-radius:6px; font-family:'Courier New',monospace; font-size:10px; font-weight:800; cursor:pointer; transition:0.2s;" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'">ACCEPT</button>
+                                    <button class="mg-btn-reject" onclick="handleGiftAction(this, 'reject')" style="flex:1; background:transparent; color:#858078; border:1px solid #858078; padding:10px 0; border-radius:6px; font-family:'Courier New',monospace; font-size:10px; font-weight:800; cursor:pointer; transition:0.2s;" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'">DECLINE</button>
                                 </div>
                             </div><img src="1" onerror="this.parentNode.classList.add('bubble-clear'); this.remove();">`;
                             c.history.push({ role: 'assistant', content: giftHtml.replace(/\n\s+/g, ''), isRevoked: false, timestamp: cardTs });
-                            c.history.push({ role: 'system_sum', content: `<i>✧ [${signName}] 为你下单了一份专属礼物</i>` });
+                            c.history.push({ role: 'system_sum', content: `<i>✧ [${signName}] 为你买了一份礼物，等待你决定是否收下</i>` });
                         } else if (card.type === 'override') {
                             c.history.push({ role: 'system_sum', content: `<i>✧ [系统强制介入] 对方强行发起了跨屏精神连接</i>` });
                             setTimeout(() => {
@@ -10766,7 +10771,63 @@ ${probText}
         saveData(); 
         appendBubbleRow(c.history[c.history.length - 1], c.history.length - 1);
     }
+    // ================= 全新：处理 AI 发送的礼物卡片点击 =================
+    function handleGiftAction(btnEl, actionType) {
+        const row = btnEl.closest('.msg-row');
+        if(!row) return;
+        
+        if(row.classList.contains('user')) return alert('这是你发出的礼物，等对方处理吧！');
 
+        const card = row.querySelector('.maison-gift-card');
+        if(!card) return;
+
+        const actionBar = card.querySelector('.mg-action-bar');
+        const badge = card.querySelector('.mg-badge-status');
+
+        const index = parseInt(row.id.replace('msg-item-', ''));
+        const c = contacts.find(x => x.id === currentContactId);
+        
+        let aiPrompt = "";
+        let uiText = "";
+
+        if (actionType === 'accept') {
+            actionBar.innerHTML = '<button style="width:100%; background:transparent; color:#34C759; border:1px dashed rgba(52,199,89,0.4); padding:10px 0; border-radius:6px; font-family:\'Courier New\',monospace; font-size:10px; font-weight:800; pointer-events:none;">ACCEPTED & DISPATCHED</button>';
+            if(badge) { badge.innerText = 'ACCEPTED'; badge.style.color = '#34C759'; badge.style.borderColor = '#34C759'; }
+            
+            // 提取数据进入物流
+            try {
+                let itemName = card.dataset.item;
+                let itemPrice = parseFloat(card.dataset.price) || 0;
+                let itemStore = card.dataset.store;
+                
+                storeCurrentOrderId = 'GF-' + Math.floor(Math.random() * 90000 + 10000) + 'X';
+                storeOrderHistory.unshift({ id: storeCurrentOrderId, date: new Date().toLocaleString(), total: itemPrice, items: [{ name: itemName, price: itemPrice, store: itemStore }] });
+                if(storeOrderHistory.length > 20) storeOrderHistory.pop(); 
+                localStorage.setItem('soap_boutique_history', JSON.stringify(storeOrderHistory));
+                
+                storePendingDeliveryInfo = { contactId: currentContactId, items: itemName };
+                storeStartLogisticsEngine();
+                document.getElementById('store-logistics-dot').classList.add('active');
+            } catch(e) { console.error("礼物物流提取失败", e); }
+
+            uiText = "✧ 你开心地收下了这份礼物！物流已启动。";
+            aiPrompt = `[系统旁白：用户欣然接受了你送的礼物！订单已进入物流配送阶段。请结合人设给出回应（如宠溺、开心或傲娇）。]`;
+
+        } else {
+            card.style.filter = 'grayscale(80%)';
+            actionBar.innerHTML = '<button style="width:100%; background:transparent; color:#888; border:1px dashed #555; padding:10px 0; border-radius:6px; font-family:\'Courier New\',monospace; font-size:10px; font-weight:800; pointer-events:none;">DENIED</button>';
+            if(badge) { badge.innerText = 'DENIED'; badge.style.color = '#888'; badge.style.borderColor = '#888'; }
+            
+            uiText = "✧ 你无情地拒收了这份礼物。";
+            aiPrompt = `[系统旁白：用户残忍拒绝了你送的礼物，订单已被取消。请结合人设给出回应（如失落、生气、强装镇定或霸道）。]`;
+        }
+
+        c.history[index].content = row.querySelector('.bubble').innerHTML;
+        c.history.push({role: 'system_sum', content: `<i>${uiText}</i>\n<span style="display:none;">${aiPrompt}</span>`});
+        
+        saveData(); 
+        appendBubbleRow(c.history[c.history.length - 1], c.history.length - 1);
+    }
     // ================= 全新：催促出餐与电话系统 =================
 
     // 拦截外卖单上的【催促出餐】按钮点击
