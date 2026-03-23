@@ -8548,9 +8548,9 @@
                 finalSysPrompt += wbContext;
 
                 // 🔄【全新记忆互通引擎】：将线下的最新记忆实时同步到线上！
-                // 🚨 核心修复 3：如果开启了小剧场番外模式 (isMiniTheater)，主线手机聊天将绝对读不到这部分剧场记忆！
-                if (c.theaterHistory && c.theaterHistory.length > 1 && !c.isMiniTheater) {
-                    let recentTh = c.theaterHistory.filter(m => m.role !== 'system').slice(-15);
+                // 🚨 核心修复：精准过滤！只有未开启“淡化历史”模式产生的主线线下记录，才会被聊天室读取互通！
+                if (c.theaterHistory && c.theaterHistory.length > 1) {
+                    let recentTh = c.theaterHistory.filter(m => m.role !== 'system' && !m.isMiniTheater).slice(-15);
                     if (recentTh.length > 0) {
                         let thText = recentTh.map(m => `${m.role === 'assistant' ? (c.chatRemark || c.name) : (gConfig.meName || '我')}: ${m.content.replace(/<[^>]+>/g, '').trim()}`).join('\n');
                         finalSysPrompt += `\n\n【❗ 线下见面记忆无缝互通】：以下是你们最近一次在线下（现实中）见面的互动记录。请你务必牢记你们刚见过面、发生过这些事，并在接下来的手机聊天中自然地延续当时的感情和话题！绝对不要失忆！\n${thText}`;
@@ -8787,11 +8787,15 @@ ${probText}
                     let desc = m.photoDesc || "一张未知的定格画面";
                     pushContent = `[消息ID: ${m._oid}] ${m.role === 'user' ? '【用户】' : '【你】'} 发送了一张实体相片！照片上的画面内容是："${desc}"。请务必在心里把它当做一张真实的视觉照片来给出反应！`;
                 } else if (m.content.includes('maison-proxy-card')) {
-                    // 🌟 核心修复：拦截代付卡片，将其翻译为极简状态描述，防止卡片的 HTML 变成长串乱码进入上下文
-                    let isPaid = m.content.includes('PAID IN FULL') || m.content.includes('mp-badge-status" style="font-family:\'Courier New\',monospace; font-size:8px; font-weight:800; padding:2px 4px; border:1px solid #34C759');
-                    let isRejected = m.content.includes('REQUEST DENIED') || m.content.includes('DECLINED');
-                    let statusText = isPaid ? '已付款' : (isRejected ? '已被拒绝' : '等待代付！你可以随时回复 <accept> 同意付款，或 <reject> 残忍拒绝。');
-                    pushContent = `[消息ID: ${m._oid}] ${m.role === 'user' ? '【用户】' : '【你】'} 发出的高定商店商品代付账单（状态：${statusText}）。`;
+                    // 🌟 核心修复：拦截代付/礼物卡片，将其翻译为极简状态描述
+                    if (m.content.includes('GIFT RECEIPT')) {
+                        pushContent = `[消息ID: ${m._oid}] ${m.role === 'user' ? '【用户】' : '【你】'} 发送了一份已付款的礼物订单（等待物流配送）。`;
+                    } else {
+                        let isPaid = m.content.includes('PAID IN FULL') || m.content.includes('mp-badge-status" style="font-family:\'Courier New\',monospace; font-size:8px; font-weight:800; padding:2px 4px; border:1px solid #34C759');
+                        let isRejected = m.content.includes('REQUEST DENIED') || m.content.includes('DECLINED');
+                        let statusText = isPaid ? '已付款' : (isRejected ? '已被拒绝' : '等待代付！你可以随时回复 <accept> 同意付款，或 <reject> 残忍拒绝。');
+                        pushContent = `[消息ID: ${m._oid}] ${m.role === 'user' ? '【用户】' : '【你】'} 发出的高定商店商品代付账单（状态：${statusText}）。`;
+                    }
                 } else if (m.content.includes('soap-bill-wrapper')) {
                     pushContent = `[消息ID: ${m._oid}] ${m.role === 'user' ? '【用户】' : '【你】'} 分享了一张外卖小票记录。`;
                 } else if (m.content.includes('sync-invite-wrap')) {
@@ -8870,6 +8874,7 @@ ${probText}
 7. 💰 【UI 物理卡片交互】(如果有必要，把这些纯英文标签自由穿插在任意 <split> 之间的对白中间，甚至放在最开头或最末尾，绝对不仅仅局限于最后一个气泡！)：
    - 收/退转账或代付 ➔ <accept> 或 <reject>
    - 发转账/黑卡/红包 ➔ <send_transfer amount="520.00" memo="留言"> / <send_blackcard amount="888" memo="留言"> / <send_redpacket amount="100.00" text="封面">
+   - 霸气为用户下单买礼物 ➔ <send_gift store="高定店名或随意专柜" item="商品名" price="价格数字">
    - 发照片/定位/听歌 ➔ <send_photo desc="照片描述"> / <send_location name="地名" desc="描述"> / <send_sync title="曲名">
    - 强行面基(破屏) ➔ <override mode="fatal"或"gentle"> (内部含<q1><q2><q3><force>)`;
 
@@ -9225,7 +9230,7 @@ ${probText}
             if(tempId && document.getElementById(tempId)) document.getElementById(tempId).remove();
             
             // 🎯 核心修复：放过我们所有的卡片交互标签！不然会被过滤掉！
-            spokenText = spokenText.replace(/<(?!split\b|\/split\b|send_blackcard\b|send_transfer\b|send_redpacket\b|send_luckypacket\b|send_location\b|send_sync\b|send_photo\b|override\b|\/override\b|q[1-3]\b|\/q[1-3]\b|force\b|\/force\b)[^>]+>/gi, '').trim();
+            spokenText = spokenText.replace(/<(?!split\b|\/split\b|send_blackcard\b|send_transfer\b|send_redpacket\b|send_luckypacket\b|send_location\b|send_sync\b|send_photo\b|send_gift\b|override\b|\/override\b|q[1-3]\b|\/q[1-3]\b|force\b|\/force\b)[^>]+>/gi, '').trim();
             
             // 💥 变异数字粉碎机：如果它在句子末尾残留了类似 >75<, <50> 这种畸形的数字壳，全部切除掉！
             spokenText = spokenText.replace(/(?:>|<|》|《|】|\[|\()\s*\d{2,3}\s*(?:>|<|》|《|】|\]|\))\s*$/g, '').trim();
@@ -9277,6 +9282,7 @@ ${probText}
                 let locRegex = /<send_location\s+name=["']?([^"'>]+)["']?\s+desc=["']?([^"'>]+)["']?>/gi;
                 let syncRegex = /<send_sync(?:\s+title=["']?([^"'>]+)["']?)?>/gi;
                 let photoRegex = /<send_photo\s+desc=["']?([^"'>]+)["']?[^>]*>/gi;
+                let giftRegex = /<send_gift\s+store=["']?([^"'>]+)["']?\s+item=["']?([^"'>]+)["']?\s+price=["']?([^"'>]+)["']?>/gi;
                 let overrideBlockRegex = /<override\s+mode=["']?(fatal|gentle)["']?>([\s\S]*?)<\/override>/gi;
                 let overrideSingleRegex = /<override\s+mode=["']?(fatal|gentle)["']?\s*\/?\s*>/gi;
 
@@ -9287,6 +9293,7 @@ ${probText}
                 while ((rMatch = locRegex.exec(seg)) !== null) localSentCards.push({ type: 'loc', name: rMatch[1], desc: rMatch[2] });
                 while ((rMatch = syncRegex.exec(seg)) !== null) localSentCards.push({ type: 'sync', title: rMatch[1] });
                 while ((rMatch = photoRegex.exec(seg)) !== null) localSentCards.push({ type: 'photo', desc: rMatch[1] });
+                while ((rMatch = giftRegex.exec(seg)) !== null) localSentCards.push({ type: 'gift', store: rMatch[1], item: rMatch[2], price: rMatch[3] });
                 
                 while ((rMatch = overrideBlockRegex.exec(seg)) !== null) {
                     let mode = rMatch[1].toLowerCase();
@@ -9314,7 +9321,7 @@ ${probText}
                 }
 
                 // 将扫描到的卡片代码从当前文本中剔除
-                seg = seg.replace(/<send_blackcard[^>]+>/gi, '').replace(/<send_transfer[^>]+>/gi, '').replace(/<send_redpacket[^>]+>/gi, '').replace(/<send_luckypacket[^>]+>/gi, '').replace(/<send_location[^>]+>/gi, '').replace(/<send_sync[^>]*>/gi, '').replace(/<send_photo[^>]+>/gi, '').replace(/<override[\s\S]*?<\/override>/gi, '').replace(/<override[^>]*>/gi, '').trim();
+                seg = seg.replace(/<send_blackcard[^>]+>/gi, '').replace(/<send_transfer[^>]+>/gi, '').replace(/<send_redpacket[^>]+>/gi, '').replace(/<send_luckypacket[^>]+>/gi, '').replace(/<send_location[^>]+>/gi, '').replace(/<send_sync[^>]*>/gi, '').replace(/<send_photo[^>]+>/gi, '').replace(/<send_gift[^>]+>/gi, '').replace(/<override[\s\S]*?<\/override>/gi, '').replace(/<override[^>]*>/gi, '').trim();
                 seg = seg.replace(/<q[1-3]>[\s\S]*?<\/q[1-3]>/gi, '').replace(/<force>[\s\S]*?<\/force>/gi, '').trim();
 
                 // 💡 局部独立引用解析引擎：允许每个气泡独立携带自己的引用
@@ -9429,6 +9436,32 @@ ${probText}
                             </div><img src="1" onerror="this.parentNode.classList.add('bubble-clear'); this.remove();">`;
                             c.history.push({ role: 'assistant', content: photoHtml.replace(/\n\s+/g, ''), isRevoked: false, timestamp: cardTs, photoDesc: card.desc });
                             c.history.push({ role: 'system_sum', content: `<i>✧ [${signName}] 给你发送了一张实体相片</i>` });
+                        } else if (card.type === 'gift') {
+                            let formattedPrice = isNaN(parseFloat(card.price)) ? card.price : parseFloat(card.price).toLocaleString();
+                            let giftHtml = `
+                            <div class="maison-proxy-card" style="width:240px; background:linear-gradient(135deg, #111 0%, #1A1A1D 100%); border:0.5px solid rgba(195,167,114,0.3); border-radius:12px; box-shadow:0 15px 30px rgba(0,0,0,0.5); position:relative; overflow:hidden; display:flex; flex-direction:column; color:#EAE6DE; margin:5px 0;">
+                                <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%) rotate(-15deg); font-family:'Didot',serif; font-size:40px; font-weight:900; font-style:italic; color:rgba(195,167,114,0.03); z-index:1; pointer-events:none;">GIFT</div>
+                                <div style="position:relative; z-index:2; padding:20px 15px;">
+                                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px;">
+                                        <div style="font-family:'Didot',serif; font-size:14px; font-weight:900; letter-spacing:1px; color:#C3A772; max-width:130px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${card.store}</div>
+                                        <div class="mp-badge-status" style="font-family:'Courier New',monospace; font-size:8px; font-weight:800; padding:2px 4px; border:1px solid #34C759; color:#34C759; border-radius:4px;">PAID</div>
+                                    </div>
+                                    <div class="mp-title-text" style="font-size:9px; color:#858078; font-weight:700; letter-spacing:1px; margin-bottom:10px;">GIFT RECEIPT // 礼物订单</div>
+                                    <div style="display:flex; flex-direction:column; gap:6px;">
+                                        <div style="display:flex; justify-content:space-between; align-items:baseline; font-size:11px;"><span style="color:#EAE6DE; max-width:65%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${card.item}</span><span style="flex:1; border-bottom:1px dotted rgba(195,167,114,0.3); margin:0 8px; position:relative; top:-3px;"></span><span style="font-family:'Courier New',monospace; color:#858078;">¥ ${formattedPrice}</span></div>
+                                    </div>
+                                    <div style="width:100%; height:1px; background:repeating-linear-gradient(to right, rgba(195,167,114,0.2) 0, rgba(195,167,114,0.2) 4px, transparent 4px, transparent 8px); margin:12px 0;"></div>
+                                    <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                                        <span style="font-family:'Courier New',monospace; font-size:9px; color:#C3A772; font-weight:800;">TOTAL</span>
+                                        <span style="font-family:'Didot',serif; font-size:20px; font-weight:900; color:#C3A772;">¥ ${formattedPrice}</span>
+                                    </div>
+                                </div>
+                                <div style="background:rgba(0,0,0,0.4); border-top:1px solid rgba(195,167,114,0.1); padding:12px 15px; position:relative; z-index:2;">
+                                    <button style="width:100%; background:transparent; color:#C3A772; border:1px dashed rgba(195,167,114,0.4); padding:10px 0; border-radius:6px; font-family:'Courier New',monospace; font-size:10px; font-weight:800; pointer-events:none;">DISPATCHED TO YOU</button>
+                                </div>
+                            </div><img src="1" onerror="this.parentNode.classList.add('bubble-clear'); this.remove();">`;
+                            c.history.push({ role: 'assistant', content: giftHtml.replace(/\n\s+/g, ''), isRevoked: false, timestamp: cardTs });
+                            c.history.push({ role: 'system_sum', content: `<i>✧ [${signName}] 为你下单了一份专属礼物</i>` });
                         } else if (card.type === 'override') {
                             c.history.push({ role: 'system_sum', content: `<i>✧ [系统强制介入] 对方强行发起了跨屏精神连接</i>` });
                             setTimeout(() => {
@@ -12432,7 +12465,7 @@ ${probText}
         if (text) {
             input.value = '';
             const msgId = Date.now().toString();
-            const newMsg = { role: 'user', content: text, timestamp: Date.now(), _id: msgId };
+            const newMsg = { role: 'user', content: text, timestamp: Date.now(), _id: msgId, isMiniTheater: c.isMiniTheater === true };
             
             c.theaterHistory.push(newMsg);
             saveData();
@@ -12646,7 +12679,7 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
             if (document.getElementById(loadingId)) document.getElementById(loadingId).remove();
             
             const msgId = Date.now().toString();
-            const aiMsg = { role: 'assistant', content: rawReply, timestamp: Date.now(), _id: msgId, mindData: mindData };
+            const aiMsg = { role: 'assistant', content: rawReply, timestamp: Date.now(), _id: msgId, mindData: mindData, isMiniTheater: c.isMiniTheater === true };
             
             c.theaterHistory.push(aiMsg);
             saveData();
