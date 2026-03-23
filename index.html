@@ -5779,13 +5779,6 @@
         </div>
 
     </div>
-    <!-- ================= 手机端调试工具 VConsole ================= -->
-    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
-    <script>
-      // 初始化 VConsole
-      var vConsole = new VConsole();
-    </script>
-    <!-- ======================================================== -->
 
 <script>
     // ====== 强大的本地存储引擎 (替代 localStorage 解决图片超出5MB保存失败问题) ======
@@ -8853,8 +8846,8 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
                 } else if (m.content.includes('maison-gift-card')) {
                     let isAccepted = m.content.includes('ACCEPTED');
                     let isRejected = m.content.includes('DENIED');
-                    let itemNameMatch = m.content.match(/data-itemnames=["']?([^"'>]+)["']?/);
-                    let itemName = itemNameMatch ? itemNameMatch[1] : '多件精美礼物';
+                    let itemNameMatch = m.content.match(/data-item=["']?([^"'>]+)["']?/);
+                    let itemName = itemNameMatch ? itemNameMatch[1] : '礼物';
                     let statusText = isAccepted ? '已被开心收下并开始物流配送' : (isRejected ? '已被无情拒收' : (m.role === 'user' ? '等待处理！你可以随时回复 <accept> 收下，或 <reject> 拒收' : '等待用户决定是否收下'));
                     pushContent = `[消息ID: ${m._oid}] ${sender} 送给 ${receiver} 的礼物订单（商品：${itemName}，状态：${statusText}）。`;
                 } else if (m.content.includes('maison-proxy-card')) {
@@ -8941,7 +8934,7 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
 7. 💰 【UI 物理卡片交互】(如果有必要，把这些纯英文标签自由穿插在任意 <split> 之间的对白中间，甚至放在最开头或最末尾，绝对不仅仅局限于最后一个气泡！)：
    - 收/退转账或代付 ➔ <accept> 或 <reject>
    - 发转账/黑卡/红包 ➔ <send_transfer amount="520.00" memo="留言"> / <send_blackcard amount="888" memo="留言"> / <send_redpacket amount="100.00" text="封面">
-   - 霸气为用户买礼物(支持多件) ➔ <send_gift store="高定店名或专柜" items="商品A|价格,商品B|价格" total="总价数字">
+   - 霸气为用户下单买礼物 ➔ <send_gift store="高定店名或随意专柜" item="商品名" price="价格数字"> (如需送多件可连续写多个该标签)
    - 发照片/定位/听歌 ➔ <send_photo desc="照片描述"> / <send_location name="地名" desc="描述"> / <send_sync title="曲名">
    - 强行面基(破屏) ➔ <override mode="fatal"或"gentle"> (内部含<q1><q2><q3><force>)
    - 拍一拍互动 ➔ 穿插 <nudge> 来回拍用户。穿插 <set_nudge text="动作词"> 来修改用户拍你时弹出的动作词缀（如：摸了摸）。`;
@@ -9383,7 +9376,7 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
                 let locRegex = /<send_location\s+name=["']?([^"'>]+)["']?\s+desc=["']?([^"'>]+)["']?>/gi;
                 let syncRegex = /<send_sync(?:\s+title=["']?([^"'>]+)["']?)?>/gi;
                 let photoRegex = /<send_photo\s+desc=["']?([^"'>]+)["']?[^>]*>/gi;
-                let giftRegex = /<send_gift\s+store=["']?([^"'>]+)["']?\s+items=["']?([^"'>]+)["']?\s+total=["']?([^"'>]+)["']?>/gi;
+                let giftRegex = /<send_gift\s+store=["']?([^"'>]+)["']?\s+item=["']?([^"'>]+)["']?\s+price=["']?([^"'>]+)["']?>/gi;
                 let overrideBlockRegex = /<override\s+mode=["']?(fatal|gentle)["']?>([\s\S]*?)<\/override>/gi;
                 let overrideSingleRegex = /<override\s+mode=["']?(fatal|gentle)["']?\s*\/?\s*>/gi;
 
@@ -9394,8 +9387,23 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
                 while ((rMatch = locRegex.exec(seg)) !== null) localSentCards.push({ type: 'loc', name: rMatch[1], desc: rMatch[2] });
                 while ((rMatch = syncRegex.exec(seg)) !== null) localSentCards.push({ type: 'sync', title: rMatch[1] });
                 while ((rMatch = photoRegex.exec(seg)) !== null) localSentCards.push({ type: 'photo', desc: rMatch[1] });
-                while ((rMatch = giftRegex.exec(seg)) !== null) localSentCards.push({ type: 'gift', store: rMatch[1], itemsStr: rMatch[2], total: rMatch[3] });
+                while ((rMatch = giftRegex.exec(seg)) !== null) localSentCards.push({ type: 'gift', store: rMatch[1], item: rMatch[2], price: rMatch[3] });
                 
+                let gifts = localSentCards.filter(c => c.type === 'gift');
+                if (gifts.length > 0) {
+                    let mergedItems = gifts.map(g => ({ name: g.item, price: parseFloat(g.price) || 0 }));
+                    let totalGiftPrice = mergedItems.reduce((sum, g) => sum + g.price, 0);
+                    let mergedGift = { 
+                        type: 'gift_merged', 
+                        store: gifts[0].store, 
+                        items: mergedItems, 
+                        totalPrice: totalGiftPrice,
+                        itemsStr: JSON.stringify(mergedItems).replace(/'/g, "&#39;").replace(/"/g, "&quot;")
+                    };
+                    localSentCards = localSentCards.filter(c => c.type !== 'gift');
+                    localSentCards.push(mergedGift);
+                }
+
                 while ((rMatch = overrideBlockRegex.exec(seg)) !== null) {
                     let mode = rMatch[1].toLowerCase();
                     if (c.overrideModePref === 'fatal') mode = 'fatal';
@@ -9542,32 +9550,16 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
                             </div><img src="1" onerror="this.parentNode.classList.add('bubble-clear'); this.remove();">`;
                             c.history.push({ role: 'assistant', content: photoHtml.replace(/\n\s+/g, ''), isRevoked: false, timestamp: cardTs, photoDesc: card.desc });
                             c.history.push({ role: 'system_sum', content: `<i>✧ [${signName}] 给你发送了一张实体相片</i>` });
-                        } else if (card.type === 'gift') {
-                            let formattedTotal = isNaN(parseFloat(card.total)) ? card.total : parseFloat(card.total).toLocaleString();
-                            let itemsArray = [];
-                            let itemsHtml = '';
-                            let itemNames = [];
+                        } else if (card.type === 'gift_merged') {
+                            let formattedTotal = card.totalPrice.toLocaleString();
+                            let itemsListHtml = '';
+                            card.items.forEach(it => {
+                                let fPrice = isNaN(parseFloat(it.price)) ? it.price : parseFloat(it.price).toLocaleString();
+                                itemsListHtml += `<div style="display:flex; justify-content:space-between; align-items:baseline; font-size:11px;"><span style="color:#EAE6DE; max-width:65%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${it.name}</span><span style="flex:1; border-bottom:1px dotted rgba(195,167,114,0.3); margin:0 8px; position:relative; top:-3px;"></span><span style="font-family:'Courier New',monospace; color:#858078;">¥ ${fPrice}</span></div>`;
+                            });
                             
-                            // 解析多件商品 (格式: 物品A|价格,物品B|价格)
-                            if (card.itemsStr) {
-                                card.itemsStr.split(',').forEach(part => {
-                                    let arr = part.split('|');
-                                    if (arr.length > 0) {
-                                        let iName = arr[0].trim();
-                                        let iPrice = arr.length > 1 ? parseFloat(arr[1].trim()) : 0;
-                                        if (isNaN(iPrice)) iPrice = 0;
-                                        itemsArray.push({ name: iName, price: iPrice });
-                                        itemNames.push(iName);
-                                        itemsHtml += `<div style="display:flex; justify-content:space-between; align-items:baseline; font-size:11px; margin-bottom:4px;"><span style="color:#EAE6DE; max-width:65%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${iName}</span><span style="flex:1; border-bottom:1px dotted rgba(195,167,114,0.3); margin:0 8px; position:relative; top:-3px;"></span><span style="font-family:'Courier New',monospace; color:#858078;">¥ ${iPrice.toLocaleString()}</span></div>`;
-                                    }
-                                });
-                            }
-                            
-                            let safeItemsJson = JSON.stringify(itemsArray).replace(/'/g, "&#39;").replace(/"/g, "&quot;");
-                            let combinedNames = itemNames.join('、');
-
                             let giftHtml = `
-                            <div class="maison-gift-card" data-store="${card.store}" data-itemnames="${combinedNames}" data-items="${safeItemsJson}" data-total="${card.total}" style="width:240px; background:linear-gradient(135deg, #111 0%, #1A1A1D 100%); border:0.5px solid rgba(195,167,114,0.3); border-radius:12px; box-shadow:0 15px 30px rgba(0,0,0,0.5); position:relative; overflow:hidden; display:flex; flex-direction:column; color:#EAE6DE; margin:5px 0;">
+                            <div class="maison-gift-card" data-store="${card.store}" data-items="${card.itemsStr}" data-total="${card.totalPrice}" style="width:240px; background:linear-gradient(135deg, #111 0%, #1A1A1D 100%); border:0.5px solid rgba(195,167,114,0.3); border-radius:12px; box-shadow:0 15px 30px rgba(0,0,0,0.5); position:relative; overflow:hidden; display:flex; flex-direction:column; color:#EAE6DE; margin:5px 0;">
                                 <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%) rotate(-15deg); font-family:'Didot',serif; font-size:40px; font-weight:900; font-style:italic; color:rgba(195,167,114,0.03); z-index:1; pointer-events:none;">GIFT</div>
                                 <div style="position:relative; z-index:2; padding:20px 15px;">
                                     <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px;">
@@ -9575,8 +9567,8 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
                                         <div class="mg-badge-status" style="font-family:'Courier New',monospace; font-size:8px; font-weight:800; padding:2px 4px; border:1px solid #C3A772; color:#C3A772; border-radius:4px;">WAITING</div>
                                     </div>
                                     <div class="mp-title-text" style="font-size:9px; color:#858078; font-weight:700; letter-spacing:1px; margin-bottom:10px;">GIFT RECEIPT // 礼物订单</div>
-                                    <div style="display:flex; flex-direction:column; gap:2px;">
-                                        ${itemsHtml}
+                                    <div style="display:flex; flex-direction:column; gap:6px;">
+                                        ${itemsListHtml}
                                     </div>
                                     <div style="width:100%; height:1px; background:repeating-linear-gradient(to right, rgba(195,167,114,0.2) 0, rgba(195,167,114,0.2) 4px, transparent 4px, transparent 8px); margin:12px 0;"></div>
                                     <div style="display:flex; justify-content:space-between; align-items:flex-end;">
@@ -9590,7 +9582,7 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
                                 </div>
                             </div><img src="1" onerror="this.parentNode.classList.add('bubble-clear'); this.remove();">`;
                             c.history.push({ role: 'assistant', content: giftHtml.replace(/\n\s+/g, ''), isRevoked: false, timestamp: cardTs });
-                            c.history.push({ role: 'system_sum', content: `<i>✧ [${signName}] 为你买了一份礼物（包含 ${itemNames.length} 件物品），等待你决定是否收下</i>` });
+                            c.history.push({ role: 'system_sum', content: `<i>✧ [${signName}] 为你买了一份礼物，等待你决定是否收下</i>` });
                         }
  else if (card.type === 'override') {
                             isOverrideTriggered = true; // 拦截信号，制止后续的加载气泡动画
@@ -10924,23 +10916,19 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
             
             // 提取数据进入物流
             try {
-                let itemsDataStr = card.dataset.items;
-                let itemsArray = [];
-                try { itemsArray = JSON.parse(itemsDataStr.replace(/&#39;/g, "'").replace(/&quot;/g, '"')); } catch(e) {}
-                
-                let itemTotal = parseFloat(card.dataset.total) || 0;
                 let itemStore = card.dataset.store;
-                let combinedNames = card.dataset.itemnames || '多件精美礼物';
+                let itemsData = JSON.parse(card.dataset.items.replace(/&#39;/g, "'").replace(/&quot;/g, '"'));
+                let total = parseFloat(card.dataset.total);
                 
-                // 给每个 item 加上 store 属性，适配物流订单明细
-                itemsArray.forEach(i => i.store = itemStore);
-                
+                itemsData = itemsData.map(it => ({ name: it.name, price: it.price, store: itemStore }));
+
                 storeCurrentOrderId = 'GF-' + Math.floor(Math.random() * 90000 + 10000) + 'X';
-                storeOrderHistory.unshift({ id: storeCurrentOrderId, date: new Date().toLocaleString(), total: itemTotal, items: itemsArray });
+                storeOrderHistory.unshift({ id: storeCurrentOrderId, date: new Date().toLocaleString(), total: total, items: itemsData });
                 if(storeOrderHistory.length > 20) storeOrderHistory.pop(); 
                 localStorage.setItem('soap_boutique_history', JSON.stringify(storeOrderHistory));
                 
-                storePendingDeliveryInfo = { contactId: currentContactId, items: combinedNames };
+                let itemNames = itemsData.map(i => i.name).join('、');
+                storePendingDeliveryInfo = { contactId: currentContactId, items: itemNames };
                 storeStartLogisticsEngine();
                 document.getElementById('store-logistics-dot').classList.add('active');
             } catch(e) { console.error("礼物物流提取失败", e); }
