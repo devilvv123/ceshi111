@@ -557,9 +557,9 @@
         .bubble.bubble-clear { background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; }
         
         /* 引用消息块样式 (自适应黑底与白底) */
-        .quote-bubble-block { background: rgba(128, 128, 128, 0.15); border-left: 2px solid currentColor; padding: 6px 10px; margin-bottom: 8px; border-radius: 4px; font-size: 0.85em; opacity: 0.85; }
+        .quote-bubble-block { background: rgba(128, 128, 128, 0.15); border-left: 2px solid currentColor; padding: 6px 10px; margin-bottom: 8px; border-radius: 4px; font-size: 0.85em; opacity: 0.85; max-width: 100%; overflow: hidden; box-sizing: border-box; }
         .quote-bubble-name { font-weight: 800; margin-bottom: 3px; font-size: 0.9em; opacity: 0.9; }
-        .quote-bubble-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.8; font-style: italic; }
+        .quote-bubble-text { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; white-space: normal; word-break: break-word; opacity: 0.8; font-style: italic; }
 
         /* 系统提示文字调为 8px，保持电影字幕感的同时提升一点可读性 */
         .bubble-sys { background: transparent; color: rgba(142, 142, 147, 0.6); font-size: 8px; font-style: italic; font-weight: 600; text-align: center; width: 100%; box-shadow: none; padding: 10px 0; cursor: pointer; transition: 0.2s; letter-spacing: 0.5px;}
@@ -1737,7 +1737,8 @@
         .bc-amt { position: absolute; top: 38%; right: 22px; font-family: 'Times New Roman', serif; font-size: 26px; font-weight: 700; letter-spacing: 1px; z-index: 5; }
         .bc-sig-bg { position: absolute; top: 62%; left: 20px; transform: translateY(-50%); width: 130px; height: 28px; background: #2A2A2A; background-image: repeating-linear-gradient(-45deg, transparent, transparent 3px, rgba(0,0,0,0.4) 3px, rgba(0,0,0,0.4) 6px); border-radius: 2px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.8); z-index: 4; }
         .bc-sig { position: absolute; top: 60%; left: 30px; transform: translateY(-50%) rotate(-6deg); font-family: 'Brush Script MT', cursive; font-size: 30px; font-style: italic; z-index: 6; text-shadow: 0 2px 4px rgba(0,0,0,0.8); white-space: nowrap; max-width: 250px;}
-        .bc-memo { position: absolute; bottom: 20px; left: 20px; font-family: 'Georgia', serif; font-style: italic; font-size: 11px; z-index: 5; opacity: 0.8; letter-spacing: 0.5px; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .bc-memo { position: absolute; bottom: 20px; left: 20px; font-family: 'Georgia', serif; font-style: italic; font-size: 11px; z-index: 15; opacity: 0.8; letter-spacing: 0.5px; max-width: 190px; white-space: nowrap; overflow-x: auto; overflow-y: hidden; text-overflow: clip; scrollbar-width: none; -webkit-overflow-scrolling: touch; pointer-events: auto; padding-bottom: 2px; }
+        .bc-memo::-webkit-scrollbar { display: none; }
         .bc-bstar { position: absolute; bottom: 18px; right: 22px; font-size: 18px; z-index: 5; }
         
         /* 废除旧版负边距（因为底层引擎已经会自动去壳），彻底解决黑卡挡住头像的问题 */
@@ -1838,6 +1839,7 @@
             font-size: 9.5px; font-weight: 600; font-style: italic; 
             white-space: nowrap; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; 
             color: #6B655E; text-shadow: 0 1px 1px rgba(255,255,255,0.7); letter-spacing: 0.5px;
+            -webkit-overflow-scrolling: touch; pointer-events: auto; padding-bottom: 4px;
         }
         .nt-memo::-webkit-scrollbar { display: none; }
         .nt-memo::before { content: "- "; }
@@ -3435,8 +3437,9 @@
                     </div>
                 </div>
                 <div class="sp-actions">
+                    <div class="sp-btn" id="cfg-btn-delete" onclick="deleteConfig()" style="color:#FF3B30; border-color:rgba(255,59,48,0.3);">DELETE</div>
                     <div class="sp-btn" onclick="closeConfigModal()">CANCEL</div>
-                    <div class="sp-btn primary" onclick="saveConfig()">SAVE & SYNC</div>
+                    <div class="sp-btn primary" onclick="saveConfig()">SAVE</div>
                 </div>
             </div>
         </div>
@@ -4738,6 +4741,9 @@
         .cs-avatar-box:active { transform: scale(0.92); }
         .cs-avatar-box img { width: 100%; height: 100%; object-fit: cover; }
 
+        @keyframes avatarShake { 0% { transform: rotate(0deg) scale(1); } 25% { transform: rotate(-10deg) scale(1.1); } 50% { transform: rotate(10deg) scale(1.1); } 75% { transform: rotate(-10deg) scale(1.1); } 100% { transform: rotate(0deg) scale(1); } }
+        .avatar-shake { animation: avatarShake 0.4s ease-in-out; }
+
         /* 齿轮动画 */
         @keyframes gearSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .gear-spin { animation: gearSpin 12s linear infinite; transform-origin: center; will-change: transform; }
@@ -4789,6 +4795,9 @@
                         <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
                     </svg>
                     <div style="font-family: 'Didot', serif; font-size: 16px; font-weight: 800; letter-spacing: 2px; color: var(--c-black);">SESSION</div>
+                    <div onclick="openNudgeSettings()" style="display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--c-black); padding: 4px; border-radius: 4px; transition: background 0.2s;" title="拍一拍设置" onmouseover="this.style.background='rgba(0, 0, 0, 0.05)'" onmouseout="this.style.background='transparent'" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform='scale(1)'">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/><path d="M8 10V6a2 2 0 0 1 2-2v0a2 2 0 0 1 2 2v0"/></svg>
+                    </div>
                     <div onclick="openClearChatHistoryModal()" style="display: flex; align-items: center; justify-content: center; cursor: pointer; color: #4a1010; padding: 4px; border-radius: 4px; transition: background 0.2s;" title="清空聊天记录" onmouseover="this.style.background='rgba(74, 16, 16, 0.1)'" onmouseout="this.style.background='transparent'" onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform='scale(1)'">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/>
@@ -5420,6 +5429,11 @@
 
         .m-profile-name { font-size: 20px; font-weight: 600; color: #262626; margin-top: 16px; letter-spacing: 0.5px; }
         .m-profile-bio { font-size: 14px; color: #7a828a; margin-top: 4px; font-weight: 400; }
+        
+        .m-profile-stars { display: flex; gap: 4px; margin-left: 16px; margin-bottom: 15px; }
+        .m-profile-star { font-size: 9px; color: #c0c5cc; animation: mProfileTwinkle 2.5s infinite alternate ease-in-out; text-shadow: 0 1px 2px rgba(255,255,255,0.8); }
+        .m-profile-star:nth-child(1) { animation-delay: 0s; } .m-profile-star:nth-child(2) { animation-delay: 0.4s; } .m-profile-star:nth-child(3) { animation-delay: 0.8s; } .m-profile-star:nth-child(4) { animation-delay: 1.2s; } .m-profile-star:nth-child(5) { animation-delay: 1.6s; } .m-profile-star:nth-child(6) { animation-delay: 2.0s; }
+        @keyframes mProfileTwinkle { 0% { opacity: 0.2; transform: scale(0.8); } 100% { opacity: 0.9; transform: scale(1.1); } }
 
         /* 动态流内容 */
         .m-feed-container { max-width: 600px; margin: 0; padding: 60px 20px 20px 20px; }
@@ -6016,7 +6030,11 @@
         
         // 核心修复：将音乐库的加载也移入异步 LocalDB 引擎，彻底解决大音频文件刷新后丢失的问题！
         const sMdb = await LocalDB.getItem('soap_music_db_v1') || localStorage.getItem('soap_music_db_v1');
-        if(sMdb) m_db = JSON.parse(sMdb);
+        if(sMdb) {
+            let parsed = JSON.parse(sMdb);
+            if(parsed.daily && parsed.daily.length > 0) m_db.daily = parsed.daily;
+            if(parsed.tracks) m_db.tracks = parsed.tracks;
+        }
 
     // ================= 全新：动态分组渲染与管理引擎 =================
     function renderFilterTabs() {
@@ -7778,6 +7796,57 @@
     function clearChatBg() { document.getElementById('cs-bg-data').value = ''; document.getElementById('cs-bg-preview').innerHTML = '已清除'; }
     function clearChatAvatar() { document.getElementById('cs-avatar-data').value = ''; document.getElementById('cs-avatar-preview').innerHTML = SVG_BOT; }
     function clearMyChatAvatar() { document.getElementById('cs-me-avatar-data').value = ''; document.getElementById('cs-me-avatar-preview').innerHTML = SVG_USER; }
+
+    function openNudgeSettings() {
+        if(!currentContactId) return;
+        const c = contacts.find(x => x.id === currentContactId);
+        let myNudge = prompt("设置别人拍你时的动作后缀 (例如: 摸了摸，蹭了蹭)\\n留空则恢复默认[拍了拍]：", c.myNudgeText || "拍了拍");
+        if(myNudge !== null) {
+            c.myNudgeText = myNudge.trim();
+            saveData();
+            alert("设置成功！对方现在点击你的头像会显示：\\n\"对方" + (c.myNudgeText || "拍了拍") + "我\"");
+        }
+    }
+
+    function triggerNudge(isMyAvatar, avatarEl) {
+        if(!currentContactId) return;
+        const c = contacts.find(x => x.id === currentContactId);
+        
+        avatarEl.classList.remove('avatar-shake');
+        void avatarEl.offsetWidth; 
+        avatarEl.classList.add('avatar-shake');
+
+        let uName = gConfig.meName || '我';
+        if(c.maskId) { const m = masks.find(x=>x.id===c.maskId); if(m) uName = m.name; }
+        let botName = c.chatRemark || c.name;
+
+        let content = '';
+        let aiPrompt = '';
+        let hintExt = (!c.myNudgeText && !c.botNudgeText) ? " (提示: 可以在右上角设置图标内更换拍一拍动作)" : "";
+
+        if(isMyAvatar) {
+            let action = c.myNudgeText || "拍了拍";
+            content = `我${action}自己${hintExt}`;
+            aiPrompt = `[系统动作通报：用户刚刚在聊天界面双击/点击了TA自己的头像，触发了“我${action}自己”的动作。请结合人设给出反应，你也可以输出 <nudge> 标签来回拍TA。]`;
+        } else {
+            let action = c.botNudgeText || "拍了拍";
+            content = `我${action}了「${botName}」${hintExt}`;
+            aiPrompt = `[系统动作通报：用户刚刚在聊天界面点击了你的头像，触发了“用户${action}了你”的动作！
+【互动玩法提示】：
+1. 这是一个名叫“拍一拍”的社交软件互动玩法。
+2. 如果你想回拍用户，请在你的回复中包含 <nudge> 标签。
+3. 你也可以随时随地在回复中包含 <set_nudge text="新动作词"> 来修改你被拍时弹出的词缀（比如改成“摸了摸”、“抱了抱”、“踢了踢”）。请结合人设立刻给出真实反应！]`;
+        }
+
+        const newMsg = { role: 'system_sum', content: `<div style="text-align:center; width:100%;"><div style="color:var(--c-gray-dark); font-size:10px; font-weight:700; background:rgba(0,0,0,0.03); padding:4px 10px; border-radius:10px; display:inline-block;">${content}</div></div>\n<span style="display:none;">${aiPrompt}</span>` };
+        c.history.push(newMsg);
+        saveData();
+        appendBubbleRow(newMsg, c.history.length - 1);
+        scrollToBottom();
+        
+        setTimeout(() => fetchAIReply(currentContactId), 500);
+    }
+
     function saveChatSettings() { 
         const c = contacts.find(x => x.id === currentContactId); 
         c.maskId = document.getElementById('cs-mask-select').value; 
@@ -7934,6 +8003,12 @@
         
         const avatarDiv = document.createElement('div'); avatarDiv.className = 'msg-avatar'; 
         avatarDiv.innerHTML = isUser ? renderAvatarHTML(uAvatar, 'user') : renderAvatarHTML(c.chatAvatar || c.avatar, 'bot');
+        
+        avatarDiv.onclick = (e) => {
+            e.stopPropagation();
+            triggerNudge(isUser, avatarDiv);
+        };
+        
         avatarWrap.appendChild(avatarDiv);
 
         if (c.chatTimestampMode === 'avatar' && msg.timestamp) {
@@ -8771,40 +8846,48 @@ ${probText}
                 
                 let pushContent = `[消息ID: ${m._oid}] ${m.role === 'user' ? '【用户】' : '【你】'}\n${cleanText}`;
                 
-                // 【核心拦截】：将系统卡片转化为客观状态描述
+                // 【核心拦截】：将系统卡片转化为客观状态描述，修复 AI 搞错收发人导致抢红包/转账乱套的问题
+                let sender = m.role === 'user' ? '【用户】' : '【你】';
+                let receiver = m.role === 'user' ? '【你】' : '【用户】';
+
                 if (m.isRevoked) {
                     pushContent = `[注意！[消息ID: ${m._oid}] 已被撤回]`;
                 } else if (m.content.includes('wax-seal')) {
-                    pushContent = `[消息ID: ${m._oid}] ${m.role === 'user' ? '【用户】' : '【你】'} 发出的转账/黑卡（状态：已收款）。`;
+                    pushContent = `[消息ID: ${m._oid}] ${sender} 发给 ${receiver} 的转账/黑卡（状态：已被收款）。`;
                 } else if (m.content.includes('reject-stamp')) {
-                    pushContent = `[消息ID: ${m._oid}] ${m.role === 'user' ? '【用户】' : '【你】'} 发出的转账/黑卡（状态：已退回）。`;
+                    pushContent = `[消息ID: ${m._oid}] ${sender} 发给 ${receiver} 的转账/黑卡（状态：已被退回）。`;
                 } else if (m.content.includes('black-card-scene') || m.content.includes('normal-transfer')) {
-                    pushContent = `[消息ID: ${m._oid}] ${m.role === 'user' ? '【用户】' : '【你】'} 发出的转账/黑卡（状态：等待处理！你可以随时回复 <accept id="${m._oid}"> 收下，或 <reject id="${m._oid}"> 拒收）。`;
+                    let status = m.role === 'user' 
+                        ? `等待处理！你可以随时回复 <accept id="${m._oid}"> 收下，或 <reject id="${m._oid}"> 拒收` 
+                        : `等待用户处理中，你无权操作`;
+                    pushContent = `[消息ID: ${m._oid}] ${sender} 发给 ${receiver} 的转账/黑卡（状态：${status}）。`;
                 } else if (m.content.includes('rp-container')) {
-                    let status = m.content.includes('is-open') ? '已被拆开' : '未拆开等待处理！你可以回复 <accept> 拆开它';
-                    pushContent = `[消息ID: ${m._oid}] ${m.role === 'user' ? '【用户】' : '【你】'} 发出的红包（状态：${status}）。`;
+                    let isOpen = m.content.includes('is-open');
+                    let status = '';
+                    if (isOpen) status = '已被拆开';
+                    else status = m.role === 'user' ? '未拆开等待处理！你可以回复 <accept> 拆开它' : '未拆开等待用户处理中，你无权操作';
+                    pushContent = `[消息ID: ${m._oid}] ${sender} 发给 ${receiver} 的红包（状态：${status}）。`;
                 } else if (m.content.includes('stamp-wrapper') || m.photoDesc) {
                     let desc = m.photoDesc || "一张未知的定格画面";
-                    pushContent = `[消息ID: ${m._oid}] ${m.role === 'user' ? '【用户】' : '【你】'} 发送了一张实体相片！照片上的画面内容是："${desc}"。请务必在心里把它当做一张真实的视觉照片来给出反应！`;
+                    pushContent = `[消息ID: ${m._oid}] ${sender} 给 ${receiver} 发送了一张实体相片！画面内容是："${desc}"。请务必在心里把它当做一张真实的视觉照片来给出反应！`;
                 } else if (m.content.includes('maison-gift-card')) {
-                    // 🌟 新增：礼物卡片的状态精准翻译
                     let isAccepted = m.content.includes('ACCEPTED');
                     let isRejected = m.content.includes('DENIED');
-                    let statusText = isAccepted ? '用户已开心收下并开始物流配送' : (isRejected ? '用户已无情拒收' : '等待用户决定是否收下');
                     let itemNameMatch = m.content.match(/data-item=["']?([^"'>]+)["']?/);
                     let itemName = itemNameMatch ? itemNameMatch[1] : '礼物';
-                    pushContent = `[消息ID: ${m._oid}] ${m.role === 'user' ? '【用户】' : '【你】'} 发送了一份礼物订单（商品：${itemName}，状态：${statusText}）。`;
+                    let statusText = isAccepted ? '已被开心收下并开始物流配送' : (isRejected ? '已被无情拒收' : (m.role === 'user' ? '等待处理！你可以随时回复 <accept> 收下，或 <reject> 拒收' : '等待用户决定是否收下'));
+                    pushContent = `[消息ID: ${m._oid}] ${sender} 送给 ${receiver} 的礼物订单（商品：${itemName}，状态：${statusText}）。`;
                 } else if (m.content.includes('maison-proxy-card')) {
-                    // 🌟 核心修复：拦截代付卡片，将其翻译为极简状态描述
                     let isPaid = m.content.includes('PAID IN FULL') || m.content.includes('mp-badge-status" style="font-family:\'Courier New\',monospace; font-size:8px; font-weight:800; padding:2px 4px; border:1px solid #34C759');
                     let isRejected = m.content.includes('REQUEST DENIED') || m.content.includes('DECLINED');
-                    let statusText = isPaid ? '已付款' : (isRejected ? '已被拒绝' : '等待代付！你可以随时回复 <accept> 同意付款，或 <reject> 残忍拒绝。');
-                    pushContent = `[消息ID: ${m._oid}] ${m.role === 'user' ? '【用户】' : '【你】'} 发出的高定商店商品代付账单（状态：${statusText}）。`;
+                    let statusText = isPaid ? '已付款' : (isRejected ? '已被拒绝' : (m.role === 'user' ? '等待代付！你可以随时回复 <accept> 同意付款，或 <reject> 残忍拒绝' : '等待用户代付中'));
+                    pushContent = `[消息ID: ${m._oid}] ${sender} 发给 ${receiver} 的高定商店商品代付账单（状态：${statusText}）。`;
                 } else if (m.content.includes('soap-bill-wrapper')) {
-                    pushContent = `[消息ID: ${m._oid}] ${m.role === 'user' ? '【用户】' : '【你】'} 分享了一张外卖小票记录。`;
+                    pushContent = `[消息ID: ${m._oid}] ${sender} 分享了一张外卖小票记录。`;
                 } else if (m.content.includes('sync-invite-wrap')) {
                     let isConnected = m.content.includes('dark-btn');
-                    pushContent = `[消息ID: ${m._oid}] ${m.role === 'user' ? '【用户】' : '【你】'} 发出的音乐共听邀请（状态：${isConnected ? '已连接' : '等待接受，你可以回复 <accept> 同意，或 <reject> 拒绝'}）。`;
+                    let status = isConnected ? '已连接' : (m.role === 'user' ? '等待接受，你可以回复 <accept> 同意，或 <reject> 拒绝' : '等待用户接受中');
+                    pushContent = `[消息ID: ${m._oid}] ${sender} 发给 ${receiver} 的音乐共听邀请（状态：${status}）。`;
                 }
 
                 // 核心多模态拦截：提取干净的图片 URL 塞给视觉引擎
@@ -8880,7 +8963,8 @@ ${probText}
    - 发转账/黑卡/红包 ➔ <send_transfer amount="520.00" memo="留言"> / <send_blackcard amount="888" memo="留言"> / <send_redpacket amount="100.00" text="封面">
    - 霸气为用户下单买礼物 ➔ <send_gift store="高定店名或随意专柜" item="商品名" price="价格数字">
    - 发照片/定位/听歌 ➔ <send_photo desc="照片描述"> / <send_location name="地名" desc="描述"> / <send_sync title="曲名">
-   - 强行面基(破屏) ➔ <override mode="fatal"或"gentle"> (内部含<q1><q2><q3><force>)`;
+   - 强行面基(破屏) ➔ <override mode="fatal"或"gentle"> (内部含<q1><q2><q3><force>)
+   - 拍一拍互动 ➔ 穿插 <nudge> 来回拍用户。穿插 <set_nudge text="动作词"> 来修改用户拍你时弹出的动作词缀（如：摸了摸）。`;
 
         // 暴力拼接：找到上下文数组里的最后一条消息，把刀架在脖子上，占据 100% 的注意力
         if (apiMessages.length > 0) {
@@ -8935,6 +9019,38 @@ ${probText}
             
             // 剥离所有的操作标签
             rawReply = rawReply.replace(actionRegex, '').trim();
+
+            // 解析拍一拍互动
+            let nudgeRegex = /<nudge>/gi;
+            if (nudgeRegex.test(rawReply)) {
+                let action = c.myNudgeText || "拍了拍";
+                let botName = c.chatRemark || c.name;
+                c.history.push({role: 'system_sum', content: `<div style="text-align:center; width:100%;"><div style="color:var(--c-gray-dark); font-size:10px; font-weight:700; background:rgba(0,0,0,0.03); padding:4px 10px; border-radius:10px; display:inline-block;">「${botName}」${action}了我</div></div>`});
+                if (isCurrentlyInRoom) {
+                    appendBubbleRow(c.history[c.history.length - 1], c.history.length - 1);
+                    setTimeout(() => {
+                        const myAvatarEls = document.querySelectorAll('.msg-row.user .msg-avatar');
+                        if(myAvatarEls.length > 0) {
+                            let lastMyAvatar = myAvatarEls[myAvatarEls.length - 1];
+                            lastMyAvatar.classList.remove('avatar-shake');
+                            void lastMyAvatar.offsetWidth;
+                            lastMyAvatar.classList.add('avatar-shake');
+                        }
+                    }, 100);
+                }
+            }
+            rawReply = rawReply.replace(nudgeRegex, '').trim();
+
+            let setNudgeRegex = /<set_nudge\s+text=["']?([^"'>]+)["']?\s*\/?>/gi;
+            let nudgeMatch;
+            while ((nudgeMatch = setNudgeRegex.exec(rawReply)) !== null) {
+                let newAction = nudgeMatch[1].trim();
+                if(newAction) {
+                    c.botNudgeText = newAction;
+                    c.history.push({role: 'system_sum', content: `<span style="display:none;">[系统记录：你修改了自己被拍时的动作为"${newAction}"]</span>`});
+                }
+            }
+            rawReply = rawReply.replace(setNudgeRegex, '').trim();
 
             // 循环处理每一个收/退动作
             actionsToProcess.forEach(action => {
@@ -9234,7 +9350,7 @@ ${probText}
             if(tempId && document.getElementById(tempId)) document.getElementById(tempId).remove();
             
             // 🎯 核心修复：放过我们所有的卡片交互标签！不然会被过滤掉！
-            spokenText = spokenText.replace(/<(?!split\b|\/split\b|send_blackcard\b|send_transfer\b|send_redpacket\b|send_luckypacket\b|send_location\b|send_sync\b|send_photo\b|send_gift\b|override\b|\/override\b|q[1-3]\b|\/q[1-3]\b|force\b|\/force\b)[^>]+>/gi, '').trim();
+            spokenText = spokenText.replace(/<(?!split\b|\/split\b|send_blackcard\b|send_transfer\b|send_redpacket\b|send_luckypacket\b|send_location\b|send_sync\b|send_photo\b|send_gift\b|override\b|\/override\b|q[1-3]\b|\/q[1-3]\b|force\b|\/force\b|nudge\b|set_nudge\b)[^>]+>/gi, '').trim();
             
             // 💥 变异数字粉碎机：如果它在句子末尾残留了类似 >75<, <50> 这种畸形的数字壳，全部切除掉！
             spokenText = spokenText.replace(/(?:>|<|》|《|】|\[|\()\s*\d{2,3}\s*(?:>|<|》|《|】|\]|\))\s*$/g, '').trim();
@@ -9264,6 +9380,7 @@ ${probText}
             let currentMood = moodMatch ? parseInt(moodMatch[1]) : lastMood;
             
             // 🎯 开始针对每一个切分好的独立气泡进行原位解析！
+            let isOverrideTriggered = false; // 新增：全局监控是否触发了强制线下
             for (let i = 0; i < splits.length; i++) {
                 let seg = splits[i];
                 let ts = Date.now();
@@ -9384,7 +9501,7 @@ ${probText}
                             c.history.push({ role: 'assistant', content: syncHtml.replace(/\n\s+/g, ''), isRevoked: false, timestamp: cardTs });
                             c.history.push({ role: 'system_sum', content: `<i>✧ [${signName}] 向你发起了同步听歌邀请 (${promptExt})</i>` });
                         } else if (card.type === 'bc') {
-                            let bcHtml = `<div style="display:flex; flex-direction:column; gap:8px; width:189px;"><div style="width:189px; height:119px; position:relative;"><div style="width:270px; height:170px; transform:scale(0.7); transform-origin:top left; position:absolute; top:0; left:0;"><div class="black-card-scene" onclick="toggleBlackCard(this)"><div class="black-card-wrapper"><div class="bc-face bc-face--front"><div class="bc-watermark"><div class="bc-star bc-ws-1 bc-gold-text">★</div><div class="bc-star bc-ws-2 bc-gold-text">★</div><div class="bc-star bc-ws-3 bc-gold-text">✩</div><div class="bc-star bc-ws-4 bc-gold-text">★</div><div class="bc-star bc-ws-5 bc-gold-text">✩</div></div><div class="bc-front-stars"><div class="bc-star bc-fs-1 bc-gold-text">✦</div><div class="bc-star bc-fs-2 bc-gold-text">✧</div><div class="bc-star bc-fs-3 bc-gold-text">✦</div><div class="bc-star bc-fs-4 bc-gold-text">✧</div><div class="bc-star bc-fs-5 bc-gold-text">✦</div><div class="bc-star bc-fs-6 bc-gold-text">✦</div><div class="bc-star bc-fs-7 bc-gold-text">✧</div></div><div class="bc-pendant-group"><div class="bc-pendant bc-p-1"><div class="bc-p-line"></div><div class="bc-p-star">✦</div></div><div class="bc-pendant bc-p-2"><div class="bc-p-line"></div><div class="bc-p-star">✦</div></div><div class="bc-pendant bc-p-3"><div class="bc-p-line"></div><div class="bc-p-star">✧</div></div></div><div class="bc-frame"><div class="bc-ornament bc-orn-tl">✥</div><div class="bc-ornament bc-orn-tr">✥</div><div class="bc-ornament bc-orn-bl">✥</div><div class="bc-ornament bc-orn-br">✥</div></div><div class="bc-title bc-gold-text">TRANSFER TO YOU</div><div class="bc-avatar"><span class="bc-as bc-as-1">✦</span><span class="bc-as bc-as-2">✧</span><span class="bc-as bc-as-3">✦</span>${botAvatarHtml}</div><div class="bc-num bc-num-l bc-gold-text">5201</div><div class="bc-num bc-num-r bc-gold-text">8888</div><div class="bc-bank-f bc-gold-text">Shop Bank</div><div class="bc-date bc-gold-text">${dateStr}</div></div><div class="bc-face bc-face--back"><div class="bc-watermark"><div class="bc-star bc-ws-1 bc-gold-text">★</div><div class="bc-star bc-ws-2 bc-gold-text">✩</div><div class="bc-star bc-ws-4 bc-gold-text">★</div></div><div class="bc-back-stars"><div class="bc-star bc-bs-1 bc-gold-text">✦</div><div class="bc-star bc-bs-2 bc-gold-text">✧</div><div class="bc-star bc-bs-3 bc-gold-text">✦</div><div class="bc-star bc-bs-4 bc-gold-text">✧</div></div><div class="bc-bank-b bc-gold-text">SOAP BANK</div><div class="bc-stripe"></div><div class="bc-amt bc-gold-text">$ ${card.amount}</div><div class="bc-sig-bg"></div><div class="bc-sig bc-gold-text">${signName}</div><div class="bc-memo bc-gold-text">- "${card.memo}"</div><div class="bc-bstar bc-gold-text">✦</div></div></div></div></div></div><div class="bc-action-bar" style="margin:0; width:100%; display:flex; justify-content:center; gap:15px; z-index:20;"><div class="bc-btn accept" onclick="handleCardAction(this, 'accept')">收下</div><div class="bc-btn reject" onclick="handleCardAction(this, 'reject')">退回</div></div></div><img src="1" onerror="this.parentElement.classList.add('bubble-clear'); this.remove();">`;
+                            let bcHtml = `<div style="display:flex; flex-direction:column; gap:8px; width:189px;"><div style="width:189px; height:119px; position:relative;"><div style="width:270px; height:170px; transform:scale(0.7); transform-origin:top left; position:absolute; top:0; left:0;"><div class="black-card-scene" onclick="toggleBlackCard(this)"><div class="black-card-wrapper"><div class="bc-face bc-face--front"><div class="bc-watermark"><div class="bc-star bc-ws-1 bc-gold-text">★</div><div class="bc-star bc-ws-2 bc-gold-text">★</div><div class="bc-star bc-ws-3 bc-gold-text">✩</div><div class="bc-star bc-ws-4 bc-gold-text">★</div><div class="bc-star bc-ws-5 bc-gold-text">✩</div></div><div class="bc-front-stars"><div class="bc-star bc-fs-1 bc-gold-text">✦</div><div class="bc-star bc-fs-2 bc-gold-text">✧</div><div class="bc-star bc-fs-3 bc-gold-text">✦</div><div class="bc-star bc-fs-4 bc-gold-text">✧</div><div class="bc-star bc-fs-5 bc-gold-text">✦</div><div class="bc-star bc-fs-6 bc-gold-text">✦</div><div class="bc-star bc-fs-7 bc-gold-text">✧</div></div><div class="bc-pendant-group"><div class="bc-pendant bc-p-1"><div class="bc-p-line"></div><div class="bc-p-star">✦</div></div><div class="bc-pendant bc-p-2"><div class="bc-p-line"></div><div class="bc-p-star">✦</div></div><div class="bc-pendant bc-p-3"><div class="bc-p-line"></div><div class="bc-p-star">✧</div></div></div><div class="bc-frame"><div class="bc-ornament bc-orn-tl">✥</div><div class="bc-ornament bc-orn-tr">✥</div><div class="bc-ornament bc-orn-bl">✥</div><div class="bc-ornament bc-orn-br">✥</div></div><div class="bc-title bc-gold-text">TRANSFER TO YOU</div><div class="bc-avatar"><span class="bc-as bc-as-1">✦</span><span class="bc-as bc-as-2">✧</span><span class="bc-as bc-as-3">✦</span>${botAvatarHtml}</div><div class="bc-num bc-num-l bc-gold-text">5201</div><div class="bc-num bc-num-r bc-gold-text">8888</div><div class="bc-bank-f bc-gold-text">Shop Bank</div><div class="bc-date bc-gold-text">${dateStr}</div></div><div class="bc-face bc-face--back"><div class="bc-watermark"><div class="bc-star bc-ws-1 bc-gold-text">★</div><div class="bc-star bc-ws-2 bc-gold-text">✩</div><div class="bc-star bc-ws-4 bc-gold-text">★</div></div><div class="bc-back-stars"><div class="bc-star bc-bs-1 bc-gold-text">✦</div><div class="bc-star bc-bs-2 bc-gold-text">✧</div><div class="bc-star bc-bs-3 bc-gold-text">✦</div><div class="bc-star bc-bs-4 bc-gold-text">✧</div></div><div class="bc-bank-b bc-gold-text">SOAP BANK</div><div class="bc-stripe"></div><div class="bc-amt bc-gold-text">$ ${card.amount}</div><div class="bc-sig-bg"></div><div class="bc-sig bc-gold-text">${signName}</div><div class="bc-memo bc-gold-text" onclick="event.stopPropagation()" ontouchstart="event.stopPropagation()" ontouchmove="event.stopPropagation()">- "${card.memo}"</div><div class="bc-bstar bc-gold-text">✦</div></div></div></div></div></div><div class="bc-action-bar" style="margin:0; width:100%; display:flex; justify-content:center; gap:15px; z-index:20;"><div class="bc-btn accept" onclick="handleCardAction(this, 'accept')">收下</div><div class="bc-btn reject" onclick="handleCardAction(this, 'reject')">退回</div></div></div><img src="1" onerror="this.parentElement.classList.add('bubble-clear'); this.remove();">`;
                             c.history.push({ role: 'assistant', content: bcHtml, isRevoked: false, timestamp: cardTs });
                             c.history.push({ role: 'system_sum', content: `<i>✧ [${signName}] 给你甩了一张专属黑卡</i>` });
                         } else if (card.type === 'nt') {
@@ -9394,7 +9511,7 @@ ${probText}
             <div class="nt-star nt-star-lg-1">✩</div><div class="nt-star nt-star-lg-2">★</div><div class="nt-star nt-star-lg-3">✩</div><div class="nt-star nt-star-lg-4">★</div><div class="nt-star nt-star-lg-5">★</div>
             <div class="nt-star nt-star-1">✩</div><div class="nt-star nt-star-2">★</div><div class="nt-star nt-star-4">★</div><div class="nt-star nt-star-5">★</div><div class="nt-star nt-star-6">✩</div><div class="nt-star nt-star-7">★</div><div class="nt-star nt-star-8">✩</div><div class="nt-star nt-star-9">✩</div><div class="nt-star nt-star-10">★</div><div class="nt-star nt-star-12">★</div><div class="nt-star nt-star-13">★</div>
             <div class="nt-inner-frame"><div class="fs-star" style="top: 0; left: 15%; font-size: 6px;">★</div><div class="fs-star" style="top: 0; left: 85%; font-size: 5px;">✩</div><div class="fs-star" style="top: 100%; left: 35%; font-size: 7px;">★</div><div class="fs-star" style="top: 100%; left: 75%; font-size: 5px;">✩</div><div class="fs-star" style="top: 25%; left: 0; font-size: 5px;">★</div><div class="fs-star" style="top: 80%; left: 0; font-size: 6px;">✩</div><div class="fs-star" style="top: 85%; left: 100%; font-size: 5px;">★</div></div>
-            <div class="nt-top"><div class="nt-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="nt-divider"></div><div class="nt-info"><div class="nt-amt">¥ ${formattedAmount}</div><div class="nt-memo">${card.memo}</div></div></div>
+            <div class="nt-top"><div class="nt-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="nt-divider"></div><div class="nt-info"><div class="nt-amt">¥ ${formattedAmount}</div><div class="nt-memo" onclick="event.stopPropagation()" ontouchstart="event.stopPropagation()" ontouchmove="event.stopPropagation()">${card.memo}</div></div></div>
             <div class="nt-bottom"><span>SOAP TRANSFER</span></div>
             <div class="luxury-strap-wrap"><div class="luxury-strap"></div><div class="luxury-bow"><div class="bow-tail left"></div><div class="bow-tail right"></div><div class="bow-loop left"></div><div class="bow-loop right"></div><div class="bow-knot"><svg class="metal-star-buckle" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="starMetal" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="25%" stop-color="#A8A196"/><stop offset="50%" stop-color="#FCFBFA"/><stop offset="75%" stop-color="#8C857D"/><stop offset="100%" stop-color="#EAE5DC"/></linearGradient><filter id="starShadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="rgba(0,0,0,0.8)"/></filter></defs><path d="M50 5 L63 34 L95 34 L69 53 L79 84 L50 65 L21 84 L31 53 L5 34 L37 34 Z" fill="url(#starMetal)" filter="url(#starShadow)" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" stroke-linejoin="round"/><circle cx="50" cy="40" r="7" fill="#111111"/><circle cx="50" cy="60" r="7" fill="#111111"/><circle cx="50" cy="40" r="7" fill="none" stroke="rgba(0,0,0,0.7)" stroke-width="2"/><circle cx="50" cy="60" r="7" fill="none" stroke="rgba(0,0,0,0.7)" stroke-width="2"/><circle cx="50" cy="40" r="6" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1"/><circle cx="50" cy="60" r="6" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1"/><path d="M47 40 L47 60 M50 40 L50 60 M53 40 L53 60" stroke="rgba(210, 210, 210, 0.85)" stroke-width="2" stroke-linecap="round" filter="drop-shadow(0 2px 2px rgba(0,0,0,0.8))"/></svg></div></div></div>
     </div><img src="1" onerror="this.parentNode.classList.add('bubble-clear'); this.remove();">`;
@@ -9468,6 +9585,7 @@ ${probText}
                             c.history.push({ role: 'assistant', content: giftHtml.replace(/\n\s+/g, ''), isRevoked: false, timestamp: cardTs });
                             c.history.push({ role: 'system_sum', content: `<i>✧ [${signName}] 为你买了一份礼物，等待你决定是否收下</i>` });
                         } else if (card.type === 'override') {
+                            isOverrideTriggered = true; // 拦截信号，制止后续的加载气泡动画
                             c.history.push({ role: 'system_sum', content: `<i>✧ [系统强制介入] 对方强行发起了跨屏精神连接</i>` });
                             setTimeout(() => {
                                 if (card.mode === 'fatal') startFatalOverride(card);
@@ -9483,7 +9601,9 @@ ${probText}
                     let count = c.history.length - baseLen;
                     for(let k = 0; k < count; k++) { appendBubbleRow(c.history[baseLen + k], baseLen + k); }
                     scrollToBottom();
-                    if (i < splits.length - 1) {
+                    
+                    // 核心修复：如果已经触发了强制线下，绝不播放延迟加载气泡！瞬间渲染完剩余文字！
+                    if (i < splits.length - 1 && !isOverrideTriggered) {
                         let loadId = 'load-split-' + Date.now();
                         const ca = document.getElementById('chat-area');
                         const row = document.createElement('div'); row.id = loadId; row.className = `msg-row bot`;
@@ -9982,7 +10102,7 @@ ${probText}
         let aiText = '';
 
         if (mode === 'black') {
-            cardHtml = `<div style="transform:scale(0.7); transform-origin:top right; margin-left:-81px; margin-bottom:-51px; margin-top:5px; margin-right:5px;"><div class="black-card-scene" onclick="toggleBlackCard(this)"><div class="black-card-wrapper"><div class="bc-face bc-face--front"><div class="bc-watermark"><div class="bc-star bc-ws-1 bc-gold-text">★</div><div class="bc-star bc-ws-2 bc-gold-text">★</div><div class="bc-star bc-ws-3 bc-gold-text">✩</div><div class="bc-star bc-ws-4 bc-gold-text">★</div><div class="bc-star bc-ws-5 bc-gold-text">✩</div></div><div class="bc-front-stars"><div class="bc-star bc-fs-1 bc-gold-text">✦</div><div class="bc-star bc-fs-2 bc-gold-text">✧</div><div class="bc-star bc-fs-3 bc-gold-text">✦</div><div class="bc-star bc-fs-4 bc-gold-text">✧</div><div class="bc-star bc-fs-5 bc-gold-text">✦</div><div class="bc-star bc-fs-6 bc-gold-text">✦</div><div class="bc-star bc-fs-7 bc-gold-text">✧</div></div><div class="bc-pendant-group"><div class="bc-pendant bc-p-1"><div class="bc-p-line"></div><div class="bc-p-star">✦</div></div><div class="bc-pendant bc-p-2"><div class="bc-p-line"></div><div class="bc-p-star">✦</div></div><div class="bc-pendant bc-p-3"><div class="bc-p-line"></div><div class="bc-p-star">✧</div></div></div><div class="bc-frame"><div class="bc-ornament bc-orn-tl">✥</div><div class="bc-ornament bc-orn-tr">✥</div><div class="bc-ornament bc-orn-bl">✥</div><div class="bc-ornament bc-orn-br">✥</div></div><div class="bc-title bc-gold-text">TRANSFER TO YOU</div><div class="bc-avatar"><span class="bc-as bc-as-1">✦</span><span class="bc-as bc-as-2">✧</span><span class="bc-as bc-as-3">✦</span>${avatarHtml}</div><div class="bc-num bc-num-l bc-gold-text">5201</div><div class="bc-num bc-num-r bc-gold-text">8888</div><div class="bc-bank-f bc-gold-text">Shop Bank</div><div class="bc-date bc-gold-text">${dateStr}</div></div><div class="bc-face bc-face--back"><div class="bc-watermark"><div class="bc-star bc-ws-1 bc-gold-text">★</div><div class="bc-star bc-ws-2 bc-gold-text">✩</div><div class="bc-star bc-ws-4 bc-gold-text">★</div></div><div class="bc-back-stars"><div class="bc-star bc-bs-1 bc-gold-text">✦</div><div class="bc-star bc-bs-2 bc-gold-text">✧</div><div class="bc-star bc-bs-3 bc-gold-text">✦</div><div class="bc-star bc-bs-4 bc-gold-text">✧</div></div><div class="bc-bank-b bc-gold-text">SOAP BANK</div><div class="bc-stripe"></div><div class="bc-amt bc-gold-text">$ ${amount}</div><div class="bc-sig-bg"></div><div class="bc-sig bc-gold-text">${sign}</div><div class="bc-memo bc-gold-text">- "${memo}"</div><div class="bc-bstar bc-gold-text">✦</div></div></div></div></div><img src="1" onerror="this.parentNode.classList.add('bubble-clear'); this.remove();">`;
+            cardHtml = `<div style="transform:scale(0.7); transform-origin:top right; margin-left:-81px; margin-bottom:-51px; margin-top:5px; margin-right:5px;"><div class="black-card-scene" onclick="toggleBlackCard(this)"><div class="black-card-wrapper"><div class="bc-face bc-face--front"><div class="bc-watermark"><div class="bc-star bc-ws-1 bc-gold-text">★</div><div class="bc-star bc-ws-2 bc-gold-text">★</div><div class="bc-star bc-ws-3 bc-gold-text">✩</div><div class="bc-star bc-ws-4 bc-gold-text">★</div><div class="bc-star bc-ws-5 bc-gold-text">✩</div></div><div class="bc-front-stars"><div class="bc-star bc-fs-1 bc-gold-text">✦</div><div class="bc-star bc-fs-2 bc-gold-text">✧</div><div class="bc-star bc-fs-3 bc-gold-text">✦</div><div class="bc-star bc-fs-4 bc-gold-text">✧</div><div class="bc-star bc-fs-5 bc-gold-text">✦</div><div class="bc-star bc-fs-6 bc-gold-text">✦</div><div class="bc-star bc-fs-7 bc-gold-text">✧</div></div><div class="bc-pendant-group"><div class="bc-pendant bc-p-1"><div class="bc-p-line"></div><div class="bc-p-star">✦</div></div><div class="bc-pendant bc-p-2"><div class="bc-p-line"></div><div class="bc-p-star">✦</div></div><div class="bc-pendant bc-p-3"><div class="bc-p-line"></div><div class="bc-p-star">✧</div></div></div><div class="bc-frame"><div class="bc-ornament bc-orn-tl">✥</div><div class="bc-ornament bc-orn-tr">✥</div><div class="bc-ornament bc-orn-bl">✥</div><div class="bc-ornament bc-orn-br">✥</div></div><div class="bc-title bc-gold-text">TRANSFER TO YOU</div><div class="bc-avatar"><span class="bc-as bc-as-1">✦</span><span class="bc-as bc-as-2">✧</span><span class="bc-as bc-as-3">✦</span>${avatarHtml}</div><div class="bc-num bc-num-l bc-gold-text">5201</div><div class="bc-num bc-num-r bc-gold-text">8888</div><div class="bc-bank-f bc-gold-text">Shop Bank</div><div class="bc-date bc-gold-text">${dateStr}</div></div><div class="bc-face bc-face--back"><div class="bc-watermark"><div class="bc-star bc-ws-1 bc-gold-text">★</div><div class="bc-star bc-ws-2 bc-gold-text">✩</div><div class="bc-star bc-ws-4 bc-gold-text">★</div></div><div class="bc-back-stars"><div class="bc-star bc-bs-1 bc-gold-text">✦</div><div class="bc-star bc-bs-2 bc-gold-text">✧</div><div class="bc-star bc-bs-3 bc-gold-text">✦</div><div class="bc-star bc-bs-4 bc-gold-text">✧</div></div><div class="bc-bank-b bc-gold-text">SOAP BANK</div><div class="bc-stripe"></div><div class="bc-amt bc-gold-text">$ ${amount}</div><div class="bc-sig-bg"></div><div class="bc-sig bc-gold-text">${sign}</div><div class="bc-memo bc-gold-text" onclick="event.stopPropagation()" ontouchstart="event.stopPropagation()" ontouchmove="event.stopPropagation()">- "${memo}"</div><div class="bc-bstar bc-gold-text">✦</div></div></div></div></div><img src="1" onerror="this.parentNode.classList.add('bubble-clear'); this.remove();">`;
             aiText = `[系统通报：用户向你甩了一张白金星尘黑卡，转账 $ ${amount}，签名 ${sign}，附带留言：${memo}。请结合人设给出反应！如果是开心收下请附带 <accept> 标签，如果是生气/驳回请附带 <reject> 标签。]`;
         } else {
             let formattedAmount = isNaN(parseFloat(amount)) ? amount : parseFloat(amount).toFixed(2);
@@ -9992,7 +10112,7 @@ ${probText}
         <div class="nt-star nt-star-lg-1">✩</div><div class="nt-star nt-star-lg-2">★</div><div class="nt-star nt-star-lg-3">✩</div><div class="nt-star nt-star-lg-4">★</div><div class="nt-star nt-star-lg-5">★</div>
         <div class="nt-star nt-star-1">✩</div><div class="nt-star nt-star-2">★</div><div class="nt-star nt-star-4">★</div><div class="nt-star nt-star-5">★</div><div class="nt-star nt-star-6">✩</div><div class="nt-star nt-star-7">★</div><div class="nt-star nt-star-8">✩</div><div class="nt-star nt-star-9">✩</div><div class="nt-star nt-star-10">★</div><div class="nt-star nt-star-12">★</div><div class="nt-star nt-star-13">★</div>
         <div class="nt-inner-frame"><div class="fs-star" style="top: 0; left: 15%; font-size: 6px;">★</div><div class="fs-star" style="top: 0; left: 85%; font-size: 5px;">✩</div><div class="fs-star" style="top: 100%; left: 35%; font-size: 7px;">★</div><div class="fs-star" style="top: 100%; left: 75%; font-size: 5px;">✩</div><div class="fs-star" style="top: 25%; left: 0; font-size: 5px;">★</div><div class="fs-star" style="top: 80%; left: 0; font-size: 6px;">✩</div><div class="fs-star" style="top: 85%; left: 100%; font-size: 5px;">★</div></div>
-        <div class="nt-top"><div class="nt-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="nt-divider"></div><div class="nt-info"><div class="nt-amt">¥ ${formattedAmount}</div><div class="nt-memo">${memo}</div></div></div>
+        <div class="nt-top"><div class="nt-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="nt-divider"></div><div class="nt-info"><div class="nt-amt">¥ ${formattedAmount}</div><div class="nt-memo" onclick="event.stopPropagation()" ontouchstart="event.stopPropagation()" ontouchmove="event.stopPropagation()">${memo}</div></div></div>
         <div class="nt-bottom"><span>SOAP TRANSFER</span></div>
         <div class="luxury-strap-wrap"><div class="luxury-strap"></div><div class="luxury-bow"><div class="bow-tail left"></div><div class="bow-tail right"></div><div class="bow-loop left"></div><div class="bow-loop right"></div><div class="bow-knot"><svg class="metal-star-buckle" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="starMetal" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="25%" stop-color="#A8A196"/><stop offset="50%" stop-color="#FCFBFA"/><stop offset="75%" stop-color="#8C857D"/><stop offset="100%" stop-color="#EAE5DC"/></linearGradient><filter id="starShadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="rgba(0,0,0,0.8)"/></filter></defs><path d="M50 5 L63 34 L95 34 L69 53 L79 84 L50 65 L21 84 L31 53 L5 34 L37 34 Z" fill="url(#starMetal)" filter="url(#starShadow)" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" stroke-linejoin="round"/><circle cx="50" cy="40" r="7" fill="#111111"/><circle cx="50" cy="60" r="7" fill="#111111"/><circle cx="50" cy="40" r="7" fill="none" stroke="rgba(0,0,0,0.7)" stroke-width="2"/><circle cx="50" cy="60" r="7" fill="none" stroke="rgba(0,0,0,0.7)" stroke-width="2"/><circle cx="50" cy="40" r="6" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1"/><circle cx="50" cy="60" r="6" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1"/><path d="M47 40 L47 60 M50 40 L50 60 M53 40 L53 60" stroke="rgba(210, 210, 210, 0.85)" stroke-width="2" stroke-linecap="round" filter="drop-shadow(0 2px 2px rgba(0,0,0,0.8))"/></svg></div></div></div>
 </div><img src="1" onerror="this.parentNode.classList.add('bubble-clear'); this.remove();">`;
@@ -12956,7 +13076,7 @@ ${contextText}`;
         }
     };
 
-    let m_db = { daily: [], tracks: { "CLASSICAL": [], "AMBIENT": [], "ELECTRONIC": [] } };
+    let m_db = JSON.parse(JSON.stringify(default_m_db));
 
     // 核心修复：升级为无限容量的异步 LocalDB，歌曲多大都不会丢！
     async function saveMusicDB() {
@@ -12981,9 +13101,9 @@ ${contextText}`;
         }
         document.getElementById('music-me-avatar').innerHTML = renderAvatarHTML(uAvatar, 'user');
 
-        if(!document.getElementById('daily-gallery').innerHTML) {
-            renderDailyPicks(); renderTrackList(currentCategory);
-        }
+        // 强制重新渲染，确保动态更新不丢失
+        renderDailyPicks(); 
+        renderTrackList(currentCategory);
         
         // 核心修复：初始化时如果没有播放歌曲，立刻启动悬浮诗意歌词
         if (!currentPlayingData && !document.getElementById('lyrics-container').innerHTML) {
@@ -13450,7 +13570,7 @@ ${actionRule}
         }
     });
 
-    function openCreateModal() { editTarget = { type: 'create' }; tempLocalBlobs = {}; tempParsedLyrics = null; document.getElementById('cm-title').innerText = 'NEW TRACK CONFIG'; document.getElementById('cfg-title').value = ''; document.getElementById('cfg-artist').value = ''; document.getElementById('cfg-img').value = ''; document.getElementById('cfg-audio').value = ''; document.getElementById('cfg-lyric').value = ''; document.getElementById('config-modal').classList.add('show'); }
+    function openCreateModal() { editTarget = { type: 'create' }; tempLocalBlobs = {}; tempParsedLyrics = null; document.getElementById('cm-title').innerText = 'NEW TRACK CONFIG'; document.getElementById('cfg-btn-delete').style.display = 'none'; document.getElementById('cfg-title').value = ''; document.getElementById('cfg-artist').value = ''; document.getElementById('cfg-img').value = ''; document.getElementById('cfg-audio').value = ''; document.getElementById('cfg-lyric').value = ''; document.getElementById('config-modal').classList.add('show'); }
     function handleLocalUpload(event, targetInputId) { 
         const file = event.target.files[0]; 
         if(file) { 
@@ -13480,6 +13600,18 @@ ${actionRule}
         const modal = document.getElementById('config-modal'); 
         let data = type === 'daily' ? m_db.daily[index] : m_db.tracks[currentCategory][index]; 
         document.getElementById('cm-title').innerText = type === 'daily' ? 'CURATION CONFIG' : 'TRACK CONFIG'; 
+        
+        const delBtn = document.getElementById('cfg-btn-delete');
+        if (type === 'daily') {
+            delBtn.style.display = 'block';
+            delBtn.innerText = 'RESET';
+        } else if (type === 'create') {
+            delBtn.style.display = 'none';
+        } else {
+            delBtn.style.display = 'block';
+            delBtn.innerText = 'DELETE';
+        }
+
         document.getElementById('cfg-title').value = data.title || ""; 
         document.getElementById('cfg-artist').value = data.artist || ""; 
         document.getElementById('cfg-img').value = (data.img && data.img.startsWith('data:image')) ? '[LOCAL IMAGE BUFFER]' : (data.img || ""); 
@@ -13487,7 +13619,27 @@ ${actionRule}
         document.getElementById('cfg-lyric').value = (data.lyric && data.lyric.length > 200 && !data.lyric.startsWith('http')) ? '[LOCAL LYRIC BUFFER]' : (data.lyric || ""); 
         modal.classList.add('show'); 
     }
+    
     function closeConfigModal() { document.getElementById('config-modal').classList.remove('show'); editTarget = null; }
+
+    function deleteConfig() {
+        if (!editTarget || editTarget.type === 'create') return;
+        if (editTarget.type === 'daily') {
+            if (confirm("确定要将此推荐位恢复为系统默认曲目吗？")) {
+                m_db.daily[editTarget.index] = JSON.parse(JSON.stringify(default_m_db.daily[editTarget.index]));
+                saveMusicDB();
+                renderDailyPicks();
+                closeConfigModal();
+            }
+        } else {
+            if (confirm("确定要永久删除这首曲目吗？")) {
+                m_db.tracks[currentCategory].splice(editTarget.index, 1);
+                saveMusicDB();
+                renderTrackList(currentCategory);
+                closeConfigModal();
+            }
+        }
+    }
 
     function saveConfig() { 
         if (!editTarget) return; 
@@ -13772,6 +13924,10 @@ ${actionRule}
     async function triggerStoreAILoading() {
         if (storeCurrentMainCat === 'WORKSHOP' || storeCurrentSubCat === 'CUSTOM') return;
 
+        // --- 新增：拦截刷新，询问风格提示词 ---
+        let customStyle = prompt("【高定店面上新】\n请输入你期望的商品风格或特定元素（例如：暗黑哥特风、赛博朋克、千禧复古风...）。\n\n注：当前分类不会改变。留空则由 AI 自由发挥：", "");
+        if (customStyle === null) return; // 用户点击取消，中止刷新操作
+
         const grid = document.getElementById('store-product-grid');
         document.getElementById('store-scroll-area').scrollTop = 0;
         grid.innerHTML = `<div class="ai-loading"><div class="spinner"></div><div class="ai-loading-text">Curating Beautiful Items...</div></div>`;
@@ -13800,8 +13956,11 @@ ${actionRule}
                         : '温馨有设计感的家具、提升房间颜值的摆件、好闻的香薰';
                 }
 
+                // --- 新增：将风格要求注入给 AI ---
+                let styleRequirement = customStyle.trim() ? `\n【顾客私人定制风格】：${customStyle.trim()}。请务必确保所有挑选的商品从命名到描述都完美契合这个风格要求！` : '';
+
                 let sysPrompt = `你是一个品味极佳的独立设计师品牌买手。
-当前需要上新的商品类别是：${targetItems}。
+当前需要上新的商品类别是：${targetItems}。${styleRequirement}
 请发挥你的审美，为客人挑选 6 到 8 件商品。
 【最高警告】：
 1. 绝对不要输出任何 markdown 标记 (不要加 \`\`\`json 等标记)！
@@ -14183,8 +14342,8 @@ ${actionRule}
                     storePendingDeliveryInfo = { contactId: targetContactId, items: itemNames };
                     saveData();
                 } else if (purchasedItems.length > 0) {
-                    let fallbackId = contacts.length > 0 ? contacts[0].id : null;
-                    if(fallbackId) storePendingDeliveryInfo = { contactId: fallbackId, items: purchasedItems.map(i => i.name).join('、') };
+                    let itemNames = purchasedItems.map(i => i.name).join('、');
+                    storePendingDeliveryInfo = { contactId: 'me', items: itemNames };
                 }
 
                 storeCartSet.clear(); document.getElementById('store-cart-dot').classList.remove('show');
@@ -14261,23 +14420,28 @@ ${actionRule}
     // 终极送达：将物品写入 AI 核心记忆并强制小剧场互动
     function onStoreDeliveryComplete() {
         if (storePendingDeliveryInfo && storePendingDeliveryInfo.contactId) {
-            let c = contacts.find(x => x.id === storePendingDeliveryInfo.contactId);
-            if (c) {
-                let timeStr = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-                let itemStr = storePendingDeliveryInfo.items;
-                
-                // 1. 在聊天室发送送达回执
-                c.history.push({role: 'system_sum', content: `<i>✧ [物流通报] 选购的精品资产 (${itemStr}) 已于 ${timeStr} 成功送达。</i>`});
-                
-                // 2. 暴力植入核心记忆！
-                // 加入绝对的强制要求，AI 在线下小剧场模式时，一定会把目光落在你买的这件东西上！
-                let memoryStr = `[系统最高指令：物品送达事件]：现实时间 ${timeStr}，名为 "${itemStr}" 的物品已送达给用户。如果是衣服首饰美妆，用户现在可能已经换上/涂上了；如果是家具摆件，已经摆在房间里了。\n【必须执行】：在后续的对话，特别是“线下小剧场”中，请找一个极其自然的切入点（例如你的目光扫过、眼神打量、动作互动等），主动提一嘴这个新到的物品（比如夸赞颜色、质感，或者询问感受），让用户感受到你真切地注意到了它！`;
-                
-                c.memory = (c.memory ? c.memory + "\n\n" : "") + memoryStr;
-                saveData();
-                
-                // 如果当前正好停在这个角色的聊天界面，立刻刷新
-                if (currentContactId === c.id) renderChatHistory();
+            let timeStr = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+            let itemStr = storePendingDeliveryInfo.items;
+
+            if (storePendingDeliveryInfo.contactId === 'me') {
+                // 🌟 核心拦截：自己买给自己的，绝不惊动AI，只弹出手机系统的顶部横幅通知
+                showToast("SOAP MAISON", `您选购的 [${itemStr}] 已成功送达，请查收。`, "", null, 8000);
+            } else {
+                let c = contacts.find(x => x.id === storePendingDeliveryInfo.contactId);
+                if (c) {
+                    // 1. 在聊天室发送送达回执
+                    c.history.push({role: 'system_sum', content: `<i>✧ [物流通报] 选购的精品资产 (${itemStr}) 已于 ${timeStr} 成功送达。</i>`});
+                    
+                    // 2. 暴力植入核心记忆！
+                    // 加入绝对的强制要求，AI 在线下小剧场模式时，一定会把目光落在你买的这件东西上！
+                    let memoryStr = `[系统最高指令：物品送达事件]：现实时间 ${timeStr}，名为 "${itemStr}" 的物品已送达给用户。如果是衣服首饰美妆，用户现在可能已经换上/涂上了；如果是家具摆件，已经摆在房间里了。\n【必须执行】：在后续的对话，特别是“线下小剧场”中，请找一个极其自然的切入点（例如你的目光扫过、眼神打量、动作互动等），主动提一嘴这个新到的物品（比如夸赞颜色、质感，或者询问感受），让用户感受到你真切地注意到了它！`;
+                    
+                    c.memory = (c.memory ? c.memory + "\n\n" : "") + memoryStr;
+                    saveData();
+                    
+                    // 如果当前正好停在这个角色的聊天界面，立刻刷新
+                    if (currentContactId === c.id) renderChatHistory();
+                }
             }
         }
         // 处理完后清空任务
@@ -15243,11 +15407,14 @@ ${actionRule}
                         </label>
                     </div>
                     <div class="m-profile-info-container">
-                        <div class="m-profile-avatar-wrapper">
-                            <img class="m-profile-avatar" src="${av}">
-                            <div class="m-api-add-btn" title="触发Ta发送动态" onclick="mTriggerAIPost(event, '${c.id}')">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"></path></svg>
+                        <div style="display:flex; align-items:flex-end;">
+                            <div class="m-profile-avatar-wrapper">
+                                <img class="m-profile-avatar" src="${av}">
+                                <div class="m-api-add-btn" title="触发Ta发送动态" onclick="mTriggerAIPost(event, '${c.id}')">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"></path></svg>
+                                </div>
                             </div>
+                            <div class="m-profile-stars"><span class="m-profile-star">✦</span><span class="m-profile-star">✧</span><span class="m-profile-star">✦</span><span class="m-profile-star">✧</span><span class="m-profile-star">✦</span><span class="m-profile-star">✧</span></div>
                         </div>
                         <h1 class="m-profile-name">${c.momentName || c.name}</h1>
                         <p class="m-profile-bio" style="cursor: pointer; position: relative; z-index: 10;" onclick="mOpenProfileEditModal('${c.id}')" title="点击编辑资料">${c.momentSign || '/// DIGITAL PERSONA ///'}</p>
@@ -15274,8 +15441,11 @@ ${actionRule}
                     </label>
                 </div>
                 <div class="m-profile-info-container">
-                    <div class="m-profile-avatar-wrapper" onclick="document.getElementById('m-me-avatar-file').click()" title="点击更换头像">
-                        <img class="m-profile-avatar" src="${meAvatar}">
+                    <div style="display:flex; align-items:flex-end;">
+                        <div class="m-profile-avatar-wrapper" onclick="document.getElementById('m-me-avatar-file').click()" title="点击更换头像">
+                            <img class="m-profile-avatar" src="${meAvatar}">
+                        </div>
+                        <div class="m-profile-stars"><span class="m-profile-star">✦</span><span class="m-profile-star">✧</span><span class="m-profile-star">✦</span><span class="m-profile-star">✧</span><span class="m-profile-star">✦</span><span class="m-profile-star">✧</span></div>
                     </div>
                     <h1 class="m-profile-name" style="cursor: pointer;" onclick="mOpenProfileEditModal('me')" title="点击编辑网名">${meName}</h1>
                     <p class="m-profile-bio" style="cursor: pointer; position: relative; z-index: 10;" onclick="mOpenProfileEditModal('me')" title="点击编辑签名">${meSign}</p>
@@ -15311,7 +15481,34 @@ ${actionRule}
             if(targetFeed) targetFeed.insertAdjacentHTML('beforeend', mCreatePostHTML(p));
         });
     }
-
+    function mRegenerateAIComments(postId) {
+        let post = momentsData.posts.find(p => p.id === postId);
+        if (!post) return;
+        
+        if (!confirm("确定要删除当前该动态下的所有 AI 评论，并让 AI 重新回复吗？")) return;
+        
+        // 保留我的评论，删掉所有 AI 的评论
+        post.comments = post.comments.filter(c => c.id === 'me');
+        saveMomentsData();
+        mRenderAllFeeds();
+        
+        if (post.authorId === 'me') {
+            // 是我的动态，重新让 AI 群友来评论
+            mTriggerAIAfterUserPost(post);
+        } else {
+            // 是 AI 的动态，让它重新回复我最后一次的评论
+            let lastUserComment = post.comments.slice().reverse().find(c => c.id === 'me');
+            if (lastUserComment) {
+                const c = contacts.find(x => x.id === post.authorId);
+                if (c) {
+                    let uName = momentsData.meName || gConfig.meName || '我';
+                    mTriggerAICommentReply(c, post, lastUserComment.text, uName);
+                }
+            } else {
+                alert("这是 AI 发的动态，且你还没有评论过，AI 无法凭空回复你哦。");
+            }
+        }
+    }
     // 动态计算过去的时间
     function mFormatRelativeTime(ts) {
         if(!ts) return 'JUST NOW';
@@ -15382,7 +15579,7 @@ ${actionRule}
                     <img src="${dynAvatar}">
                     <div class="m-post-info">
                         <span class="m-post-name">${dynName}</span>
-                        <span class="m-post-time">${displayTime}</span>
+                        <span class="m-post-time" onclick="mRegenerateAIComments('${p.id}')" style="cursor:pointer;" title="点击重新生成AI回复">${displayTime}</span>
                     </div>
                 </div>
                 <div class="m-post-content">${p.content}</div>
@@ -15589,7 +15786,7 @@ ${c.history[0].content}
 注意：
 1. 不要写太多多余的旁白或动作描写，重点是输出你回复的纯文字。
 2. 保持朋友圈回复的简短口语化，不要长篇大论。
-3. 你的态度完全取决于你的人设（如果是高冷就回得短，如果是傲娇就怼回去，如果是深情就撩TA）。`;
+3. 【⚠️ 人设绝对服从警告 ⚠️】：你的回复必须【100% 极度契合】你的人设！绝对禁止使用 AI 般热情、客套、平庸的语气！绝不说“祝你开心”这种废话！如果是高冷/暴躁，字数要少、带刺；如果是病娇/占有欲强，要透出阴暗的压迫感；如果是深情，要极其克制高级。必须像一个真实的、性格极度鲜明的人在回怼或撩拨！`;
 
         try {
             const response = await fetch(`${gConfig.apiUrl}/v1/chat/completions`, { 
@@ -16440,7 +16637,7 @@ ${realPost.sceneDesc ? `(TA还附带了一张照片，画面内容是：${realPo
 请结合你的人设和你们的关系，直接在TA的朋友圈下面留一句简短的评论。
 1. 不要写多余的动作描写或旁白，只输出你评论的纯文字。
 2. 保持口语化，不要长篇大论。
-3. 态度取决于你的人设。`;
+3. 【⚠️ 人设绝对服从警告 ⚠️】：你的评论必须【100% 极度契合】你的人设！绝对禁止使用 AI 般热情、客套、平庸的语气！绝不可以说“哇，看起来很不错”、“祝你度过愉快的一天”这种毫无灵魂的废话。必须极具个人性格色彩！`;
 
         try {
             const response = await fetch(`${gConfig.apiUrl}/v1/chat/completions`, { 
