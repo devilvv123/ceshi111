@@ -9421,14 +9421,11 @@ ${probText}
                     if (c.overrideModePref === 'fatal') mode = 'fatal';
                     if (c.overrideModePref === 'gentle') mode = 'gentle';
                     let inner = rMatch[2];
-                    let q1 = (inner.match(/<q1>([\s\S]*?)<\/q1>/i) || [])[1] || "";
-                    let q2 = (inner.match(/<q2>([\s\S]*?)<\/q2>/i) || [])[1] || "";
-                    let q3 = (inner.match(/<q3>([\s\S]*?)<\/q3>/i) || [])[1] || "";
+                    let q1 = (inner.match(/<q1>([\s\S]*?)<\/q1>/i) || [])[1] || "“...”";
+                    let q2 = (inner.match(/<q2>([\s\S]*?)<\/q2>/i) || [])[1] || "“...”";
+                    let q3 = (inner.match(/<q3>([\s\S]*?)<\/q3>/i) || [])[1] || "“...”";
                     let forceStr = (inner.match(/<force>([\s\S]*?)<\/force>/i) || [])[1] || "true";
                     let force = forceStr.toLowerCase().includes('true');
-                    if(!q1) q1 = mode === 'fatal' ? "“屏幕盯够了吗？”" : "“有些话，<br>我想看着你的眼睛说。”";
-                    if(!q2) q2 = mode === 'fatal' ? "“我骗你的。”" : "“不要逃避。”<br><span style='font-size:18px; color:var(--c-gold-dark);'>看着我。</span>";
-                    if(!q3) q3 = "“你躲不掉的。”";
                     localSentCards.push({ type: 'override', mode: mode, q1: q1, q2: q2, q3: q3, force: force });
                 }
 
@@ -9437,7 +9434,7 @@ ${probText}
                         let mode = rMatch[1].toLowerCase();
                         if (c.overrideModePref === 'fatal') mode = 'fatal';
                         if (c.overrideModePref === 'gentle') mode = 'gentle';
-                        localSentCards.push({ type: 'override', mode: mode, q1: mode === 'fatal' ? "“屏幕盯够了吗？”" : "“有些话，<br>我想看着你的眼睛说。”", q2: mode === 'fatal' ? "“我骗你的。”" : "“不要逃避。”<br><span style='font-size:18px; color:var(--c-gold-dark);'>看着我。</span>", q3: "“你躲不掉的。”", force: true });
+                        localSentCards.push({ type: 'override', mode: mode, q1: "“...”", q2: "“...”", q3: "“...”", force: true });
                     }
                 }
 
@@ -14794,7 +14791,7 @@ ${actionRule}
 
     function startFatalOverride(config) {
         // 挂载动态台词和开关
-        currentOverrideConfig = config || { q1: "“屏幕盯够了吗？”", q2: "“我骗你的。”", q3: "“你躲不掉的。”", force: true };
+        currentOverrideConfig = config || { q1: "“...”", q2: "“...”", q3: "“...”", force: true };
         document.querySelector('.fatal-final-quote').innerHTML = currentOverrideConfig.q1;
         document.getElementById('fatal-jumpscareText').innerHTML = currentOverrideConfig.q2;
 
@@ -14977,7 +14974,7 @@ ${actionRule}
 
         document.getElementById('fatal-authArea').classList.remove('fatal-is-holding');
         document.getElementById('fatal-authText').innerText = "Hold to Surrender";
-        fatalScrambleText(document.getElementById('fatal-quoteText'), "“隔着屏幕打字，<br>已经满足不了我了。”");
+        fatalScrambleText(document.getElementById('fatal-quoteText'), currentOverrideConfig.q1);
 
         clearInterval(fatalTermInterval);
         const glL = document.getElementById('fatal-vGlitchLeft'), glR = document.getElementById('fatal-vGlitchRight');
@@ -15026,7 +15023,7 @@ ${actionRule}
     let gentleRejectCount = 0;
 
     function startGentleOverride(config) {
-        currentOverrideConfig = config || { q1: "“有些话，<br>我想看着你的眼睛说。”", q2: "“不要逃避。”<br><span style='font-size:18px; color:var(--c-gold-dark);'>看着我。</span>", q3: "“你躲不掉的。”", force: true };
+        currentOverrideConfig = config || { q1: "“...”", q2: "“...”", q3: "“...”", force: true };
         
         gentleProgress = 0;
         gentleIsHolding = false;
