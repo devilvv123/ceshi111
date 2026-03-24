@@ -8,7 +8,8 @@
     <meta name="apple-mobile-web-app-title" content="SOAP OS">
     <meta name="theme-color" content="#000000">
     <link id="pwa-manifest-link" rel="manifest" href="">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23000000'%3E%3Cpath d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="https://nos.netease.com/ysf/547542b6a49930315c352e6a326bb876.png">
+    <link rel="icon" href="data:,">
     <title>SOAP OS</title>
     <style>
         :root {
@@ -5821,9 +5822,9 @@
             background_color: "#000000",
             theme_color: "#000000",
             icons: [{
-                src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23000000'%3E%3Crect width='24' height='24' fill='%23FFFFFF'/%3E%3Cpath d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5' fill='%23000000'/%3E%3C/svg%3E",
+                src: "https://nos.netease.com/ysf/547542b6a49930315c352e6a326bb876.png",
                 sizes: "192x192",
-                type: "image/svg+xml",
+                type: "image/png",
                 purpose: "any maskable"
             }]
         };
@@ -10911,10 +10912,10 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
         let uiText = "";
 
         if (actionType === 'accept') {
-            actionBar.innerHTML = '<button style="width:100%; background:transparent; color:#34C759; border:1px dashed rgba(52,199,89,0.4); padding:10px 0; border-radius:6px; font-family:\'Courier New\',monospace; font-size:10px; font-weight:800; pointer-events:none;">ACCEPTED & DISPATCHED</button>';
+            actionBar.innerHTML = '<button style="width:100%; background:transparent; color:#34C759; border:1px dashed rgba(52,199,89,0.4); padding:10px 0; border-radius:6px; font-family:\'Courier New\',monospace; font-size:10px; font-weight:800; pointer-events:none;">ACCEPTED & DELIVERED</button>';
             if(badge) { badge.innerText = 'ACCEPTED'; badge.style.color = '#34C759'; badge.style.borderColor = '#34C759'; }
             
-            // 提取数据进入物流
+            // 提取数据进入物流并直接瞬间送达
             try {
                 let itemStore = card.dataset.store;
                 let itemsData = JSON.parse(card.dataset.items.replace(/&#39;/g, "'").replace(/&quot;/g, '"'));
@@ -10928,13 +10929,16 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
                 localStorage.setItem('soap_boutique_history', JSON.stringify(storeOrderHistory));
                 
                 let itemNames = itemsData.map(i => i.name).join('、');
-                storePendingDeliveryInfo = { contactId: currentContactId, items: itemNames };
-                storeStartLogisticsEngine();
-                document.getElementById('store-logistics-dot').classList.add('active');
+                
+                // 核心修改：不再等待漫长的物流倒计时，直接瞬间送达，并强制暴力写入核心记忆！
+                let timeStr = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+                let memoryStr = `[系统最高指令：收到专属礼物]：现实时间 ${timeStr}，你赠送给用户的礼物（包含：${itemNames}）用户已欣然收下，并且物品已瞬间送达用户身边！如果是衣服首饰美妆等，用户现在可能已经穿戴在身上了；如果是摆件，已经摆在房间里了。\n【必须执行】：请在接下来的对话中，找机会极其自然地表现出你看到用户收到/使用这些礼物时的反应！`;
+                c.memory = (c.memory ? c.memory + "\n\n" : "") + memoryStr;
+
             } catch(e) { console.error("礼物物流提取失败", e); }
 
-            uiText = "✧ 你开心地收下了这份礼物！物流已启动。";
-            aiPrompt = `[系统旁白：用户欣然接受了你送的礼物！订单已进入物流配送阶段。请结合人设给出回应（如宠溺、开心或傲娇）。]`;
+            uiText = "✧ 你开心地收下了这份礼物，物品已瞬间送到你身边！";
+            aiPrompt = `[系统旁白：用户欣然接受了你送的礼物，并且礼物已经瞬间送达TA手边了！请立刻结合人设给出回应（比如打量TA穿戴上/使用时的样子，或表示宠溺和开心）。]`;
 
         } else {
             card.style.filter = 'grayscale(80%)';
