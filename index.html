@@ -2046,8 +2046,10 @@
         .luxury-box-wrap .card-icon { width: 14px; height: 14px; margin-bottom: 4px; }
         .luxury-box-wrap .card-icon svg { fill: url(#lb-foil-gold-1); }
         
-        .luxury-box-wrap .card-content { font-family: "Didot", "Times New Roman", "PingFang SC", serif; font-size: 10px; font-weight: 600; letter-spacing: 2px; background: linear-gradient(to right, #d1d5db, #ffffff, #8b929a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; width: 100%; padding: 0 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
-        .luxury-box-wrap .card-sub { font-family: "Helvetica Neue", sans-serif; font-size: 6px; font-weight: 400; opacity: 0.7; margin-top: 3px; letter-spacing: 2px; color: #ffffff; text-transform: uppercase; text-align: center; width: 100%; padding: 0 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .luxury-box-wrap .card-content { font-family: "Didot", "Times New Roman", "PingFang SC", serif; font-size: 10px; font-weight: 600; letter-spacing: 2px; background: linear-gradient(to right, #d1d5db, #ffffff, #8b929a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; width: 100%; padding: 0 10px; white-space: nowrap; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; line-height: 1.2; }
+        .luxury-box-wrap .card-content::-webkit-scrollbar { display: none; }
+        .luxury-box-wrap .card-sub { font-family: "Helvetica Neue", sans-serif; font-size: 6px; font-weight: 400; opacity: 0.7; margin-top: 3px; letter-spacing: 2px; color: #ffffff; text-transform: uppercase; text-align: center; width: 100%; padding: 0 10px; white-space: nowrap; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        .luxury-box-wrap .card-sub::-webkit-scrollbar { display: none; }
         
         .luxury-box-wrap .action-btn-layer { position: absolute; top: 45%; left: 50%; z-index: 70; transform: translate(-50%, -50%) scale(0); opacity: 0; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.4s, opacity 0.5s 0.4s; pointer-events: none; }
         .luxury-box-wrap .action-btn { width: 44px; height: 44px; background: rgba(10, 10, 12, 0.9); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); border: 1px solid rgba(209, 213, 219, 0.7); box-shadow: 0 8px 20px rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; }
@@ -2058,7 +2060,7 @@
         .luxury-box-wrap .chat-card.is-open .scene { transform: rotateX(-65deg) rotateY(-15deg) scale(0.9) translateY(20px); }
         .luxury-box-wrap .chat-card.is-open .lid { transform: translateZ(-30px) rotateX(135deg) translateY(-140px) translateZ(80px); opacity: 0; }
         .luxury-box-wrap .chat-card.is-open .stars-2d-pile { transform: scale(1) translateY(0); opacity: 1; }
-        .luxury-box-wrap .chat-card.is-open .greeting-card-layer { transform: scale(1) translateY(-15px) rotate(-4deg); opacity: 1; }
+        .luxury-box-wrap .chat-card.is-open .greeting-card-layer { transform: scale(1) translateY(-15px) rotate(-4deg); opacity: 1; pointer-events: auto; }
         .luxury-box-wrap .chat-card.is-open .action-btn-layer.btn-decline { transform: translate(calc(-50% - 105px), calc(-50% - 5px)) scale(1) rotate(-6deg); opacity: 1; pointer-events: auto; }
         .luxury-box-wrap .chat-card.is-open .action-btn-layer.btn-accept { transform: translate(calc(-50% + 105px), calc(-50% - 5px)) scale(1) rotate(6deg); opacity: 1; pointer-events: auto; }
         .luxury-box-wrap .chat-card.is-open .action-btn { animation: lbFloatUpDown 3s ease-in-out infinite 1.2s; }
@@ -10386,11 +10388,11 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
             lbWrap.classList.add('lb-accepted');
             card.classList.add('is-open');
             lbWrap.insertAdjacentHTML('beforeend', '<div class="bill-stamp stamp-green" style="z-index:100; font-size:16px;">ACCEPTED</div>');
-            uiText = "✧ 你开心收下了黑金高定礼盒";
-            aiPrompt = `[系统动作：用户开心收下了你送的黑金高定礼盒（${title}）。请结合人设给出自然的反应。]`;
+            uiText = "✧ 你收下了高定礼盒";
+            aiPrompt = `[系统动作：用户收下了你送的高定礼盒（${title}）。请结合人设给出自然的反应。]`;
             
             let timeStr = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-            c.memory = (c.memory ? c.memory + "\n\n" : "") + `[系统最高指令：收到专属黑金礼盒]：现实时间 ${timeStr}，你送给用户的黑金高定礼盒（${title}）用户已开心收下！请在接下来的对话中，找机会极其自然地提及用户收到这个礼物时的反应，或者聊聊这个礼物。`;
+            c.memory = (c.memory ? c.memory + "\n\n" : "") + `[系统日志]：现实时间 ${timeStr}，用户收下了你赠送的高定礼盒（${title}）。`;
         } else {
             lbWrap.classList.add('lb-rejected');
             card.style.filter = 'grayscale(80%) brightness(0.7)';
@@ -17118,11 +17120,11 @@ ${realPost.sceneDesc ? `(TA还附带了一张照片，画面内容是：${realPo
             lbWrap.classList.add('lb-accepted');
             card.classList.add('is-open');
             lbWrap.insertAdjacentHTML('beforeend', '<div class="bill-stamp stamp-green" style="z-index:100; font-size:16px;">ACCEPTED</div>');
-            uiText = "✧ 你开心收下了高定礼盒";
-            aiPrompt = `[系统动作：用户开心收下了你送的高定礼盒（${title}）。请结合人设给出自然的反应。]`;
+            uiText = "✧ 你收下了高定礼盒";
+            aiPrompt = `[系统动作：用户收下了你送的高定礼盒（${title}）。请结合人设给出自然的反应。]`;
             
             let timeStr = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-            c.memory = (c.memory ? c.memory + "\n\n" : "") + `[系统最高指令：收到专属礼盒]：现实时间 ${timeStr}，你送给用户的礼盒（${title}）用户已开心收下！请在接下来的对话中，找机会极其自然地提及用户收到这个礼物时的反应，或者聊聊这个礼物。`;
+            c.memory = (c.memory ? c.memory + "\n\n" : "") + `[系统日志]：现实时间 ${timeStr}，用户收下了你赠送的高定礼盒（${title}）。`;
         } else {
             lbWrap.classList.add('lb-rejected');
             card.style.filter = 'grayscale(80%) brightness(0.7)';
