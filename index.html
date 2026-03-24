@@ -16983,7 +16983,29 @@ ${realPost.sceneDesc ? `(TA还附带了一张照片，画面内容是：${realPo
         appendBubbleRow(newMsg, c.history.length - 2); 
         closeChatMenu();
     }
-        // ================= 高定黑金礼盒卡片生成器与控制引擎 =================
+        // 用户手动发送黑金礼盒
+    function sendUserLuxuryBox() {
+        if(!currentContactId) return alert("请先进入聊天室！");
+        
+        let title = prompt("请输入礼物名称（如：百达翡丽钻表）：", "神秘臻礼");
+        if (!title) return;
+        let sub = prompt("请输入英文副标题（如：PATEK PHILIPPE）：", "EXCLUSIVE PRESENT");
+        
+        const c = contacts.find(x => x.id === currentContactId);
+        
+        let lbHtml = generateLuxuryBoxHtml(title, sub, 'pending', true);
+        const newMsg = { role: 'user', content: lbHtml.replace(/\n\s+/g, ''), isRevoked: false, timestamp: Date.now() };
+        
+        let aiPrompt = `[系统通报：用户向你送出了一个黑金高定礼盒（${title}）。请结合人设给出自然的反应。如果是开心收下请在回复中附带 <accept> 标签，如果拒收请附带 <reject> 标签。]`;
+
+        c.history.push(newMsg);
+        c.history.push({role: 'system_sum', content: `<span style="display:none;">${aiPrompt}</span>`});
+
+        saveData(); 
+        appendBubbleRow(newMsg, c.history.length - 2); 
+        closeChatMenu();
+    }
+
     // ================= 高定黑金礼盒卡片生成器与控制引擎 =================
     function generateLuxuryBoxHtml(title, sub, status = 'pending', isUser = false) {
         let shapes = [
@@ -17064,88 +17086,6 @@ ${realPost.sceneDesc ? `(TA还附带了一张照片，画面内容是：${realPo
                     <div class="action-btn-layer btn-accept" ${btnStyle}><div class="action-btn" onclick="event.stopPropagation(); handleLuxuryBoxAction(this, 'accept')"><span>收下</span></div></div>
                     <div class="stars-burst-layer">${burstHtml}</div>
                     ${extraOverlay}
-                </div>
-            </div><img src="1" onerror="this.parentNode.classList.add('bubble-clear'); this.remove();">
-        </div>`;
-    }
-        let shapes = [
-            `M12 0 C12 8 8 12 0 12 C8 12 12 16 12 24 C12 16 16 12 24 12 C16 12 12 8 12 0 Z`,
-            `M12 1 L14.5 9.5 L23 12 L14.5 14.5 L12 23 L9.5 14.5 L1 12 L9.5 9.5 Z`,
-            `M11.5 0 L12.5 0 L12.5 11.5 L24 11.5 L24 12.5 L12.5 12.5 L12.5 24 L11.5 24 L11.5 12.5 L0 12.5 L0 11.5 L11.5 11.5 Z`
-        ];
-        let gradients = ['url(#lb-foil-gold-1)', 'url(#lb-foil-gold-2)', 'url(#lb-foil-gold-3)'];
-
-        let pileHtml = '';
-        for(let i = 0; i < 55; i++) {
-            let shape = shapes[Math.floor(Math.random() * shapes.length)];
-            let fill = gradients[Math.floor(Math.random() * gradients.length)];
-            let angle = Math.random() * Math.PI * 2;
-            let radius = Math.random() * 85; 
-            let tx = Math.cos(angle) * radius;
-            let ty = Math.sin(angle) * radius;
-            let scale = 0.6 + Math.random() * 2.5; 
-            let rotation = Math.random() * 360;
-            pileHtml += `<div class="pile-star" style="transform: translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) rotate(${rotation}deg) scale(${scale})"><svg viewBox="0 0 24 24"><path d="${shape}" fill="${fill}"/></svg></div>`;
-        }
-
-        let burstHtml = '';
-        for(let i = 0; i < 35; i++) {
-            let shape = (Math.random() > 0.3) ? shapes[0] : shapes[1];
-            let fill = gradients[Math.floor(Math.random() * gradients.length)];
-            let angle = Math.random() * Math.PI * 2;
-            let radius = 90 + Math.random() * 110; 
-            let tx = `calc(-50% + ${Math.cos(angle) * radius}px)`;
-            let ty = `calc(-50% + ${Math.sin(angle) * radius}px)`;
-            let scale = 0.5 + Math.random() * 1.5; 
-            let rotation = Math.random() * 360 + 'deg';
-            let delay = Math.random() * 0.15 + 's';
-            burstHtml += `<div class="burst-star" style="--tx:${tx}; --ty:${ty}; --s:${scale}; --r:${rotation}; animation-delay:${delay};"><svg viewBox="0 0 24 24"><path d="${shape}" fill="${fill}"/></svg></div>`;
-        }
-
-        let isAccepted = status === 'accepted';
-        let isRejected = status === 'rejected';
-        let wrapperClass = `luxury-box-wrap ${isAccepted ? 'lb-accepted' : ''} ${isRejected ? 'lb-rejected' : ''}`;
-        let cardClass = `chat-card ${(isAccepted || isRejected) ? 'is-open' : ''}`;
-        let btnStyle = (isAccepted || isRejected || isUser) ? 'style="display:none;"' : '';
-        
-        let extraOverlay = '';
-        if (isAccepted) extraOverlay = '<div class="bill-stamp stamp-green" style="z-index:100; font-size:16px;">ACCEPTED</div>';
-        if (isRejected) {
-            extraOverlay = `<div class="shattered-glass" style="z-index:100;"><svg class="crack-lines" viewBox="0 0 270 170"><path d="M 80,60 L 120,0 M 80,60 L 270,40 M 80,60 L 220,170 M 80,60 L 100,170 M 80,60 L 0,110 M 80,60 L 30,0 M 150,100 L 270,120 M 150,100 L 200,170 M 40,80 L 0,50" stroke="rgba(255,255,255,0.8)" stroke-width="1.5" fill="none"/></svg><div class="reject-stamp">DENIED</div></div>`;
-            wrapperClass += ' lb-gray-out';
-        }
-
-        let scaleWrapperStyle = isUser 
-            ? `transform: scale(0.65); transform-origin: top right; margin-left: -105px; margin-bottom: -105px; margin-top: 5px;` 
-            : `transform: scale(0.65); transform-origin: top left; margin-right: -105px; margin-bottom: -105px; margin-top: 5px;`;
-
-        return `<div style="${scaleWrapperStyle}">
-            <div class="${wrapperClass}" data-title="${title}" data-sub="${sub}">
-                <div class="${cardClass}" onclick="if(!this.classList.contains('is-open')) this.classList.add('is-open');">
-                    <svg style="position:absolute; width:0; height:0;"><defs><linearGradient id="lb-foil-gold-1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#fff5ba" /><stop offset="40%" stop-color="#e1b333" /><stop offset="100%" stop-color="#996515" /></linearGradient><linearGradient id="lb-foil-gold-2" x1="100%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#e1b333" /><stop offset="60%" stop-color="#b8860b" /><stop offset="100%" stop-color="#6b4c1a" /></linearGradient><linearGradient id="lb-foil-gold-3" x1="0%" y1="50%" x2="100%" y2="50%"><stop offset="0%" stop-color="#ffffff" /><stop offset="50%" stop-color="#fff5ba" /><stop offset="100%" stop-color="#d4af37" /></linearGradient></defs></svg>
-                    <div class="geo-grid"></div><div class="geo-plane-1"></div><div class="geo-plane-2"></div><div class="geo-circle"></div><div class="geo-line-v"></div><div class="geo-line-h"></div><div class="geo-point-1"></div><div class="geo-point-2"></div>
-                    <div class="text-title">Haute <strong>Couture</strong></div>
-                    <div class="scene-wrapper">
-                        <div class="scene">
-                            <div class="face front"><div class="ribbon-v"></div></div><div class="face back"><div class="ribbon-v"></div></div><div class="face left"><div class="ribbon-v"></div></div><div class="face right"><div class="ribbon-v"></div></div><div class="face bottom"></div><div class="bottom-inside"></div>
-                            <div class="lid">
-                                <div class="lid-top"><div class="ribbon-v"></div><div class="ribbon-h"></div><div class="bow-container"><div class="bow-ribbon-tail left"></div><div class="bow-ribbon-tail right"></div><div class="bow-loop left"></div><div class="bow-loop right"></div><div class="bow-center"></div></div></div>
-                                <div class="lid-side lid-front"></div><div class="lid-side lid-back"></div><div class="lid-side lid-left"></div><div class="lid-side lid-right"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stars-2d-pile">\${pileHtml}</div>
-                    <div class="greeting-card-layer">
-                        <div class="greeting-card">
-                            <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 0 C12 8 8 12 0 12 C8 12 12 16 12 24 C12 16 16 12 24 12 C16 12 12 8 12 0 Z"/></svg></div>
-                            <div class="card-content">\${title}</div>
-                            <div class="card-sub">\${sub}</div>
-                        </div>
-                    </div>
-                    <div class="action-btn-layer btn-decline" \${btnStyle}><div class="action-btn" onclick="event.stopPropagation(); handleLuxuryBoxAction(this, 'reject')"><span>拒绝</span></div></div>
-                    <div class="action-btn-layer btn-accept" \${btnStyle}><div class="action-btn" onclick="event.stopPropagation(); handleLuxuryBoxAction(this, 'accept')"><span>收下</span></div></div>
-                    <div class="stars-burst-layer">\${burstHtml}</div>
-                    \${extraOverlay}
                 </div>
             </div><img src="1" onerror="this.parentNode.classList.add('bubble-clear'); this.remove();">
         </div>`;
