@@ -9078,7 +9078,7 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
    - 收/退转账或代付 ➔ <accept> 或 <reject>
    - 发转账/黑卡/红包 ➔ <send_transfer amount="520.00" memo="留言"> / <send_blackcard amount="888" memo="留言"> / <send_redpacket amount="100.00" text="封面">
    - 主动送专属礼物（★首选推荐） ➔ <send_luxury_box title="简短物品名(限4中文字)" sub="英文副标题(限10字母)"> (【注意】：这是你平时主动送礼、制造浪漫惊喜的首选！因为贺卡很小，字数必须极简！如果想送多件不同礼物，请连续输出多个该标签，系统会发出多个独立的高定礼盒！)
-   - 专柜正式下单购物（次选备用） ➔ <send_gift store="店名或专柜" item="商品名" price="价格数字"> (【注意】：仅当明确体现极其正式的“长条外卖/购物账单”时才使用此卡片！【最高警告】：如果要一次性送多件商品，【必须、务必】将多个该标签紧紧挨在一起连续输出，中间【绝对不能有任何文字或换行】！否则会导致卡片断裂崩溃！)
+   - 专柜正式下单购物（次选备用） ➔ <send_gift store="店名" item="商品名" price="数字"> (【最高红线】：若要一次送多件商品，你必须像这样连着写：<send_gift...><send_gift...>，标签之间【绝对、绝对禁止】加任何标点、空格、文字或换行！否则系统将崩溃！)
    - 发照片/定位/听歌 ➔ <send_photo desc="照片描述"> / <send_location name="地名" desc="描述"> / <send_sync title="曲名">
    - 强行面基(破屏) ➔ <override mode="fatal"或"gentle"> (内部含<q1><q2><q3><force>)
    - 拍一拍互动 ➔ 穿插 <nudge> 来回拍用户。穿插 <set_nudge text="动作词"> 来修改用户拍你时弹出的动作词缀（如：摸了摸）。`;
@@ -9500,8 +9500,12 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
             // 💥 变异数字粉碎机：如果它在句子末尾残留了类似 >75<, <50> 这种畸形的数字壳，全部切除掉！
             spokenText = spokenText.replace(/(?:>|<|》|《|】|\[|\()\s*\d{2,3}\s*(?:>|<|》|《|】|\]|\))\s*$/g, '').trim();
 
-            // 🎁 连续账单强力缝合器：防止 AI 在多个商品中间加回车导致长账单断裂成多张小票！
-            spokenText = spokenText.replace(/(<send_gift[^>]+>)\s*[\n\r]+\s*(?=<send_gift)/gi, '$1');
+            // 🎁 连续账单强力缝合器：极其残暴的吸附引擎，无视标点、换行，死死焊在同一个气泡里！
+            let _prevSpoken;
+            do {
+                _prevSpoken = spokenText;
+                spokenText = spokenText.replace(/(<send_gift[^>]+>)(?:[\s\n\r,，、。]+|<split>)*(?=<send_gift)/gi, '$1');
+            } while (spokenText !== _prevSpoken);
 
             // 💥 引用缝合与拆分器
             spokenText = spokenText.replace(/(\[(?:Quote|引用)[:：\s]*[^\]】]+[\]】])\s*\n+\s*/gi, '$1 ');
