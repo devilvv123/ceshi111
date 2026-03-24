@@ -6794,7 +6794,7 @@
     
     function saveGlobalApi() { saveGlobal(); alert("API 配置已保存！"); }
 
-    function saveGlobalFromCS() { gConfig.bubbleCss = document.getElementById('cs-me-bubble-css').value; saveData(); applyGlobalConfigToUI(); if(currentContactId) renderChatHistory(); }
+    function saveGlobalFromCS() { if(!currentContactId) return; const c = contacts.find(x => x.id === currentContactId); c.bubbleCss = document.getElementById('cs-me-bubble-css').value; saveData(); renderChatHistory(); }
     function saveGlobalMe() { gConfig.meName = document.getElementById('me-hero-name').value.trim() || '我'; gConfig.meAvatar = document.getElementById('me-hero-data').value; saveData(); applyGlobalConfigToUI(); if(currentContactId) { updateChatTopUI(); renderChatHistory(); } }
 
     async function fetchModels() { saveGlobal(); if(!gConfig.apiUrl || !gConfig.apiKey) return alert("请填写接口和Key"); const btn = document.getElementById('btn-fetch'); btn.innerText = '拉取中...'; btn.disabled = true; try { const res = await fetch(`${gConfig.apiUrl}/v1/models`, { headers: { 'Authorization': `Bearer ${gConfig.apiKey}` } }); if(!res.ok) throw new Error("拒绝访问"); const data = await res.json(); const sel = document.getElementById('model-select'); sel.innerHTML = ''; if(data.data && data.data.length > 0) { data.data.forEach(m => { const opt = document.createElement('option'); opt.value = m.id; opt.innerText = m.id; sel.appendChild(opt); }); sel.value = gConfig.model; alert("成功！"); saveGlobal(); } } catch(e) { alert("失败:"+e.message); } finally { btn.innerText='拉取可用模型'; btn.disabled=false; } }
@@ -7840,7 +7840,7 @@
         document.getElementById('cs-bg-data').value = c.chatBg || ''; if(c.chatBg) document.getElementById('cs-bg-preview').innerHTML = `<img src="${c.chatBg}">`; else document.getElementById('cs-bg-preview').innerHTML = 'TAP TO UPLOAD'; 
         document.getElementById('cs-avatar-data').value = c.chatAvatar || ''; document.getElementById('cs-avatar-preview').innerHTML = renderAvatarHTML(c.chatAvatar || c.avatar, 'bot');
         document.getElementById('cs-me-avatar-data').value = c.chatMeAvatar || ''; document.getElementById('cs-me-avatar-preview').innerHTML = renderAvatarHTML(c.chatMeAvatar || gConfig.meAvatar, 'user');
-        document.getElementById('cs-me-bubble-css').value = gConfig.bubbleCss || '';
+        document.getElementById('cs-me-bubble-css').value = c.bubbleCss || '';
         
         // 初始化时不展开预设框
         document.getElementById('sum-prompt-wrap').style.display = 'none';
@@ -7932,15 +7932,15 @@
         if(isMyAvatar) {
             let action = c.myNudgeText || "拍了拍";
             content = `我${action}自己${hintExt}`;
-            aiPrompt = `[系统动作通报：用户刚刚在聊天界面双击/点击了TA自己的头像，触发了“我${action}自己”的动作。请结合人设给出反应，你也可以输出 <nudge> 标签来回拍TA。]`;
+            aiPrompt = `[系统动作通报：这是聊天软件自带的线上互动玩法！用户刚刚在界面上双击了TA自己的头像，屏幕上显示“用户${action}自己”。这只是一个线上小互动，并非现实中的真实动作！请完全基于你的人设性格给出自然的回复或吐槽，绝不加入刻板情绪。如果想回拍用户，可在回复中输出 <nudge> 标签。]`;
         } else {
             let action = c.botNudgeText || "拍了拍";
             content = `我${action}了「${botName}」${hintExt}`;
-            aiPrompt = `[系统动作通报：用户刚刚在聊天界面点击了你的头像，触发了“用户${action}了你”的动作！
-【互动玩法提示】：
-1. 这是一个名叫“拍一拍”的社交软件互动玩法。
-2. 如果你想回拍用户，请在你的回复中包含 <nudge> 标签。
-3. 你也可以随时随地在回复中包含 <set_nudge text="新动作词"> 来修改你被拍时弹出的词缀（比如改成“摸了摸”、“抱了抱”、“踢了踢”）。请结合人设立刻给出真实反应！]`;
+            aiPrompt = `[系统动作通报：这是聊天软件自带的线上互动玩法！用户刚刚在界面上点击了你的头像，屏幕上显示“用户${action}了你”。这只是一个线上的虚拟动作，并非现实中的真实肢体接触！
+【互动要求】：
+1. 请完全基于你的人设性格给出符合逻辑的自然聊天反应，不要带入任何刻板的固定情绪，也不要把这当做现实接触。
+2. 如果你也想在线上回拍用户，请在回复中直接输出 <nudge> 标签。
+3. 你还可以通过输出 <set_nudge text="新动作词"> 随时修改你被拍时系统显示的后缀词（例如改成“踢了踢”、“捏了捏”等）。]`;
         }
 
         const newMsg = { role: 'system_sum', content: `<div style="text-align:center; width:100%;"><div style="color:var(--c-gray-dark); font-size:10px; font-weight:700; background:rgba(0,0,0,0.03); padding:4px 10px; border-radius:10px; display:inline-block;">${content}</div></div>\n<span style="display:none;">${aiPrompt}</span>` };
@@ -7949,7 +7949,8 @@
         appendBubbleRow(newMsg, c.history.length - 1);
         scrollToBottom();
         
-        setTimeout(() => fetchAIReply(currentContactId), 500);
+        // 核心改动：注释掉自动调用 AI 回复，把主动权交还给用户！
+        // setTimeout(() => fetchAIReply(currentContactId), 500);
     }
 
     function saveChatSettings() { 
@@ -7976,10 +7977,7 @@
         c.sumPrompt = document.getElementById('cs-sum-prompt').value.trim() || c.sumPrompt; 
         c.chatBg = document.getElementById('cs-bg-data').value; 
         
-        gConfig.bubbleCss = document.getElementById('cs-me-bubble-css').value;
-        
-        // 核心修复：调用全局UI刷新引擎，让气泡CSS瞬间应用生效！
-        applyGlobalConfigToUI();
+        c.bubbleCss = document.getElementById('cs-me-bubble-css').value;
         
         updateChatTopUI(); applyChatBackground(c.chatBg); renderChatHistory(); saveData(); closeChatSettings(); renderRoleList(); 
     }
@@ -7993,7 +7991,8 @@
         
         const c = contacts.find(x => x.id === currentContactId); 
         let cSize = c.chatFontSize || 8; 
-        document.getElementById('dynamic-chat-style').innerHTML = `#view-chat .bubble { font-size: ${cSize}px !important; }`;
+        let customCss = c.bubbleCss || '';
+        document.getElementById('dynamic-chat-style').innerHTML = `#view-chat .bubble { font-size: ${cSize}px !important; }\n${customCss}`;
         
         // 🚨 核心性能修复 3：加入视口截取！如果聊天记录高达上千条，全量加载必卡死！
         // 只提取最近的 150 条非 system 消息进行渲染（足够日常翻阅了）
@@ -8531,9 +8530,41 @@
         closeChatMenu();
         const c = contacts.find(x => x.id === currentContactId);
         if (!c || c.history.length === 0) return;
+        
         let deleted = false;
-        while(c.history.length > 0 && c.history[c.history.length - 1].role === 'assistant') { c.history.pop(); deleted = true; }
-        if (deleted) { saveData(); renderChatHistory(); fetchAIReply(currentContactId); } else { alert("当前没有可重新生成的 AI 回复。请先发送消息！"); }
+        let lastUserIdx = -1;
+        for(let i = c.history.length - 1; i >= 0; i--) {
+            if (c.history[i].role === 'user' || c.history[i].role === 'system') {
+                lastUserIdx = i;
+                break;
+            }
+        }
+        
+        let cutStartIndex = lastUserIdx + 1;
+        while(cutStartIndex < c.history.length && c.history[cutStartIndex].role === 'system_sum') {
+            cutStartIndex++;
+        }
+        
+        let hasAssistant = false;
+        for(let i = cutStartIndex; i < c.history.length; i++) {
+            if (c.history[i].role === 'assistant') {
+                hasAssistant = true;
+                break;
+            }
+        }
+        
+        if (hasAssistant) {
+            c.history.splice(cutStartIndex);
+            deleted = true;
+        }
+
+        if (deleted) { 
+            saveData(); 
+            renderChatHistory(); 
+            fetchAIReply(currentContactId); 
+        } else { 
+            alert("当前没有可重新生成的 AI 回复。请先发送消息！"); 
+        }
     }
 
     function showToast(name, msg, avatar, contactId, duration = 5000) {
@@ -9026,7 +9057,7 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
 <affection>当前对用户的好感度(0-100)</affection>
 <mood>当前心情状态(0-100，0为极度悲伤/愤怒，100为愉悦)</mood>
 <thought>
-(这里写你此刻最隐秘、最真实的心理活动，字数要丰满，展现你的算计或情绪起伏)
+(这里写你此刻最隐秘、最真实的心理活动，展现情绪起伏。【最高警告】：字数必须强制控制在 50 字左右！绝不能长篇大论！)
 </thought>
 (如果有动作仅限放开头) 这是你发送的第一条微信消息对白
 <split>
@@ -9046,9 +9077,9 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
 7. 💰 【UI 物理卡片交互】(如果有必要，把这些纯英文标签自由穿插在任意 <split> 之间的对白中间，甚至放在最开头或最末尾，绝对不仅仅局限于最后一个气泡！)：
    - 收/退转账或代付 ➔ <accept> 或 <reject>
    - 发转账/黑卡/红包 ➔ <send_transfer amount="520.00" memo="留言"> / <send_blackcard amount="888" memo="留言"> / <send_redpacket amount="100.00" text="封面">
-   - 霸气为用户下单买礼物 ➔ <send_gift store="高定店名或随意专柜" item="商品名" price="价格数字"> (【非常重要】：如果要一次性送多件商品，请在同一段对话中连续输出多个该标签！系统会自动把它们合并显示在同一张订单卡片中！绝对不要分开发！)
+   - 主动送专属礼物（★首选推荐） ➔ <send_luxury_box title="简短物品名(限4中文字)" sub="英文副标题(限10字母)"> (【注意】：这是你平时主动送礼、制造浪漫惊喜的首选！因为贺卡很小，字数必须极简！如果想送多件不同礼物，请连续输出多个该标签，系统会发出多个独立的高定礼盒！)
+   - 专柜正式下单购物（次选备用） ➔ <send_gift store="店名或专柜" item="商品名" price="价格数字"> (【注意】：仅当明确体现极其正式的“长条外卖/购物账单”时才使用此卡片！【最高警告】：如果要一次性送多件商品，【必须、务必】将多个该标签紧紧挨在一起连续输出，中间【绝对不能有任何文字或换行】！否则会导致卡片断裂崩溃！)
    - 发照片/定位/听歌 ➔ <send_photo desc="照片描述"> / <send_location name="地名" desc="描述"> / <send_sync title="曲名">
-   - 送黑金高定礼盒 ➔ <send_luxury_box title="礼物名称" sub="英文副标题">
    - 强行面基(破屏) ➔ <override mode="fatal"或"gentle"> (内部含<q1><q2><q3><force>)
    - 拍一拍互动 ➔ 穿插 <nudge> 来回拍用户。穿插 <set_nudge text="动作词"> 来修改用户拍你时弹出的动作词缀（如：摸了摸）。`;
 
@@ -9468,6 +9499,9 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
             
             // 💥 变异数字粉碎机：如果它在句子末尾残留了类似 >75<, <50> 这种畸形的数字壳，全部切除掉！
             spokenText = spokenText.replace(/(?:>|<|》|《|】|\[|\()\s*\d{2,3}\s*(?:>|<|》|《|】|\]|\))\s*$/g, '').trim();
+
+            // 🎁 连续账单强力缝合器：防止 AI 在多个商品中间加回车导致长账单断裂成多张小票！
+            spokenText = spokenText.replace(/(<send_gift[^>]+>)\s*[\n\r]+\s*(?=<send_gift)/gi, '$1');
 
             // 💥 引用缝合与拆分器
             spokenText = spokenText.replace(/(\[(?:Quote|引用)[:：\s]*[^\]】]+[\]】])\s*\n+\s*/gi, '$1 ');
@@ -13013,7 +13047,7 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
 7. SLOW BURN & PRESENT TENSION (CRITICAL): ABSOLUTELY FORBIDDEN to make empty promises about the future or use delaying words like "今晚" (tonight) or "我会" (I will). You must act in the PRESENT moment. However, DO NOT RUSH the pacing! Escalate the physical and emotional tension slowly, step by step. Savor the details, use micro-actions to build intense anticipation, and let the atmosphere simmer. "Show" the progress right now instead of promising it for later, but keep the rhythm elegantly slow.
 8. MANDATORY MIND REVEAL (CRITICAL): You MUST include a <mind> block BEFORE your spoken dialogue/actions. This block represents your deepest, unvarnished internal state and current environment analysis. Format EXACTLY as follows:
 <mind>
-<thought>Your true inner monologue. (CRITICAL: MUST BE EXTREMELY SHORT, STRICTLY AROUND 15-30 CHINESE CHARACTERS! Do not write long paragraphs!)</thought>
+<thought>Your true inner monologue. (CRITICAL: MUST BE STRICTLY AROUND 50 CHINESE CHARACTERS! Do not write long paragraphs!)</thought>
 <focus>What your eyes are currently fixed on (e.g., "她因为紧张而发抖的指尖")</focus>
 <facade>1-10 (How well you are hiding your feelings. 10 = perfect poker face, 1 = completely exposed)</facade>
 <restraint>1-10 (How close you are to losing control. 10 = fully disciplined, 1 = about to snap/kiss/attack)</restraint>
