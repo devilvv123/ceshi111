@@ -1943,6 +1943,72 @@
         .burst-particle { position: absolute; width: 14px; height: 14px; background: radial-gradient(circle, #FFE082 0%, #FFB300 80%); border-radius: 50%; box-shadow: 0 4px 8px rgba(0,0,0,0.4), inset 0 2px 2px rgba(255,255,255,0.6); display: flex; justify-content: center; align-items: center; pointer-events: none; z-index: 9999; }
         .burst-particle::after { content: ''; width: 4px; height: 4px; background: rgba(162, 49, 49, 0.8); border-radius: 1px; }
 
+        /* ================= 高定黑金盲盒礼盒 ================= */
+        .lb-chat-card { position: relative; width: 100%; height: 100%; background: linear-gradient(135deg, #ffffff, #f0f2f5); border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(255,255,255,0.9); overflow: hidden; cursor: pointer; --box-light: #2c2d30; --box-main: #141517; --box-dark: #08080a; --star-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M12 0 C12 8 8 12 0 12 C8 12 12 16 12 24 C12 16 16 12 24 12 C16 12 12 8 12 0 Z' fill='rgba(255,255,255,0.03)' transform='translate(10,10) scale(1.5) rotate(15)'/%3E%3Cpath d='M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5Z' fill='rgba(225,179,51,0.05)' transform='translate(60,30) scale(1.8)'/%3E%3C/svg%3E"); --gold-edge: #a67c00; --gold-mid: #e1b333; --gold-shine: #fff5ba; --line-gold: rgba(225, 179, 51, 0.35); }
+        .lb-geo-grid { position: absolute; width: 100%; height: 100%; background-image: radial-gradient(rgba(225, 179, 51, 0.15) 1px, transparent 1px); background-size: 15px 15px; opacity: 0.8; z-index: 1; }
+        .lb-geo-plane-1 { position: absolute; top: -30px; right: -30px; width: 140px; height: 140px; background: linear-gradient(135deg, rgba(225, 179, 51, 0.1), transparent); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); border: 1px solid rgba(225, 179, 51, 0.2); transform: rotate(25deg); z-index: 2; }
+        .lb-geo-plane-2 { position: absolute; bottom: -40px; left: -20px; width: 160px; height: 160px; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, 0.6), transparent 70%); border: 1px solid rgba(255, 255, 255, 0.8); z-index: 2; }
+        .lb-geo-line-v { position: absolute; top: 0; left: 30%; width: 1px; height: 100%; background: linear-gradient(to bottom, transparent, var(--line-gold), transparent); z-index: 3; }
+        .lb-geo-line-h { position: absolute; top: 70%; left: 0; width: 100%; height: 1px; background: linear-gradient(to right, transparent, var(--line-gold), transparent); z-index: 3; }
+        .lb-geo-circle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 220px; height: 220px; border-radius: 50%; border: 0.5px dashed var(--line-gold); z-index: 3; }
+        .lb-geo-point-1 { position: absolute; top: 70%; left: 30%; width: 4px; height: 4px; border-radius: 50%; background: var(--gold-shine); box-shadow: 0 0 8px var(--gold-mid); transform: translate(-50%, -50%); z-index: 4; }
+        .lb-geo-point-2 { position: absolute; top: 25%; right: 25%; width: 3px; height: 3px; border-radius: 50%; background: var(--gold-shine); transform: translate(-50%, -50%); z-index: 4; }
+        .lb-text-title { position: absolute; top: 20px; left: 25px; letter-spacing: 0.2em; font-weight: 300; font-size: 10px; color: #888; text-transform: uppercase; z-index: 5; font-family: "Helvetica Neue", sans-serif; }
+        .lb-text-title strong { background: linear-gradient(to right, #b8860b, #e1b333); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 600; }
+        .lb-scene-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; perspective: 900px; pointer-events: none; z-index: 10; }
+        .lb-scene { position: absolute; top: 50%; left: 50%; width: 0; height: 0; transform-style: preserve-3d; transform: rotateX(-15deg) rotateY(-25deg) translateY(25px); transition: transform 1.2s cubic-bezier(0.25, 1, 0.25, 1); }
+        .lb-face { position: absolute; width: 100px; height: 100px; margin-top: -50px; margin-left: -50px; border: 1px solid rgba(255,255,255,0.05); box-shadow: inset 2px 2px 10px rgba(255,255,255,0.05), inset -5px -5px 15px rgba(0,0,0,0.8); }
+        .lb-front  { transform: translateZ(50px); background: var(--star-pattern), linear-gradient(135deg, var(--box-light), var(--box-main)); background-size: cover; }
+        .lb-back   { transform: rotateY(180deg) translateZ(50px); background: var(--star-pattern), var(--box-dark); background-size: cover; }
+        .lb-left   { transform: rotateY(-90deg) translateZ(50px); background: var(--star-pattern), linear-gradient(135deg, var(--box-main), var(--box-dark)); background-size: cover; }
+        .lb-right  { transform: rotateY(90deg) translateZ(50px); background: var(--star-pattern), linear-gradient(135deg, var(--box-light), var(--box-dark)); background-size: cover; }
+        .lb-bottom { transform: rotateX(-90deg) translateZ(50px); background: #050505; box-shadow: 0 30px 40px rgba(0,0,0,0.4); }
+        .lb-bottom-inside { transform: rotateX(90deg) translateZ(-49px); background: #1a1a1c; }
+        .lb-ribbon-v { top: 0; left: 50%; transform: translateX(-50%); width: 10px; height: 100%; background: linear-gradient(to right, var(--gold-edge) 0%, var(--gold-shine) 40%, var(--gold-mid) 60%, var(--gold-edge) 100%); position: absolute; box-shadow: 0 0 5px rgba(0,0,0,0.5);}
+        .lb-ribbon-h { top: 50%; left: 0; transform: translateY(-50%); width: 100%; height: 10px; background: linear-gradient(to bottom, var(--gold-edge) 0%, var(--gold-shine) 40%, var(--gold-mid) 60%, var(--gold-edge) 100%); position: absolute; box-shadow: 0 0 5px rgba(0,0,0,0.5);}
+        .lb-lid { position: absolute; width: 106px; height: 106px; margin-top: -53px; margin-left: -53px; transform-style: preserve-3d; transform: translateZ(0px) rotateX(90deg) translateZ(51px); transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.8s; }
+        .lb-lid-top { position: absolute; width: 100%; height: 100%; background: var(--star-pattern), radial-gradient(circle at center, var(--box-light), var(--box-main)); background-size: cover; border: 1px solid rgba(225, 179, 51, 0.4); transform-style: preserve-3d; }
+        .lb-lid-side { position: absolute; background: var(--star-pattern), var(--box-main); background-size: cover; border: 1px solid rgba(225, 179, 51, 0.4); }
+        .lb-lid-front { top: 100%; left: 0; width: 106px; height: 16px; transform-origin: top; transform: rotateX(-90deg); border-top: none; }
+        .lb-lid-back  { bottom: 100%; left: 0; width: 106px; height: 16px; transform-origin: bottom; transform: rotateX(90deg); border-bottom: none; }
+        .lb-lid-left  { right: 100%; top: 0; width: 16px; height: 106px; transform-origin: right; transform: rotateY(-90deg); border-right: none; }
+        .lb-lid-right { left: 100%; top: 0; width: 16px; height: 106px; transform-origin: left; transform: rotateY(90deg); border-left: none; }
+        .lb-bow-container { position: absolute; top: 50%; left: 50%; width: 0; height: 0; transform-style: preserve-3d; transform: translateZ(3px); z-index: 10; }
+        .lb-bow-loop { position: absolute; width: 44px; height: 20px; border: 5px solid; border-image: linear-gradient(135deg, var(--gold-shine), var(--gold-edge)) 1; border-radius: 22px / 10px; top: -10px; }
+        .lb-bow-loop.lb-left { right: -2px; transform-origin: right center; transform: rotateZ(-15deg) rotateY(-45deg); }
+        .lb-bow-loop.lb-right { left: -2px; transform-origin: left center; transform: rotateZ(15deg) rotateY(45deg); }
+        .lb-bow-center { position: absolute; width: 18px; height: 18px; background: linear-gradient(135deg, var(--gold-shine), var(--gold-edge)); border-radius: 50%; top: -9px; left: -9px; transform: translateZ(8px); }
+        .lb-bow-ribbon-tail { position: absolute; width: 35px; height: 10px; background: linear-gradient(to right, var(--gold-edge), var(--gold-shine), var(--gold-mid)); top: -2px; }
+        .lb-bow-ribbon-tail.lb-left { right: 0; transform-origin: right top; transform: rotateZ(-65deg) rotateX(15deg); }
+        .lb-bow-ribbon-tail.lb-right { left: 0; transform-origin: left top; transform: rotateZ(65deg) rotateX(15deg); }
+        .lb-stars-2d-pile { position: absolute; top: 45%; left: 50%; width: 0; height: 0; z-index: 50; pointer-events: none; transform: scale(0) translateY(10px); opacity: 0; transition: transform 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.1s, opacity 0.5s 0.1s; }
+        .lb-pile-star { position: absolute; width: 24px; height: 24px; transform-origin: center; filter: drop-shadow(0 0 6px rgba(225, 179, 51, 0.4)); }
+        .lb-pile-star svg { width: 100%; height: 100%; }
+        .lb-stars-burst-layer { position: absolute; top: 45%; left: 50%; width: 0; height: 0; z-index: 60; pointer-events: none; }
+        .lb-burst-star { position: absolute; width: 20px; height: 20px; opacity: 0; transform: translate(-50%, -50%) scale(0); }
+        .lb-burst-star svg { width: 100%; height: 100%; }
+        .lb-greeting-card-layer { position: absolute; top: 45%; left: 50%; width: 0; height: 0; z-index: 55; pointer-events: none; transform: scale(0) translateY(20px) rotate(-15deg); opacity: 0; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.35s, opacity 0.5s 0.35s; }
+        .lb-greeting-card { position: absolute; top: -35px; left: -60px; width: 120px; height: 70px; background: #0a0a0c; border: 1px solid rgba(225, 179, 51, 0.6); display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 12px 25px rgba(0,0,0,0.6); overflow: hidden; }
+        .lb-greeting-card::before { content: ''; position: absolute; top: 3px; left: 3px; right: 3px; bottom: 3px; border: 0.5px solid rgba(225, 179, 51, 0.3); pointer-events: none; }
+        .lb-card-icon { width: 14px; height: 14px; margin-bottom: 4px; }
+        .lb-card-content { font-family: "Didot", "Times New Roman", "PingFang SC", serif; font-size: 13px; font-weight: 400; letter-spacing: 3px; background: linear-gradient(to right, #e1b333, #fff5ba, #b8860b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .lb-card-sub { font-family: "Helvetica Neue", sans-serif; font-size: 7px; font-weight: 300; opacity: 0.6; margin-top: 4px; letter-spacing: 2px; color: #fff5ba; text-transform: uppercase; }
+        .lb-action-btn-layer { position: absolute; top: 45%; left: 50%; z-index: 70; transform: translate(-50%, -50%) scale(0); opacity: 0; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.4s, opacity 0.5s 0.4s; pointer-events: none; }
+        .lb-action-btn { width: 44px; height: 44px; background: rgba(10, 10, 12, 0.9); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); border: 1px solid rgba(225, 179, 51, 0.7); box-shadow: 0 8px 20px rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; }
+        .lb-action-btn::before { content: ''; position: absolute; top: 2px; left: 2px; right: 2px; bottom: 2px; border: 0.5px solid rgba(225, 179, 51, 0.3); pointer-events: none; }
+        .lb-action-btn span { font-size: 11px; font-weight: 400; letter-spacing: 2px; margin-left: 2px; color: #fff5ba; }
+        .lb-action-btn:hover { background: rgba(225, 179, 51, 0.15); box-shadow: 0 0 15px rgba(225, 179, 51, 0.4); }
+        @keyframes lbFloatUpDown { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+        .lb-chat-card.is-open .lb-scene { transform: rotateX(-65deg) rotateY(-15deg) scale(0.9) translateY(20px); }
+        .lb-chat-card.is-open .lb-lid { transform: translateZ(-30px) rotateX(135deg) translateY(-140px) translateZ(80px); opacity: 0; }
+        .lb-chat-card.is-open .lb-stars-2d-pile { transform: scale(1) translateY(0); opacity: 1; }
+        .lb-chat-card.is-open .lb-greeting-card-layer { transform: scale(1) translateY(-15px) rotate(-4deg); opacity: 1; }
+        .lb-chat-card.is-open .lb-action-btn-layer.lb-btn-decline { transform: translate(calc(-50% - 105px), calc(-50% - 5px)) scale(1) rotate(-6deg); opacity: 1; pointer-events: auto; }
+        .lb-chat-card.is-open .lb-action-btn-layer.lb-btn-accept { transform: translate(calc(-50% + 105px), calc(-50% - 5px)) scale(1) rotate(6deg); opacity: 1; pointer-events: auto; }
+        .lb-chat-card.is-open .lb-action-btn { animation: lbFloatUpDown 3s ease-in-out infinite 1.2s; }
+        @keyframes lbFlatBurst { 0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 1; } 60% { opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(var(--s)) rotate(var(--r)); opacity: 0; } }
+        .lb-chat-card.is-open .lb-burst-star { animation: lbFlatBurst 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
         /* ================= 高定法式邮票 (虚拟照片) ================= */
         .stamp-wrapper { filter: drop-shadow(0 8px 20px rgba(0,0,0,0.08)) drop-shadow(0 2px 4px rgba(0,0,0,0.04)); cursor: pointer; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s; margin-top: 5px; }
         .stamp-wrapper:active { transform: translateY(-2px) scale(0.98); filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05)); }
@@ -1957,92 +2023,6 @@
 
         /* ================= 互动按钮 ================= */
         .bc-action-bar { display: flex; justify-content: center; gap: 18px; position: relative; z-index: 20; width: 100%; margin-top: 12px; margin-left: -5px; }
-
-        /* ================= 黑金高定盲盒礼物 ================= */
-        .luxury-present-wrapper {
-            position: relative; width: 260px; height: 260px; margin: 5px 0;
-            perspective: 1200px; flex-shrink: 0; box-sizing: border-box;
-            transform: scale(0.9); transform-origin: top left; margin-right: -26px; margin-bottom: -26px;
-        }
-        .user .luxury-present-wrapper { transform-origin: top right; margin-left: -26px; margin-right: 0; }
-        
-        .lp-card {
-            position: relative; width: 100%; height: 100%;
-            background: linear-gradient(135deg, #ffffff, #f0f2f5);
-            border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(255,255,255,0.9);
-            overflow: hidden; cursor: pointer;
-            --lp-star-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M12 0 C12 8 8 12 0 12 C8 12 12 16 12 24 C12 16 16 12 24 12 C16 12 12 8 12 0 Z' fill='rgba(255,255,255,0.03)' transform='translate(10,10) scale(1.5) rotate(15)'/%3E%3Cpath d='M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5Z' fill='rgba(225,179,51,0.05)' transform='translate(60,30) scale(1.8)'/%3E%3C/svg%3E");
-        }
-        .lp-geo-grid { position: absolute; width: 100%; height: 100%; background-image: radial-gradient(rgba(225, 179, 51, 0.15) 1px, transparent 1px); background-size: 15px 15px; opacity: 0.8; z-index: 1; pointer-events: none; }
-        .lp-geo-plane-1 { position: absolute; top: -30px; right: -30px; width: 140px; height: 140px; background: linear-gradient(135deg, rgba(225, 179, 51, 0.1), transparent); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); border: 1px solid rgba(225, 179, 51, 0.2); transform: rotate(25deg); z-index: 2; pointer-events: none; }
-        .lp-geo-plane-2 { position: absolute; bottom: -40px; left: -20px; width: 160px; height: 160px; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, 0.6), transparent 70%); border: 1px solid rgba(255, 255, 255, 0.8); z-index: 2; pointer-events: none; }
-        .lp-geo-line-v { position: absolute; top: 0; left: 30%; width: 1px; height: 100%; background: linear-gradient(to bottom, transparent, rgba(225, 179, 51, 0.35), transparent); z-index: 3; pointer-events: none; }
-        .lp-geo-line-h { position: absolute; top: 70%; left: 0; width: 100%; height: 1px; background: linear-gradient(to right, transparent, rgba(225, 179, 51, 0.35), transparent); z-index: 3; pointer-events: none; }
-        .lp-geo-circle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 220px; height: 220px; border-radius: 50%; border: 0.5px dashed rgba(225, 179, 51, 0.35); z-index: 3; pointer-events: none; }
-        .lp-text-title { position: absolute; top: 15px; left: 20px; letter-spacing: 0.2em; font-weight: 300; font-size: 9px; color: #888; text-transform: uppercase; z-index: 5; font-family: "Helvetica Neue", sans-serif; pointer-events: none; }
-        .lp-text-title strong { background: linear-gradient(to right, #b8860b, #e1b333); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 600; }
-
-        .lp-scene-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; perspective: 900px; pointer-events: none; z-index: 10; }
-        .lp-scene { position: absolute; top: 50%; left: 50%; width: 0; height: 0; transform-style: preserve-3d; transform: rotateX(-15deg) rotateY(-25deg) translateY(25px); transition: transform 1.2s cubic-bezier(0.25, 1, 0.25, 1); }
-        .lp-face { position: absolute; width: 90px; height: 90px; margin-top: -45px; margin-left: -45px; border: 1px solid rgba(255,255,255,0.05); box-shadow: inset 2px 2px 10px rgba(255,255,255,0.05), inset -5px -5px 15px rgba(0,0,0,0.8); }
-        .lp-front  { transform: translateZ(45px); background: var(--lp-star-pattern), linear-gradient(135deg, #2c2d30, #141517); background-size: cover; }
-        .lp-back   { transform: rotateY(180deg) translateZ(45px); background: var(--lp-star-pattern), #08080a; background-size: cover; }
-        .lp-left   { transform: rotateY(-90deg) translateZ(45px); background: var(--lp-star-pattern), linear-gradient(135deg, #141517, #08080a); background-size: cover; }
-        .lp-right  { transform: rotateY(90deg) translateZ(45px); background: var(--lp-star-pattern), linear-gradient(135deg, #2c2d30, #08080a); background-size: cover; }
-        .lp-bottom { transform: rotateX(-90deg) translateZ(45px); background: #050505; box-shadow: 0 30px 40px rgba(0,0,0,0.4); }
-        .lp-ribbon-v { top: 0; left: 50%; transform: translateX(-50%); width: 8px; height: 100%; background: linear-gradient(to right, #a67c00 0%, #fff5ba 40%, #e1b333 60%, #a67c00 100%); position: absolute; box-shadow: 0 0 5px rgba(0,0,0,0.5);}
-        .lp-ribbon-h { top: 50%; left: 0; transform: translateY(-50%); width: 100%; height: 8px; background: linear-gradient(to bottom, #a67c00 0%, #fff5ba 40%, #e1b333 60%, #a67c00 100%); position: absolute; box-shadow: 0 0 5px rgba(0,0,0,0.5);}
-        
-        .lp-lid { position: absolute; width: 94px; height: 94px; margin-top: -47px; margin-left: -47px; transform-style: preserve-3d; transform: translateZ(0px) rotateX(90deg) translateZ(46px); transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.8s; }
-        .lp-lid-top { position: absolute; width: 100%; height: 100%; background: var(--lp-star-pattern), radial-gradient(circle at center, #2c2d30, #141517); background-size: cover; border: 1px solid rgba(225, 179, 51, 0.4); transform-style: preserve-3d; }
-        .lp-lid-side { position: absolute; background: var(--lp-star-pattern), #141517; background-size: cover; border: 1px solid rgba(225, 179, 51, 0.4); }
-        .lp-lid-front { top: 100%; left: 0; width: 94px; height: 14px; transform-origin: top; transform: rotateX(-90deg); border-top: none; }
-        .lp-lid-back  { bottom: 100%; left: 0; width: 94px; height: 14px; transform-origin: bottom; transform: rotateX(90deg); border-bottom: none; }
-        .lp-lid-left  { right: 100%; top: 0; width: 14px; height: 94px; transform-origin: right; transform: rotateY(-90deg); border-right: none; }
-        .lp-lid-right { left: 100%; top: 0; width: 14px; height: 94px; transform-origin: left; transform: rotateY(90deg); border-left: none; }
-        
-        .lp-bow-container { position: absolute; top: 50%; left: 50%; width: 0; height: 0; transform-style: preserve-3d; transform: translateZ(3px); z-index: 10; }
-        .lp-bow-loop { position: absolute; width: 38px; height: 18px; border: 4px solid; border-image: linear-gradient(135deg, #fff5ba, #a67c00) 1; border-radius: 19px / 9px; top: -9px; }
-        .lp-bow-loop.left { right: -2px; transform-origin: right center; transform: rotateZ(-15deg) rotateY(-45deg); }
-        .lp-bow-loop.right { left: -2px; transform-origin: left center; transform: rotateZ(15deg) rotateY(45deg); }
-        .lp-bow-center { position: absolute; width: 16px; height: 16px; background: linear-gradient(135deg, #fff5ba, #a67c00); border-radius: 50%; top: -8px; left: -8px; transform: translateZ(8px); }
-        .lp-bow-tail { position: absolute; width: 30px; height: 8px; background: linear-gradient(to right, #a67c00, #fff5ba, #e1b333); top: -2px; }
-        .lp-bow-tail.left { right: 0; transform-origin: right top; transform: rotateZ(-65deg) rotateX(15deg); }
-        .lp-bow-tail.right { left: 0; transform-origin: left top; transform: rotateZ(65deg) rotateX(15deg); }
-
-        .lp-stars-pile { position: absolute; top: 45%; left: 50%; width: 0; height: 0; z-index: 50; pointer-events: none; transform: scale(0) translateY(10px); opacity: 0; transition: transform 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.1s, opacity 0.5s 0.1s; }
-        .lp-pile-star { position: absolute; width: 20px; height: 20px; transform-origin: center; filter: drop-shadow(0 0 6px rgba(225, 179, 51, 0.4)); }
-        .lp-pile-star svg { width: 100%; height: 100%; }
-        
-        .lp-stars-burst { position: absolute; top: 45%; left: 50%; width: 0; height: 0; z-index: 60; pointer-events: none; }
-        .lp-burst-star { position: absolute; width: 18px; height: 18px; opacity: 0; transform: translate(-50%, -50%) scale(0); }
-        .lp-burst-star svg { width: 100%; height: 100%; }
-
-        .lp-greeting-layer { position: absolute; top: 45%; left: 50%; width: 0; height: 0; z-index: 55; pointer-events: none; transform: scale(0) translateY(20px) rotate(-15deg); opacity: 0; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.35s, opacity 0.5s 0.35s; }
-        .lp-greeting-card { position: absolute; top: -30px; left: -50px; width: 100px; height: 60px; background: #0a0a0c; border: 1px solid rgba(225, 179, 51, 0.6); display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 12px 25px rgba(0,0,0,0.6); overflow: hidden; }
-        .lp-greeting-card::before { content: ''; position: absolute; top: 2px; left: 2px; right: 2px; bottom: 2px; border: 0.5px solid rgba(225, 179, 51, 0.3); pointer-events: none; }
-        .lp-card-icon { width: 12px; height: 12px; margin-bottom: 2px; }
-        .lp-card-content { font-family: "Didot", serif; font-size: 11px; font-weight: 600; letter-spacing: 2px; background: linear-gradient(to right, #e1b333, #fff5ba, #b8860b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; white-space: nowrap; max-width: 90%; overflow: hidden; text-overflow: ellipsis; text-align: center; }
-        .lp-card-sub { font-family: "Helvetica Neue", sans-serif; font-size: 6px; font-weight: 300; opacity: 0.6; margin-top: 4px; letter-spacing: 2px; color: #fff5ba; text-transform: uppercase; white-space: nowrap; max-width: 90%; overflow: hidden; text-overflow: ellipsis; text-align: center; }
-
-        .lp-action-layer { position: absolute; top: 45%; left: 50%; z-index: 70; transform: translate(-50%, -50%) scale(0); opacity: 0; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.4s, opacity 0.5s 0.4s; pointer-events: none; }
-        .lp-action-btn { width: 40px; height: 40px; background: rgba(10, 10, 12, 0.9); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); border: 1px solid rgba(225, 179, 51, 0.7); box-shadow: 0 8px 20px rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; }
-        .lp-action-btn::before { content: ''; position: absolute; top: 2px; left: 2px; right: 2px; bottom: 2px; border: 0.5px solid rgba(225, 179, 51, 0.3); pointer-events: none; }
-        .lp-action-btn span { font-size: 10px; font-weight: 400; letter-spacing: 2px; margin-left: 2px; color: #fff5ba; }
-        .lp-action-btn:hover { background: rgba(225, 179, 51, 0.15); box-shadow: 0 0 15px rgba(225, 179, 51, 0.4); }
-
-        @keyframes lpFloatUpDown { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-        
-        .lp-card.is-open .lp-scene { transform: rotateX(-65deg) rotateY(-15deg) scale(0.9) translateY(20px); }
-        .lp-card.is-open .lp-lid { transform: translateZ(-30px) rotateX(135deg) translateY(-140px) translateZ(80px); opacity: 0; }
-        .lp-card.is-open .lp-stars-pile { transform: scale(1) translateY(0); opacity: 1; }
-        .lp-card.is-open .lp-greeting-layer { transform: scale(1) translateY(-15px) rotate(-4deg); opacity: 1; }
-        .lp-card.is-open .lp-action-layer.lp-decline { transform: translate(calc(-50% - 90px), calc(-50% - 5px)) scale(1) rotate(-6deg); opacity: 1; pointer-events: auto; }
-        .lp-card.is-open .lp-action-layer.lp-accept { transform: translate(calc(-50% + 90px), calc(-50% - 5px)) scale(1) rotate(6deg); opacity: 1; pointer-events: auto; }
-        .lp-card.is-open .lp-action-btn { animation: lpFloatUpDown 3s ease-in-out infinite 1.2s; }
-
-        @keyframes lpFlatBurst { 0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 1; } 60% { opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(var(--s)) rotate(var(--r)); opacity: 0; } }
-        .lp-card.is-open .lp-burst-star { animation: lpFlatBurst 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .bc-btn { padding: 5px 14px; border-radius: 100px; font-size: 10px; font-weight: 800; cursor: pointer; letter-spacing: 1px; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .bc-btn:active { transform: scale(0.92); }
         .bc-btn.accept { background: #1C1C1E; color: #F5D78D; border: 1px solid #8A733F; }
@@ -8114,7 +8094,7 @@
         bubbleDiv.className = `bubble ${isUser ? 'bubble-user' : 'bubble-bot'}`; 
         
         // 【核心修复】：在底层引擎直接判定，只要内容里包含特殊卡片，强制加上剥离气泡外壳的样式，永不反弹！
-        if (text && (text.includes('normal-transfer') || text.includes('black-card-scene') || text.includes('rp-container') || text.includes('stamp-wrapper') || text.includes('loc-card-shell') || text.includes('luxury-present-wrapper'))) {
+        if (text && (text.includes('normal-transfer') || text.includes('black-card-scene') || text.includes('rp-container') || text.includes('stamp-wrapper') || text.includes('loc-card-shell'))) {
             bubbleDiv.classList.add('bubble-clear');
         }
 
@@ -8948,13 +8928,6 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
                     let isConnected = m.content.includes('dark-btn');
                     let status = isConnected ? '已连接' : (m.role === 'user' ? '等待接受，你可以回复 <accept> 同意，或 <reject> 拒绝' : '等待用户接受中');
                     pushContent = `[消息ID: ${m._oid}] ${sender} 发给 ${receiver} 的音乐共听邀请（状态：${status}）。`;
-                } else if (m.content.includes('luxury-present-wrapper')) {
-                    let isAccepted = m.content.includes('ACCEPTED & DELIVERED');
-                    let isRejected = m.content.includes('DENIED');
-                    let itemNameMatch = m.content.match(/data-item=["']?([^"'>]+)["']?/);
-                    let itemName = itemNameMatch ? itemNameMatch[1] : '黑金盲盒礼物';
-                    let statusText = isAccepted ? '已被开心拆开收下' : (isRejected ? '已被无情退回' : (m.role === 'user' ? '等待处理！你可以随时回复 <accept> 拆开它，或 <reject> 退回' : '未拆开，等待用户处理中'));
-                    pushContent = `[消息ID: ${m._oid}] ${sender} 送给 ${receiver} 的黑金盲盒实体礼物（内置物品：${itemName}，状态：${statusText}）。`;
                 }
 
                 // 核心多模态拦截：提取干净的图片 URL 塞给视觉引擎
@@ -8967,7 +8940,7 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
                     imageUrl = null; // 强行设为 null，防止它走图片链接通道
                 } else if (!imageUrl) {
                     // 彻底屏蔽所有带头像的系统卡片，防止误把卡片上的头像发给视觉引擎！
-                    const isSystemCard = m.content.includes('black-card-scene') || m.content.includes('normal-transfer') || m.content.includes('rp-container') || m.content.includes('stamp-wrapper') || m.content.includes('soap-bill-wrapper') || m.content.includes('quote-bubble-block') || m.content.includes('luxury-present-wrapper');
+                    const isSystemCard = m.content.includes('black-card-scene') || m.content.includes('normal-transfer') || m.content.includes('rp-container') || m.content.includes('stamp-wrapper') || m.content.includes('soap-bill-wrapper') || m.content.includes('quote-bubble-block');
                     
                     if (!isSystemCard) {
                         let imgMatch = m.content.match(/<img[^>]+src=["']([^"']+)["']/i);
@@ -9028,8 +9001,8 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
 7. 💰 【UI 物理卡片交互】(如果有必要，把这些纯英文标签自由穿插在任意 <split> 之间的对白中间，甚至放在最开头或最末尾，绝对不仅仅局限于最后一个气泡！)：
    - 收/退转账或代付 ➔ <accept> 或 <reject>
    - 发转账/黑卡/红包 ➔ <send_transfer amount="520.00" memo="留言"> / <send_blackcard amount="888" memo="留言"> / <send_redpacket amount="100.00" text="封面">
-   - 霸气为用户下单买礼物 ➔ <send_gift store="高定店名或随意专柜" item="商品名" price="价格数字"> (【非常重要】：如果要一次性送多件商品，请在同一段对话中连续输出多个该标签！系统会自动把它们合并显示在同一张订单卡片中！绝对不要分开发！)
-   - 发送精心准备的黑金盲盒实体礼物 ➔ <send_present item="盲盒内真实的物品名称" desc="附在贺卡上的深情寄语/副标题"> (此标签会生成一个极具视觉冲击力的黑金互动礼盒，等待用户拆开！)
+   - 霸气为用户下单买礼物 ➔ <send_gift store="高定店名或随意专柜" item="商品名" price="价格数字"> (如需送多件可连续写多个该标签)
+   - 赠送高定黑金实体盲盒礼盒 ➔ <send_luxury_box text="星光臻藏礼" sub="exclusive present"> (【非常重要】：当你想送给用户极其贵重、神秘的实体礼物，并且要求用户【必须进行点击拆除盲盒或拒收】的操作时使用！绝对禁止遗漏标签！绝对不要和转账混淆！)
    - 发照片/定位/听歌 ➔ <send_photo desc="照片描述"> / <send_location name="地名" desc="描述"> / <send_sync title="曲名">
    - 强行面基(破屏) ➔ <override mode="fatal"或"gentle"> (内部含<q1><q2><q3><force>)
    - 拍一拍互动 ➔ 穿插 <nudge> 来回拍用户。穿插 <set_nudge text="动作词"> 来修改用户拍你时弹出的动作词缀（如：摸了摸）。`;
@@ -9141,9 +9114,6 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
                     // 新增：未处理的一起听卡片
                     if (html.includes('sync-invite-wrap')) {
                         return !html.includes('dark-btn') && !html.includes('shattered-glass');
-                    }
-                    if (html.includes('luxury-present-wrapper')) {
-                        return !html.includes('ACCEPTED & DELIVERED') && !html.includes('DENIED');
                     }
                     return false;
                 };
@@ -9475,7 +9445,7 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
                 let syncRegex = /<send_sync(?:\s+title=["']?([^"'>]+)["']?)?>/gi;
                 let photoRegex = /<send_photo\s+desc=["']?([^"'>]+)["']?[^>]*>/gi;
                 let giftRegex = /<send_gift\s+store=["']?([^"'>]+)["']?\s+item=["']?([^"'>]+)["']?\s+price=["']?([^"'>]+)["']?>/gi;
-                let presentRegex = /<send_present\s+item=["']?([^"'>]+)["']?\s+desc=["']?([^"'>]+)["']?>/gi;
+                let lbRegex = /<send_luxury_box\s+text=["']?([^"'>]+)["']?\s+sub=["']?([^"'>]+)["']?>/gi;
                 let overrideBlockRegex = /<override\s+mode=["']?(fatal|gentle)["']?>([\s\S]*?)<\/override>/gi;
                 let overrideSingleRegex = /<override\s+mode=["']?(fatal|gentle)["']?\s*\/?\s*>/gi;
 
@@ -9487,7 +9457,7 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
                 while ((rMatch = syncRegex.exec(seg)) !== null) localSentCards.push({ type: 'sync', title: rMatch[1] });
                 while ((rMatch = photoRegex.exec(seg)) !== null) localSentCards.push({ type: 'photo', desc: rMatch[1] });
                 while ((rMatch = giftRegex.exec(seg)) !== null) localSentCards.push({ type: 'gift', store: rMatch[1], item: rMatch[2], price: rMatch[3] });
-                while ((rMatch = presentRegex.exec(seg)) !== null) localSentCards.push({ type: 'present', item: rMatch[1], desc: rMatch[2] });
+                while ((rMatch = lbRegex.exec(seg)) !== null) localSentCards.push({ type: 'luxury_box', text: rMatch[1], sub: rMatch[2] });
                 
                 let gifts = localSentCards.filter(c => c.type === 'gift');
                 if (gifts.length > 0) {
@@ -9533,7 +9503,7 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
                 }
 
                 // 将扫描到的卡片代码从当前文本中剔除
-                seg = seg.replace(/<send_blackcard[^>]+>/gi, '').replace(/<send_transfer[^>]+>/gi, '').replace(/<send_redpacket[^>]+>/gi, '').replace(/<send_luckypacket[^>]+>/gi, '').replace(/<send_location[^>]+>/gi, '').replace(/<send_sync[^>]*>/gi, '').replace(/<send_photo[^>]+>/gi, '').replace(/<send_gift[^>]+>/gi, '').replace(/<send_present[^>]+>/gi, '').replace(/<override[\s\S]*?<\/override>/gi, '').replace(/<override[^>]*>/gi, '').trim();
+                seg = seg.replace(/<send_blackcard[^>]+>/gi, '').replace(/<send_transfer[^>]+>/gi, '').replace(/<send_redpacket[^>]+>/gi, '').replace(/<send_luckypacket[^>]+>/gi, '').replace(/<send_location[^>]+>/gi, '').replace(/<send_sync[^>]*>/gi, '').replace(/<send_photo[^>]+>/gi, '').replace(/<send_gift[^>]+>/gi, '').replace(/<send_luxury_box[^>]+>/gi, '').replace(/<override[\s\S]*?<\/override>/gi, '').replace(/<override[^>]*>/gi, '').trim();
                 seg = seg.replace(/<q[1-3]>[\s\S]*?<\/q[1-3]>/gi, '').replace(/<force>[\s\S]*?<\/force>/gi, '').trim();
 
                 // 💡 局部独立引用解析引擎：允许每个气泡独立携带自己的引用
@@ -9632,6 +9602,10 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
                             
                             c.history.push({ role: 'assistant', content: botCardHtml.replace(/\n\s+/g, ''), isRevoked: false, timestamp: cardTs });
                             c.history.push({ role: 'system_sum', content: `<i>✧ [${signName}] 给你发了一个${isLucky ? '拼手气' : ''}红包</i>` });
+                        } else if (card.type === 'luxury_box') {
+                            let lbHtml = generateLuxuryBoxHTML(card.text, card.sub, false);
+                            c.history.push({ role: 'assistant', content: lbHtml.replace(/\n\s+/g, ''), isRevoked: false, timestamp: cardTs });
+                            c.history.push({ role: 'system_sum', content: `<i>✧ [${signName}] 送给了你一个极其贵重的黑金盲盒礼盒，等待你拆开</i>` });
                         } else if (card.type === 'loc') {
                             let locHtml = generateLocHtml(card.name, card.desc, false);
                             c.history.push({ role: 'assistant', content: locHtml.replace(/\n\s+/g, ''), isRevoked: false, timestamp: cardTs });
@@ -9683,53 +9657,8 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
                             </div><img src="1" onerror="this.parentNode.classList.add('bubble-clear'); this.remove();">`;
                             c.history.push({ role: 'assistant', content: giftHtml.replace(/\n\s+/g, ''), isRevoked: false, timestamp: cardTs });
                             c.history.push({ role: 'system_sum', content: `<i>✧ [${signName}] 为你买了一份包含多件商品的礼物，等待你决定是否收下</i>` });
-                        } else if (card.type === 'present') {
-                            let presentHtml = `
-                            <div class="luxury-present-wrapper" data-item="${card.item}">
-                                <div class="lp-card" onclick="this.classList.toggle('is-open')">
-                                    <svg style="position:absolute; width:0; height:0;"><defs><linearGradient id="foil-gold-1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#fff5ba" /><stop offset="40%" stop-color="#e1b333" /><stop offset="100%" stop-color="#996515" /></linearGradient><linearGradient id="foil-gold-2" x1="100%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#e1b333" /><stop offset="60%" stop-color="#b8860b" /><stop offset="100%" stop-color="#6b4c1a" /></linearGradient><linearGradient id="foil-gold-3" x1="0%" y1="50%" x2="100%" y2="50%"><stop offset="0%" stop-color="#ffffff" /><stop offset="50%" stop-color="#fff5ba" /><stop offset="100%" stop-color="#d4af37" /></linearGradient></defs></svg>
-                                    <div class="lp-geo-grid"></div><div class="lp-geo-plane-1"></div><div class="lp-geo-plane-2"></div>
-                                    <div class="lp-geo-circle"></div><div class="lp-geo-line-v"></div><div class="lp-geo-line-h"></div>
-                                    <div class="lp-text-title">Haute <strong>Couture</strong></div>
-                                    <div class="lp-scene-wrapper">
-                                        <div class="lp-scene">
-                                            <div class="lp-face lp-front"><div class="lp-ribbon-v"></div></div><div class="lp-face lp-back"><div class="lp-ribbon-v"></div></div><div class="lp-face lp-left"><div class="lp-ribbon-v"></div></div><div class="lp-face lp-right"><div class="lp-ribbon-v"></div></div><div class="lp-face lp-bottom"></div>
-                                            <div class="lp-lid">
-                                                <div class="lp-lid-top"><div class="lp-ribbon-v"></div><div class="lp-ribbon-h"></div><div class="lp-bow-container"><div class="lp-bow-tail left"></div><div class="lp-bow-tail right"></div><div class="lp-bow-loop left"></div><div class="lp-bow-loop right"></div><div class="lp-bow-center"></div></div></div>
-                                                <div class="lp-lid-side lp-lid-front"></div><div class="lp-lid-side lp-lid-back"></div><div class="lp-lid-side lp-lid-left"></div><div class="lp-lid-side lp-lid-right"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="lp-stars-pile">
-                                        ${Array(55).fill(0).map(() => {
-                                            const shapes = [`M12 0 C12 8 8 12 0 12 C8 12 12 16 12 24 C12 16 16 12 24 12 C16 12 12 8 12 0 Z`, `M12 1 L14.5 9.5 L23 12 L14.5 14.5 L12 23 L9.5 14.5 L1 12 L9.5 9.5 Z`, `M11.5 0 L12.5 0 L12.5 11.5 L24 11.5 L24 12.5 L12.5 12.5 L12.5 24 L11.5 24 L11.5 12.5 L0 12.5 L0 11.5 L11.5 11.5 Z`];
-                                            const gradients = ['url(#foil-gold-1)', 'url(#foil-gold-2)', 'url(#foil-gold-3)'];
-                                            const shape = shapes[Math.floor(Math.random() * shapes.length)]; const fill = gradients[Math.floor(Math.random() * gradients.length)]; const angle = Math.random() * Math.PI * 2; const radius = Math.random() * 85; const tx = Math.cos(angle) * radius; const ty = Math.sin(angle) * radius; const scale = 0.6 + Math.random() * 2.5; const rotation = Math.random() * 360;
-                                            return `<div class="lp-pile-star" style="transform: translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) rotate(${rotation}deg) scale(${scale})"><svg viewBox="0 0 24 24"><path d="${shape}" fill="${fill}"/></svg></div>`;
-                                        }).join('')}
-                                    </div>
-                                    <div class="lp-greeting-layer">
-                                        <div class="lp-greeting-card">
-                                            <div class="lp-card-icon"><svg viewBox="0 0 24 24"><path d="M12 0 C12 8 8 12 0 12 C8 12 12 16 12 24 C12 16 16 12 24 12 C16 12 12 8 12 0 Z" fill="url(#foil-gold-1)"/></svg></div>
-                                            <div class="lp-card-content" title="${card.item}">${card.item}</div>
-                                            <div class="lp-card-sub" title="${card.desc}">${card.desc}</div>
-                                        </div>
-                                    </div>
-                                    <div class="lp-action-layer lp-decline"><div class="lp-action-btn" onclick="handlePresentAction(event, this, 'reject')"><span>拒绝</span></div></div>
-                                    <div class="lp-action-layer lp-accept"><div class="lp-action-btn" onclick="handlePresentAction(event, this, 'accept')"><span>收下</span></div></div>
-                                    <div class="lp-stars-burst">
-                                        ${Array(35).fill(0).map(() => {
-                                            const shapes = [`M12 0 C12 8 8 12 0 12 C8 12 12 16 12 24 C12 16 16 12 24 12 C16 12 12 8 12 0 Z`, `M12 1 L14.5 9.5 L23 12 L14.5 14.5 L12 23 L9.5 14.5 L1 12 L9.5 9.5 Z`];
-                                            const gradients = ['url(#foil-gold-1)', 'url(#foil-gold-2)', 'url(#foil-gold-3)'];
-                                            const shape = (Math.random() > 0.3) ? shapes[0] : shapes[1]; const fill = gradients[Math.floor(Math.random() * gradients.length)]; const angle = Math.random() * Math.PI * 2; const radius = 90 + Math.random() * 110; const tx = `calc(-50% + ${Math.cos(angle) * radius}px)`; const ty = `calc(-50% + ${Math.sin(angle) * radius}px)`; const scale = 0.5 + Math.random() * 1.5; const rotation = Math.random() * 360 + 'deg'; const delay = Math.random() * 0.15 + 's';
-                                            return `<div class="lp-burst-star" style="--tx: ${tx}; --ty: ${ty}; --s: ${scale}; --r: ${rotation}; animation-delay: ${delay};"><svg viewBox="0 0 24 24"><path d="${shape}" fill="${fill}"/></svg></div>`;
-                                        }).join('')}
-                                    </div>
-                                </div>
-                            </div><img src="1" onerror="this.parentNode.classList.add('bubble-clear'); this.remove();">`;
-                            c.history.push({ role: 'assistant', content: presentHtml.replace(/\n\s+/g, ''), isRevoked: false, timestamp: cardTs });
-                            c.history.push({ role: 'system_sum', content: `<i>✧ [${signName}] 为你精心准备了一份黑金盲盒实体礼物，等待你拆开</i>` });
-                        } else if (card.type === 'override') {
+                        }
+ else if (card.type === 'override') {
                             isOverrideTriggered = true; // 拦截信号，制止后续的加载气泡动画
                             c.history.push({ role: 'system_sum', content: `<i>✧ [系统强制介入] 对方强行发起了跨屏精神连接</i>` });
                             setTimeout(() => {
@@ -10277,7 +10206,153 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
     function handleCardAction(btnEl, actionType) {
         const row = btnEl.closest('.msg-row');
         if(!row) return;
-            // ================= 一起听卡片生成器与控制引擎 =================
+            // ================= 黑金盲盒礼盒卡片生成器与控制引擎 =================
+    function generateLuxuryBoxHTML(text, sub, isUser = false) {
+        const shapes = [
+            `M12 0 C12 8 8 12 0 12 C8 12 12 16 12 24 C12 16 16 12 24 12 C16 12 12 8 12 0 Z`,
+            `M12 1 L14.5 9.5 L23 12 L14.5 14.5 L12 23 L9.5 14.5 L1 12 L9.5 9.5 Z`,
+            `M11.5 0 L12.5 0 L12.5 11.5 L24 11.5 L24 12.5 L12.5 12.5 L12.5 24 L11.5 24 L11.5 12.5 L0 12.5 L0 11.5 L11.5 11.5 Z`
+        ];
+        const gradients = ['url(#lb-foil-gold-1)', 'url(#lb-foil-gold-2)', 'url(#lb-foil-gold-3)'];
+        
+        let pileHtml = '';
+        for(let i=0; i<55; i++) {
+            let shape = shapes[Math.floor(Math.random() * shapes.length)];
+            let fill = gradients[Math.floor(Math.random() * gradients.length)];
+            let angle = Math.random() * Math.PI * 2;
+            let radius = Math.random() * 85; 
+            let tx = Math.cos(angle) * radius;
+            let ty = Math.sin(angle) * radius;
+            let scale = 0.6 + Math.random() * 2.5; 
+            let rotation = Math.random() * 360;
+            pileHtml += `<div class="lb-pile-star" style="transform: translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) rotate(${rotation}deg) scale(${scale});"><svg viewBox="0 0 24 24"><path d="${shape}" fill="${fill}"/></svg></div>`;
+        }
+
+        let burstHtml = '';
+        for(let i=0; i<35; i++) {
+            let shape = (Math.random() > 0.3) ? shapes[0] : shapes[1];
+            let fill = gradients[Math.floor(Math.random() * gradients.length)];
+            let angle = Math.random() * Math.PI * 2;
+            let radius = 90 + Math.random() * 110; 
+            let tx = `calc(-50% + ${Math.cos(angle) * radius}px)`;
+            let ty = `calc(-50% + ${Math.sin(angle) * radius}px)`;
+            let scale = 0.5 + Math.random() * 1.5; 
+            let rotation = Math.random() * 360 + 'deg';
+            let delay = Math.random() * 0.15 + 's';
+            burstHtml += `<div class="lb-burst-star" style="--tx: ${tx}; --ty: ${ty}; --s: ${scale}; --r: ${rotation}; animation-delay: ${delay};"><svg viewBox="0 0 24 24"><path d="${shape}" fill="${fill}"/></svg></div>`;
+        }
+
+        let transformStyle = isUser 
+            ? `transform: scale(0.8); transform-origin: top right; margin-left: -60px; margin-bottom: -60px; margin-top: 5px;` 
+            : `transform: scale(0.8); transform-origin: top left; margin-right: -60px; margin-bottom: -60px; margin-top: 5px;`;
+
+        return `
+        <div style="${transformStyle} width: 300px; height: 300px;">
+            <svg style="position:absolute; width:0; height:0;">
+                <defs>
+                    <linearGradient id="lb-foil-gold-1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#fff5ba" /><stop offset="40%" stop-color="#e1b333" /><stop offset="100%" stop-color="#996515" /></linearGradient>
+                    <linearGradient id="lb-foil-gold-2" x1="100%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#e1b333" /><stop offset="60%" stop-color="#b8860b" /><stop offset="100%" stop-color="#6b4c1a" /></linearGradient>
+                    <linearGradient id="lb-foil-gold-3" x1="0%" y1="50%" x2="100%" y2="50%"><stop offset="0%" stop-color="#ffffff" /><stop offset="50%" stop-color="#fff5ba" /><stop offset="100%" stop-color="#d4af37" /></linearGradient>
+                </defs>
+            </svg>
+            <div class="lb-chat-card" onclick="this.classList.add('is-open')">
+                <div class="lb-geo-grid"></div>
+                <div class="lb-geo-plane-1"></div>
+                <div class="lb-geo-plane-2"></div>
+                <div class="lb-geo-circle"></div>
+                <div class="lb-geo-line-v"></div>
+                <div class="lb-geo-line-h"></div>
+                <div class="lb-geo-point-1"></div>
+                <div class="lb-geo-point-2"></div>
+                <div class="lb-text-title">Haute <strong>Couture</strong></div>
+                <div class="lb-scene-wrapper">
+                    <div class="lb-scene">
+                        <div class="lb-face lb-front"><div class="lb-ribbon-v"></div></div>
+                        <div class="lb-face lb-back"><div class="lb-ribbon-v"></div></div>
+                        <div class="lb-face lb-left"><div class="lb-ribbon-v"></div></div>
+                        <div class="lb-face lb-right"><div class="lb-ribbon-v"></div></div>
+                        <div class="lb-face lb-bottom"></div>
+                        <div class="lb-bottom-inside"></div>
+                        <div class="lb-lid">
+                            <div class="lb-lid-top">
+                                <div class="lb-ribbon-v"></div><div class="lb-ribbon-h"></div>
+                                <div class="lb-bow-container">
+                                    <div class="lb-bow-ribbon-tail lb-left"></div><div class="lb-bow-ribbon-tail lb-right"></div>
+                                    <div class="lb-bow-loop lb-left"></div><div class="lb-bow-loop lb-right"></div>
+                                    <div class="lb-bow-center"></div>
+                                </div>
+                            </div>
+                            <div class="lb-lid-side lb-lid-front"></div><div class="lb-lid-side lb-lid-back"></div>
+                            <div class="lb-lid-side lb-lid-left"></div><div class="lb-lid-side lb-lid-right"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lb-stars-2d-pile">${pileHtml}</div>
+                <div class="lb-greeting-card-layer">
+                    <div class="lb-greeting-card">
+                        <div class="lb-card-icon"><svg viewBox="0 0 24 24"><path d="M12 0 C12 8 8 12 0 12 C8 12 16 12 24 12 C16 12 12 8 12 0 Z" fill="url(#lb-foil-gold-1)"/></svg></div>
+                        <div class="lb-card-content">${text}</div>
+                        <div class="lb-card-sub">${sub}</div>
+                    </div>
+                </div>
+                <div class="lb-action-btn-layer lb-btn-decline">
+                    <div class="lb-action-btn" onclick="handleLuxuryBoxAction(this, 'reject', event)"><span>拒绝</span></div>
+                </div>
+                <div class="lb-action-btn-layer lb-btn-accept">
+                    <div class="lb-action-btn" onclick="handleLuxuryBoxAction(this, 'accept', event)"><span>收下</span></div>
+                </div>
+                <div class="lb-stars-burst-layer">${burstHtml}</div>
+            </div>
+        </div><img src="1" onerror="this.parentNode.classList.add('bubble-clear'); this.remove();">`;
+    }
+
+    function handleLuxuryBoxAction(btnEl, actionType, e) {
+        if(e) { e.stopPropagation(); e.preventDefault(); }
+        const row = btnEl.closest('.msg-row');
+        if(!row) return;
+        
+        if(row.classList.contains('user')) return alert('这是你发出的礼盒，等对方处理吧！');
+
+        const card = row.querySelector('.lb-chat-card');
+        if(!card) return;
+
+        const btns = card.querySelectorAll('.lb-action-btn-layer');
+        btns.forEach(b => b.remove());
+        
+        if (!card.classList.contains('is-open')) {
+            card.classList.add('is-open');
+        }
+
+        const index = parseInt(row.id.replace('msg-item-', ''));
+        const c = contacts.find(x => x.id === currentContactId);
+        if(!c) return;
+
+        let uiText = "";
+        let aiPrompt = "";
+
+        if (actionType === 'accept') {
+            card.insertAdjacentHTML('beforeend', '<div class="wax-seal" style="right: 15px; top: 15px; z-index: 100;"></div>');
+            uiText = "✧ 你欣喜地拆开了黑金礼盒并收下了礼物！";
+            aiPrompt = `[系统动作通报：用户欣喜地拆开了你送的黑金盲盒礼盒，并收下了里面的礼物！请立刻结合人设给出回应（如宠溺、满意、或傲娇地调侃）。]`;
+        } else {
+            card.style.filter = 'grayscale(80%) brightness(0.8)';
+            let shattered = `<div class="shattered-glass" style="z-index: 100;"><svg class="crack-lines" viewBox="0 0 270 170"><path d="M 80,60 L 120,0 M 80,60 L 270,40 M 80,60 L 220,170 M 80,60 L 100,170 M 80,60 L 0,110 M 80,60 L 30,0 M 150,100 L 270,120 M 150,100 L 200,170 M 40,80 L 0,50" stroke="rgba(255,255,255,0.8)" stroke-width="1.5" fill="none"/></svg><div class="reject-stamp">DENIED</div></div>`;
+            card.insertAdjacentHTML('beforeend', shattered);
+            uiText = "✧ 你无情地拒收了黑金礼盒。";
+            aiPrompt = `[系统动作通报：用户残忍拒绝了你精心准备的黑金盲盒礼盒，原路退回。请结合人设给出回应（如失落、生气、强装镇定或霸道强求）。]`;
+        }
+
+        c.history[index].content = row.querySelector('.bubble').innerHTML;
+        c.history.push({role: 'system_sum', content: `<i>${uiText}</i>\n<span style="display:none;">${aiPrompt}</span>`});
+        
+        let timeStr = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        c.memory = (c.memory ? c.memory + "\n\n" : "") + `[系统最高指令：黑金礼盒交互]：现实时间 ${timeStr}，你赠送给用户的顶级黑金盲盒礼盒，用户已经${actionType === 'accept' ? '拆开并欣然收下' : '无情拒收'}了。`;
+        
+        saveData(); 
+        appendBubbleRow(c.history[c.history.length - 1], c.history.length - 1);
+    }
+
+    // ================= 一起听卡片生成器与控制引擎 =================
     function generateSyncCardHtml(isAccepted = false, isUser = true, songData = null) {
         let modeClass = isAccepted ? "dark" : "light";
         let btnClass = isAccepted ? "sc-dark-btn" : "sc-light-btn";
@@ -11099,55 +11174,7 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
         saveData(); 
         appendBubbleRow(c.history[c.history.length - 1], c.history.length - 1);
     }
-
-    // ================= 全新：黑金礼盒交互逻辑 =================
-    function handlePresentAction(e, btnEl, actionType) {
-        e.stopPropagation();
-        const row = btnEl.closest('.msg-row');
-        if(!row) return;
-        
-        if(row.classList.contains('user')) return alert('这是你发出的礼物，等对方处理吧！');
-
-        const card = row.querySelector('.lp-card');
-        const wrapper = row.querySelector('.luxury-present-wrapper');
-        if(!card || !wrapper) return;
-
-        // 获取物品信息
-        let itemName = wrapper.dataset.item || '神秘礼物';
-
-        const index = parseInt(row.id.replace('msg-item-', ''));
-        const c = contacts.find(x => x.id === currentContactId);
-        
-        let aiPrompt = "";
-        let uiText = "";
-
-        if (actionType === 'accept') {
-            card.innerHTML = '<div style="width:100%; height:100%; display:flex; justify-content:center; align-items:center; background:#141517; border-radius:16px; border:1px solid rgba(225, 179, 51, 0.4);"><div style="font-family:\'Courier New\',monospace; font-size:12px; font-weight:800; color:#e1b333; letter-spacing:2px; text-shadow:0 0 10px rgba(225, 179, 51, 0.4);">ACCEPTED & DELIVERED</div></div>';
-            
-            uiText = `✧ 你欣然拆开了黑金盲盒，收下了里面的 [${itemName}]！`;
-            aiPrompt = `[系统旁白：用户开心地拆开了你准备的黑金盲盒礼物，并收下了里面的 "${itemName}"！请立刻结合人设给出回应（比如满足、宠溺、或傲娇地让她好好珍惜）。]`;
-            
-            // 写入核心记忆
-            let timeStr = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-            let memoryStr = `[系统最高指令：收到专属盲盒礼物]：现实时间 ${timeStr}，你精心准备的黑金盲盒礼物（包含：${itemName}）用户已欣然拆开并收下！\n【必须执行】：请在接下来的对话中，自然地提及这件礼物。`;
-            c.memory = (c.memory ? c.memory + "\n\n" : "") + memoryStr;
-
-        } else {
-            card.innerHTML = '<div style="width:100%; height:100%; display:flex; justify-content:center; align-items:center; background:#f0f2f5; border-radius:16px; border:1px dashed #a0a5aa;"><div style="font-family:\'Courier New\',monospace; font-size:12px; font-weight:800; color:#888; letter-spacing:2px;">DENIED</div></div>';
-            card.style.filter = 'grayscale(100%)';
-            
-            uiText = `✧ 你无情地退回了这份黑金礼物。`;
-            aiPrompt = `[系统旁白：用户残忍地拒绝并退回了你精心准备的黑金盲盒礼物（"${itemName}"）。请结合人设给出回应（比如失落、冷笑、强装镇定或霸道地逼迫TA收下）。]`;
-        }
-
-        card.removeAttribute('onclick');
-        c.history[index].content = row.querySelector('.bubble').innerHTML;
-        c.history.push({role: 'system_sum', content: `<i>${uiText}</i>\n<span style="display:none;">${aiPrompt}</span>`});
-        
-        saveData(); 
-        appendBubbleRow(c.history[c.history.length - 1], c.history.length - 1);
-    }
-    // ================= 催促出餐与电话系统 =================
+    // ================= 全新：催促出餐与电话系统 =================
 
     // 拦截外卖单上的【催促出餐】按钮点击
     function triggerDeliveryCall(btnEl) {
