@@ -4369,6 +4369,14 @@
                             <div class="cm-text">揭开真心</div>
                         </div>
 
+                        <!-- 【新增】：黑金礼盒入口 -->
+                        <div class="cm-item" onclick="sendUserLuxuryBox()">
+                            <div class="cm-icon-box" style="background: linear-gradient(135deg, #141517, #2c2d30); color: #e1b333; box-shadow: 0 8px 20px rgba(0,0,0,0.3); border: 1px solid rgba(225,179,51,0.3);">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            </div>
+                            <div class="cm-text">送出高定</div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -9451,7 +9459,7 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
             if(tempId && document.getElementById(tempId)) document.getElementById(tempId).remove();
             
             // 🎯 核心修复：放过我们所有的卡片交互标签！不然会被过滤掉！
-            spokenText = spokenText.replace(/<(?!split\b|\/split\b|send_blackcard\b|send_transfer\b|send_redpacket\b|send_luckypacket\b|send_location\b|send_sync\b|send_photo\b|send_gift\b|override\b|\/override\b|q[1-3]\b|\/q[1-3]\b|force\b|\/force\b|nudge\b|set_nudge\b)[^>]+>/gi, '').trim();
+            spokenText = spokenText.replace(/<(?!split\b|\/split\b|send_blackcard\b|send_transfer\b|send_redpacket\b|send_luckypacket\b|send_location\b|send_sync\b|send_photo\b|send_gift\b|send_luxury_box\b|override\b|\/override\b|q[1-3]\b|\/q[1-3]\b|force\b|\/force\b|nudge\b|set_nudge\b)[^>]+>/gi, '').trim();
             
             // 💥 变异数字粉碎机：如果它在句子末尾残留了类似 >75<, <50> 这种畸形的数字壳，全部切除掉！
             spokenText = spokenText.replace(/(?:>|<|》|《|】|\[|\()\s*\d{2,3}\s*(?:>|<|》|《|】|\]|\))\s*$/g, '').trim();
@@ -9563,7 +9571,7 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
                 }
 
                 // 将扫描到的卡片代码从当前文本中剔除
-                seg = seg.replace(/<send_blackcard[^>]+>/gi, '').replace(/<send_transfer[^>]+>/gi, '').replace(/<send_redpacket[^>]+>/gi, '').replace(/<send_luckypacket[^>]+>/gi, '').replace(/<send_location[^>]+>/gi, '').replace(/<send_sync[^>]*>/gi, '').replace(/<send_photo[^>]+>/gi, '').replace(/<send_gift[^>]+>/gi, '').replace(/<override[\s\S]*?<\/override>/gi, '').replace(/<override[^>]*>/gi, '').trim();
+                seg = seg.replace(/<send_blackcard[^>]+>/gi, '').replace(/<send_transfer[^>]+>/gi, '').replace(/<send_redpacket[^>]+>/gi, '').replace(/<send_luckypacket[^>]+>/gi, '').replace(/<send_location[^>]+>/gi, '').replace(/<send_sync[^>]*>/gi, '').replace(/<send_photo[^>]+>/gi, '').replace(/<send_gift[^>]+>/gi, '').replace(/<send_luxury_box[^>]+>/gi, '').replace(/<override[\s\S]*?<\/override>/gi, '').replace(/<override[^>]*>/gi, '').trim();
                 seg = seg.replace(/<q[1-3]>[\s\S]*?<\/q[1-3]>/gi, '').replace(/<force>[\s\S]*?<\/force>/gi, '').trim();
 
                 // 💡 局部独立引用解析引擎：允许每个气泡独立携带自己的引用
@@ -9681,7 +9689,7 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
                             c.history.push({ role: 'assistant', content: photoHtml.replace(/\n\s+/g, ''), isRevoked: false, timestamp: cardTs, photoDesc: card.desc });
                             c.history.push({ role: 'system_sum', content: `<i>✧ [${signName}] 给你发送了一张实体相片</i>` });
                         } else if (card.type === 'luxury') {
-                            let lbHtml = generateLuxuryBoxHtml(card.title, card.sub, 'pending', true);
+                            let lbHtml = generateLuxuryBoxHtml(card.title, card.sub, 'pending', false);
                             c.history.push({ role: 'assistant', content: lbHtml.replace(/\n\s+/g, ''), isRevoked: false, timestamp: cardTs });
                             c.history.push({ role: 'system_sum', content: `<i>✧ [${signName}] 递给你一个黑金高定礼盒</i>` });
                         } else if (card.type === 'gift_merged') {
@@ -16952,6 +16960,28 @@ ${realPost.sceneDesc ? `(TA还附带了一张照片，画面内容是：${realPo
         } catch (error) {
             console.error("AI 自动评论你的朋友圈失败:", error);
         }
+    }
+        // 用户手动发送黑金礼盒
+    function sendUserLuxuryBox() {
+        if(!currentContactId) return alert("请先进入聊天室！");
+        
+        let title = prompt("请输入礼物名称（如：百达翡丽钻表）：", "神秘臻礼");
+        if (!title) return;
+        let sub = prompt("请输入英文副标题（如：PATEK PHILIPPE）：", "EXCLUSIVE PRESENT");
+        
+        const c = contacts.find(x => x.id === currentContactId);
+        
+        let lbHtml = generateLuxuryBoxHtml(title, sub, 'pending', true);
+        const newMsg = { role: 'user', content: lbHtml.replace(/\n\s+/g, ''), isRevoked: false, timestamp: Date.now() };
+        
+        let aiPrompt = `[系统通报：用户向你送出了一个黑金高定礼盒（${title}）。请结合人设给出自然的反应。如果是开心收下请在回复中附带 <accept> 标签，如果拒收请附带 <reject> 标签。]`;
+
+        c.history.push(newMsg);
+        c.history.push({role: 'system_sum', content: `<span style="display:none;">${aiPrompt}</span>`});
+
+        saveData(); 
+        appendBubbleRow(newMsg, c.history.length - 2); 
+        closeChatMenu();
     }
 </script>
 </body>
