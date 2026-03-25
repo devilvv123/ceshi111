@@ -8946,17 +8946,19 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
 
                 apiMessages.push({ role: 'system', content: finalSysPrompt });
             } else if (m.role === 'system_sum') { 
-                
-                // 🛑 核心拦截器：无论是因为旧代码遗留在缓存里的，还是误生成的系统报错，直接强行抹除，永远不发给 AI 产生幻觉！
-                if (m.content.includes('网络或模型故障') || m.content.includes('连接断开') || m.content.includes('ERROR:')) return;
+    
+    // 🛑 核心拦截器：无论是因为旧代码遗留在缓存里的，还是误生成的系统报错，直接强行抹除，永远不发给 AI 产生幻觉！
+    if (m.content.includes('网络或模型故障') || m.content.includes('连接断开') || m.content.includes('ERROR:')) return;
 
-                // 🌟 核心修复：提取隐藏在 <span> 里的真实系统通报，剥离 HTML 标签，防止 AI 因为 display:none 导致无视或产生乱码幻觉！
-                let match = m.content.match(/<span style="display:none;">(.*?)<\/span>/);
-                let hiddenText = match ? match[1] : m.content.replace(/<[^>]+>/g, '').trim();
-                if (hiddenText) {
-                    apiMessages.push({ role: 'system', content: hiddenText });
-                }
-            } else { 
+    // 🌟 核心修复：提取隐藏在 <span> 里的真实系统通报，剥离 HTML 标签，防止 AI 因为 display:none 导致无视或产生乱码幻觉！
+    // 使用 [\s\S]*? 完美匹配多行文本，解决带换行的提示词无法被读取的 Bug！
+    let match = m.content.match(/<span style="display:none;">([\s\S]*?)<\/span>/);
+    let hiddenText = match ? match[1] : m.content.replace(/<[^>]+>/g, '').trim();
+    if (hiddenText) {
+        // 强制伪装成 user 角色发送，彻底解决大模型无视中间 system 消息导致“看不到拍一拍”的问题！
+        apiMessages.push({ role: 'user', content: hiddenText });
+    }
+} else { 
                 // 🎯 终极净化引擎：如果内容里有真图/表情包，把庞大到上万字的 Base64 代码替换成纯净的 "[图片]"，防止撑爆AI大脑！
                 let cleanText = m.content.replace(/<img[^>]*>/gi, '[图片]');
                 // 剥离剩下的所有残余 HTML 标签，保证绝对纯净
