@@ -4324,9 +4324,9 @@
                 <!-- 移除了真实的系统相机调起，改为虚拟的文字描述照片 -->
 
                 <!-- 内嵌回形针面板：接入底层丝滑控制类 -->
-                <div id="attachment-panel" class="bottom-panel chat-menu-panel" style="border-radius:0; box-shadow:none;">
-                    <div class="cm-grid">
-                        <div class="cm-item" onclick="document.getElementById('chat-image-upload').click()">
+<div id="attachment-panel" class="bottom-panel chat-menu-panel" style="border-radius:0; box-shadow:none; padding-bottom:0;">
+    <div class="cm-grid" style="overflow-y: auto; height: 100%; align-content: flex-start; padding-bottom: calc(40px + var(--safe-bottom));">
+        <div class="cm-item" onclick="document.getElementById('chat-image-upload').click()">
                             <div class="cm-icon-box"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
                             <div class="cm-text">相册真图</div>
                         </div>
@@ -7940,15 +7940,15 @@
             content = `我${botAction}${hintExt}`;
             aiPrompt = `[系统动作通报：这是聊天软件自带的线上互动玩法！用户刚刚在界面上点击了你的头像，屏幕上显示“我${botAction}”。这只是一个线上的虚拟动作，并非现实中的真实肢体接触！
 【互动最高指令】：
-1. 请完全基于你的人设性格给出符合逻辑的自然聊天反应，不要带入任何刻板的固定情绪。
+1. 请完全基于你的人设性格给出符合逻辑的自然聊天反应。
 2. 如果你也想在线上回拍用户，请在回复中直接输出 <nudge> 标签。
 3. 【修改拍一拍特权 - 极其重要】：如果你对用户拍你的动作或部位不满意，你可以强行修改它！
-   【防错警告】：你修改的文字将直接接在“我(用户)”字后面显示在屏幕上！所以你【必须以动词开头】，并且【必须带有明确的宾语（如“你”或你的名字）】，绝对不能只写动词！
+   【语法死命令】：你修改的文字将直接接在“我(用户)”字后面显示在屏幕上！所以你【必须严格采用类似“X了X”的强烈动作词开头】（如：捏了捏、咬了一口、敲了敲），并且【必须带有明确的宾语（如“你”或你的名字）】！
    【格式最高警告】：必须且只能使用严格的 XML 标签 <set_nudge text="动作文案">！
-   ✅正确示范（带动词和宾语）：<set_nudge text="狠狠捏了捏你的脸"> （UI将完美显示：我狠狠捏了捏你的脸）
-   ✅正确示范（带动词和名字）：<set_nudge text="小心翼翼地戳了戳「${botName}」">
+   ✅正确示范（动作词+宾语）：<set_nudge text="狠狠捏了捏你的脸"> （UI将完美显示：我狠狠捏了捏你的脸）
+   ✅正确示范（动作词+名字）：<set_nudge text="小心翼翼地戳了戳「${botName}」">
    ❌错误示范（缺宾语）：<set_nudge text="摸了摸头"> （UI会变成语意不明的“我摸了摸头”）
-   ❌错误示范（搞错主语）：<set_nudge text="我捏了捏你的脸"> （UI会变成错乱的“我我捏了捏你的脸”）
+   ❌错误示范（非动作词开头/搞错主语）：<set_nudge text="我捏了捏你的脸"> 或 <set_nudge text="脸">
    请尽情发挥你的人设和占有欲来修改它吧！]`;
         }
 
@@ -9092,7 +9092,7 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
    - 🧾 专柜狂购/甩出长条小票（★霸气清空购物车专用） ➔ <send_gift store="店名" item="商品名" price="数字"> (【绝对注意】：这是“购物账单/外卖小票”！仅当用户明确要求你“买买买”或你想展现“霸道包场”时才用！【最高红线】：若要一次买多件商品印在同一张小票上，必须像这样紧挨着连写：<send_gift...><send_gift...>，标签之间【绝对禁止】加任何标点、空格或换行！否则系统将崩溃！)
    - 发照片/定位/听歌 ➔ <send_photo desc="照片描述"> / <send_location name="地名" desc="描述"> / <send_sync title="曲名">
    - 强行面基(破屏) ➔ <override mode="fatal"或"gentle"> (内部含<q1><q2><q3><force>)
-- 拍一拍互动 ➔ 穿插 <nudge> 来回拍用户。穿插 <set_nudge text="动作文案"> 来修改用户拍你时弹出的提示（【防错警告】：文案将直接接在“我”字后面，【必须以动词开头】且【必须带有明确的宾语如“你”或你的名字】！✅正确示范：<set_nudge text="捏了捏你的脸"> ❌错误示范：<set_nudge text="摸了摸">）。`;
+- 拍一拍互动 ➔ 穿插 <nudge> 来回拍用户。穿插 <set_nudge text="动作文案"> 来强行修改用户拍你时的提示词（【语法死命令】：文案将直接接在“我”字后面，【必须是“X了X”等动作词开头】且【必须带宾语】！✅正确示范：<set_nudge text="狠狠咬了一口你的手"> ❌错误示范：<set_nudge text="摸头">）。`;
 
         // 暴力拼接：找到上下文数组里的最后一条消息，把刀架在脖子上，占据 100% 的注意力
         if (apiMessages.length > 0) {
