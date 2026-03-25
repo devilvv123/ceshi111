@@ -7902,57 +7902,59 @@
     function clearChatAvatar() { document.getElementById('cs-avatar-data').value = ''; document.getElementById('cs-avatar-preview').innerHTML = SVG_BOT; }
     function clearMyChatAvatar() { document.getElementById('cs-me-avatar-data').value = ''; document.getElementById('cs-me-avatar-preview').innerHTML = SVG_USER; }
 
-       function openNudgeSettings() {
-       if(!currentContactId) return;
-       const c = contacts.find(x => x.id === currentContactId);
-       let myNudge = prompt("设置别人拍你时的动作词缀 (例如: 摸了摸，捏了捏，踹了飞)\n留空则恢复默认 [拍了拍]：", c.myNudgeText || "拍了拍");
-       if(myNudge !== null) {
-           c.myNudgeText = myNudge.trim();
-           saveData();
-           let botName = c.chatRemark || c.name;
-           alert("设置成功！\n对方点你头像会显示：\"「" + botName + "」" + (c.myNudgeText || "拍了拍") + "我\"\n你点自己头像会显示：\"我" + (c.myNudgeText || "拍了拍") + "自己\"");
-       }
-   }
+    function openNudgeSettings() {
+        if(!currentContactId) return;
+        const c = contacts.find(x => x.id === currentContactId);
+        let myNudge = prompt("设置别人拍你时的动作词 (例如: 摸了摸，捏了捏)\n留空则恢复默认 [拍了拍]：", c.myNudgeText || "拍了拍");
+        if(myNudge !== null) {
+            c.myNudgeText = myNudge.trim();
+            saveData();
+            let botName = c.chatRemark || c.name;
+            alert("设置成功！\n对方点你头像会显示：\"「" + botName + "」" + (c.myNudgeText || "拍了拍") + "我\"\n你点自己头像会显示：\"我" + (c.myNudgeText || "拍了拍") + "自己\"");
+        }
+    }
 
-   function triggerNudge(isMyAvatar, avatarEl) {
-       if(!currentContactId) return;
-       const c = contacts.find(x => x.id === currentContactId);
-       
-       avatarEl.classList.remove('avatar-shake');
-       void avatarEl.offsetWidth; 
-       avatarEl.classList.add('avatar-shake');
+    function triggerNudge(isMyAvatar, avatarEl) {
+        if(!currentContactId) return;
+        const c = contacts.find(x => x.id === currentContactId);
+        
+        avatarEl.classList.remove('avatar-shake');
+        void avatarEl.offsetWidth; 
+        avatarEl.classList.add('avatar-shake');
 
-       let uName = gConfig.meName || '我';
-       if(c.maskId) { const m = masks.find(x=>x.id===c.maskId); if(m) uName = m.name; }
-       let botName = c.chatRemark || c.name;
+        let uName = gConfig.meName || '我';
+        if(c.maskId) { const m = masks.find(x=>x.id===c.maskId); if(m) uName = m.name; }
+        let botName = c.chatRemark || c.name;
 
-       let content = '';
-       let aiPrompt = '';
-       let hintExt = (!c.myNudgeText && !c.botNudgeText) ? " (提示: 可以在右上角设置图标内更换动作词)" : "";
+        let content = '';
+        let aiPrompt = '';
+        let hintExt = (!c.myNudgeText && !c.botNudgeText) ? " (提示: 可以在右上角设置图标内更换拍一拍动作)" : "";
 
-       if(isMyAvatar) {
-           let action = c.myNudgeText || "拍了拍";
-           content = `我${action}自己${hintExt}`;
-           aiPrompt = `[系统动作通报：这是聊天软件自带的线上互动玩法！用户刚刚在界面上双击了TA自己的头像，屏幕上显示“我${action}自己”。这只是一个线上小互动，并非现实中的真实动作！请完全基于你的人设性格给出自然的回复或吐槽，绝不加入刻板情绪。如果想回拍用户，可在回复中输出 <nudge> 标签。]`;
-       } else {
-           let action = c.botNudgeText || "拍了拍";
-           content = `我${action}「${botName}」${hintExt}`;
-           aiPrompt = `[系统动作通报：这是聊天软件自带的线上互动玩法！用户刚刚在界面上点击了你的头像，屏幕上显示“我${action}「${botName}」”。这只是一个线上的虚拟动作，并非现实中的真实肢体接触！
+        if(isMyAvatar) {
+            let action = c.myNudgeText || "拍了拍";
+            content = `我${action}自己${hintExt}`;
+            aiPrompt = `[系统动作通报：这是聊天软件自带的线上互动玩法！用户刚刚在界面上双击了TA自己的头像，屏幕上显示“我${action}自己”。这只是一个线上小互动，并非现实中的真实动作！请完全基于你的人设性格给出自然的回复或吐槽，绝不加入刻板情绪。如果想回拍用户，可在回复中输出 <nudge> 标签。]`;
+        } else {
+            let action = c.botNudgeText || "拍了拍";
+            content = `我${action}「${botName}」${hintExt}`;
+            aiPrompt = `[系统动作通报：这是聊天软件自带的线上互动玩法！用户刚刚在界面上点击了你的头像，屏幕上显示“我${action}了你”。这只是一个线上的虚拟动作，并非现实中的真实肢体接触！
 【互动最高指令】：
 1. 请完全基于你的人设性格给出符合逻辑的自然聊天反应，不要带入任何刻板的固定情绪。
 2. 如果你也想在线上回拍用户，请在回复中直接输出 <nudge> 标签。
-3. 【特权】：你可以随时输出 <set_nudge text="动词"> 来强行修改用户拍你时显示的动作词！(只能是动词，比如"戳了戳"、"捏了捏")。修改后，下次用户再拍你屏幕上就会显示"我[动词]「${botName}」"。]`;
-       }
+3. 【自定义特权】：如果你对用户拍你的动作不满意，你可以随时在回复中输出 <set_nudge text="新动作词"> 来强行修改它！
+   例如：输出 <set_nudge text="狠狠捏了捏"> 或 <set_nudge text="亲了亲">。
+   修改后，下次用户再点你头像就会直接显示新动作词！请尽情发挥你的人设来修改它吧！]`;
+        }
 
-       const newMsg = { role: 'system_sum', content: `<div style="text-align:center; width:100%;"><div style="color:var(--c-gray-dark); font-size:10px; font-weight:700; background:rgba(0,0,0,0.03); padding:4px 10px; border-radius:10px; display:inline-block;">${content}</div></div>\n<span style="display:none;">${aiPrompt}</span>` };
-       c.history.push(newMsg);
-       saveData();
-       appendBubbleRow(newMsg, c.history.length - 1);
-       scrollToBottom();
-       
-       // 核心改动：注释掉自动调用 AI 回复，把主动权交还给用户！
-       // setTimeout(() => fetchAIReply(currentContactId), 500);
-   }
+        const newMsg = { role: 'system_sum', content: `<div style="text-align:center; width:100%;"><div style="color:var(--c-gray-dark); font-size:10px; font-weight:700; background:rgba(0,0,0,0.03); padding:4px 10px; border-radius:10px; display:inline-block;">${content}</div></div>\n<span style="display:none;">${aiPrompt}</span>` };
+        c.history.push(newMsg);
+        saveData();
+        appendBubbleRow(newMsg, c.history.length - 1);
+        scrollToBottom();
+        
+        // 核心改动：注释掉自动调用 AI 回复，把主动权交还给用户！
+        // setTimeout(() => fetchAIReply(currentContactId), 500);
+    }
 
     function saveChatSettings() { 
         const c = contacts.find(x => x.id === currentContactId); 
@@ -9138,37 +9140,37 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
             // 剥离所有的操作标签
             rawReply = rawReply.replace(actionRegex, '').trim();
 
-                       // 解析拍一拍互动
-           let nudgeRegex = /<nudge>/gi;
-           if (nudgeRegex.test(rawReply)) {
-               let action = c.myNudgeText || "拍了拍";
-               let botName = c.chatRemark || c.name;
-               c.history.push({role: 'system_sum', content: `<div style="text-align:center; width:100%;"><div style="color:var(--c-gray-dark); font-size:10px; font-weight:700; background:rgba(0,0,0,0.03); padding:4px 10px; border-radius:10px; display:inline-block;">「${botName}」${action}我</div></div>`});
-               if (isCurrentlyInRoom) {
-                   appendBubbleRow(c.history[c.history.length - 1], c.history.length - 1);
-                   setTimeout(() => {
-                       const myAvatarEls = document.querySelectorAll('.msg-row.user .msg-avatar');
-                       if(myAvatarEls.length > 0) {
-                           let lastMyAvatar = myAvatarEls[myAvatarEls.length - 1];
-                           lastMyAvatar.classList.remove('avatar-shake');
-                           void lastMyAvatar.offsetWidth;
-                           lastMyAvatar.classList.add('avatar-shake');
-                       }
-                   }, 100);
-               }
-           }
-           rawReply = rawReply.replace(nudgeRegex, '').trim();
+            // 解析拍一拍互动
+            let nudgeRegex = /<nudge>/gi;
+            if (nudgeRegex.test(rawReply)) {
+                let action = c.myNudgeText || "拍了拍";
+                let botName = c.chatRemark || c.name;
+                c.history.push({role: 'system_sum', content: `<div style="text-align:center; width:100%;"><div style="color:var(--c-gray-dark); font-size:10px; font-weight:700; background:rgba(0,0,0,0.03); padding:4px 10px; border-radius:10px; display:inline-block;">「${botName}」${action}我</div></div>`});
+                if (isCurrentlyInRoom) {
+                    appendBubbleRow(c.history[c.history.length - 1], c.history.length - 1);
+                    setTimeout(() => {
+                        const myAvatarEls = document.querySelectorAll('.msg-row.user .msg-avatar');
+                        if(myAvatarEls.length > 0) {
+                            let lastMyAvatar = myAvatarEls[myAvatarEls.length - 1];
+                            lastMyAvatar.classList.remove('avatar-shake');
+                            void lastMyAvatar.offsetWidth;
+                            lastMyAvatar.classList.add('avatar-shake');
+                        }
+                    }, 100);
+                }
+            }
+            rawReply = rawReply.replace(nudgeRegex, '').trim();
 
-           let setNudgeRegex = /<set_nudge\s+text=["']?([^"'>]+)["']?\s*\/?>/gi;
-           let nudgeMatch;
-           while ((nudgeMatch = setNudgeRegex.exec(rawReply)) !== null) {
-               let newAction = nudgeMatch[1].trim();
-               if(newAction) {
-                   c.botNudgeText = newAction;
-                   c.history.push({role: 'system_sum', content: `<span style="display:none;">[系统记录：你修改了自己被拍时的动作词缀为"${newAction}"]</span>`});
-               }
-           }
-           rawReply = rawReply.replace(setNudgeRegex, '').trim();
+            let setNudgeRegex = /<set_nudge\s+text=["']?([^"'>]+)["']?\s*\/?>/gi;
+            let nudgeMatch;
+            while ((nudgeMatch = setNudgeRegex.exec(rawReply)) !== null) {
+                let newAction = nudgeMatch[1].trim();
+                if(newAction) {
+                    c.botNudgeText = newAction;
+                    c.history.push({role: 'system_sum', content: `<span style="display:none;">[系统记录：你修改了自己被拍时的动作为"${newAction}"]</span>`});
+                }
+            }
+            rawReply = rawReply.replace(setNudgeRegex, '').trim();
 
             let setNudgeRegex = /<set_nudge\s+text=["']?([^"'>]+)["']?\s*\/?>/gi;
             let nudgeMatch;
