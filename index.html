@@ -13589,9 +13589,10 @@ ${contextText}`;
 当前场景：你正在和 ${uName} 一起跨时空同步听歌。
 耳机播放：${currentSong} (歌手: ${currentArtist})。
 【严格要求】：
-1. 畅所欲言！你可以自由地表达你的感受、对歌曲的看法或者对 ${uName} 说的话，字数和长短不限。
-2. 绝对禁止输出任何 <thought>, <split>, <bpm> 等代码标签！绝对禁止使用 [Quote: ...] 格式引用我的话！
-3. 语气完美符合人设，根据歌名随口聊聊氛围或直接回应 ${uName}。
+1. 畅所欲言！你可以自由地表达你的感受、对歌曲的看法或者对 ${uName} 说的话。
+2. 【最高排版警告】：绝对禁止发一大段长篇大论！你必须像发微信一样，把你的话拆分成多个极其简短的气泡！你可以使用 <split> 标签或直接换行来分隔每条消息。
+3. 绝对禁止输出 <thought>, <bpm>, <affection>, <mood> 等数值标签！绝对禁止使用 [Quote: ...] 格式引用我的话！
+4. 语气完美符合人设，根据歌名随口聊聊氛围或直接回应 ${uName}。
 ${actionRule}
 ==================================================`;
 
@@ -13628,18 +13629,28 @@ ${actionRule}
             rawReply = rawReply.replace(/\[(?:Quote|引用)[:：\s]*[^\]】]+[\]】]/gi, '');
             
             // 🛑 动作隔离墙：如果没有开启“允许动作描写”，直接物理删掉所有星号和括号里的内容
-            if (!c.allowAction) {
-                rawReply = rawReply.replace(/\*[^*]+\*/g, ''); // 删掉 *...*
-                rawReply = rawReply.replace(/（[^）]+）/g, ''); // 删掉 （...）
-                rawReply = rawReply.replace(/\([^)]+\)/g, ''); // 删掉 (...)
-            }
-            
-            rawReply = rawReply.replace(/<[^>]+>/g, '').replace(/\n/g, ' ').trim();
-            if(!rawReply) rawReply = "…";
+if (!c.allowAction) {
+    rawReply = rawReply.replace(/\*[^*]+\*/g, ''); // 删掉 *...*
+    rawReply = rawReply.replace(/（[^）]+）/g, ''); // 删掉 （...）
+    rawReply = rawReply.replace(/\([^)]+\)/g, ''); // 删掉 (...)
+}
 
-            // 2. 拿到回复后，自动按标点分句，避免一大坨文字不美观！
-            let sentences = rawReply.match(/[^。？！…\n.?!]+[。？！…\n.?!]*/g) || [rawReply];
-            sentences = sentences.map(s => s.trim()).filter(s => s);
+// 🛑 核心修复：保护切分标记！先把 <split> 统一换成换行符 \n
+rawReply = rawReply.replace(/<\/?split>/gi, '\n');
+
+// 🛑 清理其他无关 HTML 标签，但【绝对保留】换行符 \n
+rawReply = rawReply.replace(/<[^>]+>/g, '').trim();
+if(!rawReply) rawReply = "…";
+
+// 2. 拿到回复后，按换行符切分气泡，确保一句一句发！
+let sentences = rawReply.split('\n');
+sentences = sentences.map(s => s.trim()).filter(s => s);
+
+// 如果切分后依然只有一句，且字数太长，再尝试用标点符号强制切碎兜底
+if (sentences.length === 1 && sentences[0].length > 25) {
+    sentences = sentences[0].match(/[^。？！…\n.?!]+[。？！…\n.?!]*/g) || [sentences[0]];
+    sentences = sentences.map(s => s.trim()).filter(s => s);
+}
             
             let delay = 0;
             sentences.forEach((sentence, i) => {
