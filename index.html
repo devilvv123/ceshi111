@@ -7905,22 +7905,12 @@
     function openNudgeSettings() {
         if(!currentContactId) return;
         const c = contacts.find(x => x.id === currentContactId);
-        let botName = c.chatRemark || c.name;
-        
-        let defaultBotNudge = c.botNudgeText || `拍了拍「${botName}」`;
-        let newBotNudge = prompt(`【设置你拍对方时的完整提示文案】\n例如输入：揉了揉「${botName}」的脑袋\n留空则恢复默认：`, defaultBotNudge);
-        
-        if(newBotNudge !== null) {
-            c.botNudgeText = newBotNudge.trim() || `拍了拍「${botName}」`;
-            
-            let defaultMyNudge = c.myNudgeText || `拍了拍我`;
-            let newMyNudge = prompt(`【设置对方拍你时的完整提示文案】\n例如输入：捏了捏我的脸\n留空则恢复默认：`, defaultMyNudge);
-            
-            if(newMyNudge !== null) {
-                c.myNudgeText = newMyNudge.trim() || `拍了拍我`;
-                saveData();
-                alert(`设置成功！\n你拍对方显示：我 ${c.botNudgeText}\n对方拍你显示：${botName} ${c.myNudgeText}`);
-            }
+        let myNudge = prompt("设置别人拍你时的完整互动文案 (例如: 捏了捏我的脸，狠狠敲了敲我的头)\\n留空则恢复默认 [拍了拍我]：", c.myNudgeText || "拍了拍我");
+        if(myNudge !== null) {
+            c.myNudgeText = myNudge.trim();
+            saveData();
+            let botName = c.chatRemark || c.name;
+            alert("设置成功！\\n对方点你头像会显示：\"「" + botName + "」" + (c.myNudgeText || "拍了拍我") + "\"\\n你点自己头像会显示：\"我" + (c.myNudgeText ? c.myNudgeText.replace(/我/g, '自己') : "拍了拍自己") + "\"");
         }
     }
 
@@ -7938,20 +7928,23 @@
 
         let content = '';
         let aiPrompt = '';
-        let hintExt = " (提示: 可在右上角设置图标内更换动作和部位)";
+        let hintExt = (!c.myNudgeText && !c.botNudgeText) ? " (提示: 可以在右上角设置图标内更换拍一拍动作)" : "";
 
         if(isMyAvatar) {
-            let action = c.myNudgeText ? c.myNudgeText.replace(/我/g, '自己') : "拍了拍自己";
-            content = `我${action}${hintExt}`;
-            aiPrompt = `[系统动作通报：这是聊天软件自带的线上互动玩法！用户刚刚在界面上双击了TA自己的头像，屏幕上显示“我${action}”。这只是一个线上小互动，并非现实中的真实动作！请完全基于你的人设性格给出自然的回复或吐槽，绝不加入刻板情绪。如果想回拍用户，可在回复中输出 <nudge> 标签。]`;
+            let myAction = c.myNudgeText || "拍了拍我";
+            let selfAction = myAction.replace(/我/g, '自己'); // 自动把“我”替换成“自己”
+            content = `我${selfAction}${hintExt}`;
+            aiPrompt = `[系统动作通报：这是聊天软件自带的线上互动玩法！用户刚刚在界面上双击了TA自己的头像，屏幕上显示“我${selfAction}”。这只是一个线上小互动，并非现实中的真实动作！请完全基于你的人设性格给出自然的回复或吐槽，绝不加入刻板情绪。如果想回拍用户，可在回复中输出 <nudge> 标签。]`;
         } else {
-            let action = c.botNudgeText || `拍了拍「${botName}」`;
-            content = `我${action}${hintExt}`;
-            aiPrompt = `[系统动作通报：这是聊天软件自带的线上互动玩法！用户刚刚在界面上点击了你的头像，屏幕上显示“我${action}”。这只是一个线上的虚拟动作，并非现实中的真实肢体接触！
-【互动要求】：
-1. 请完全基于你的人设性格给出符合逻辑的自然聊天反应，不要带入任何刻板的固定情绪，也不要把这当做现实接触。
+            let botAction = c.botNudgeText || `拍了拍「${botName}」`;
+            content = `我${botAction}${hintExt}`;
+            aiPrompt = `[系统动作通报：这是聊天软件自带的线上互动玩法！用户刚刚在界面上点击了你的头像，屏幕上显示“我${botAction}”。这只是一个线上的虚拟动作，并非现实中的真实肢体接触！
+【互动最高指令】：
+1. 请完全基于你的人设性格给出符合逻辑的自然聊天反应，不要带入任何刻板的固定情绪。
 2. 如果你也想在线上回拍用户，请在回复中直接输出 <nudge> 标签。
-3. 【最高权限】：你可以通过输出 <set_nudge text="新的完整动作和部位"> 随时修改我拍你时系统显示的文字！比如输出 <set_nudge text="捏了捏「${botName}」的脸颊">，以后用户再拍你，就会显示“我 捏了捏「${botName}」的脸颊”。你可以根据当下的聊天氛围、你的占有欲或防备心，随意修改这个互动文案！]`;
+3. 【自定义特权】：如果你对用户拍你的动作或部位不满意，你可以随时在回复中输出 <set_nudge text="新动作文案"> 来强行修改它！
+   例如：输出 <set_nudge text="捏了捏「${botName}」的脸"> 或 <set_nudge text="小心翼翼地戳了戳「${botName}」">。
+   修改后，下次用户再拍你就会直接显示新文案！请尽情发挥你的人设和占有欲来修改它吧！]`;
         }
 
         const newMsg = { role: 'system_sum', content: `<div style="text-align:center; width:100%;"><div style="color:var(--c-gray-dark); font-size:10px; font-weight:700; background:rgba(0,0,0,0.03); padding:4px 10px; border-radius:10px; display:inline-block;">${content}</div></div>\n<span style="display:none;">${aiPrompt}</span>` };
@@ -7959,6 +7952,9 @@
         saveData();
         appendBubbleRow(newMsg, c.history.length - 1);
         scrollToBottom();
+        
+        // 核心改动：注释掉自动调用 AI 回复，把主动权交还给用户！
+        // setTimeout(() => fetchAIReply(currentContactId), 500);
     }
 
     function saveChatSettings() { 
@@ -9089,7 +9085,7 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
    - 🧾 专柜狂购/甩出长条小票（★霸气清空购物车专用） ➔ <send_gift store="店名" item="商品名" price="数字"> (【绝对注意】：这是“购物账单/外卖小票”！仅当用户明确要求你“买买买”或你想展现“霸道包场”时才用！【最高红线】：若要一次买多件商品印在同一张小票上，必须像这样紧挨着连写：<send_gift...><send_gift...>，标签之间【绝对禁止】加任何标点、空格或换行！否则系统将崩溃！)
    - 发照片/定位/听歌 ➔ <send_photo desc="照片描述"> / <send_location name="地名" desc="描述"> / <send_sync title="曲名">
    - 强行面基(破屏) ➔ <override mode="fatal"或"gentle"> (内部含<q1><q2><q3><force>)
-   - 拍一拍互动 ➔ 穿插 <nudge> 来主动触碰用户（注意！当前系统显示给用户的特效文字是：“[你的名字] ${c.myNudgeText || '拍了拍我'}”！一旦你使用了 <nudge>，必须在本次回复的台词中完美配合这个动作做出自然反应！）。穿插 <set_nudge text="新的完整动作和部位"> 随时修改用户拍你时弹出的系统提示词。`;
+   - 拍一拍互动 ➔ 穿插 <nudge> 来回拍用户。穿插 <set_nudge text="动作词"> 来修改用户拍你时弹出的动作词缀（如：摸了摸）。`;
 
         // 暴力拼接：找到上下文数组里的最后一条消息，把刀架在脖子上，占据 100% 的注意力
         if (apiMessages.length > 0) {
@@ -9148,9 +9144,9 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
             // 解析拍一拍互动
             let nudgeRegex = /<nudge>/gi;
             if (nudgeRegex.test(rawReply)) {
-                let action = c.myNudgeText || "拍了拍我";
+                let myAction = c.myNudgeText || "拍了拍我";
                 let botName = c.chatRemark || c.name;
-                c.history.push({role: 'system_sum', content: `<div style="text-align:center; width:100%;"><div style="color:var(--c-gray-dark); font-size:10px; font-weight:700; background:rgba(0,0,0,0.03); padding:4px 10px; border-radius:10px; display:inline-block;">「${botName}」${action}</div></div>`});
+                c.history.push({role: 'system_sum', content: `<div style="text-align:center; width:100%;"><div style="color:var(--c-gray-dark); font-size:10px; font-weight:700; background:rgba(0,0,0,0.03); padding:4px 10px; border-radius:10px; display:inline-block;">「${botName}」${myAction}</div></div>`});
                 if (isCurrentlyInRoom) {
                     appendBubbleRow(c.history[c.history.length - 1], c.history.length - 1);
                     setTimeout(() => {
@@ -9172,7 +9168,7 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
                 let newAction = nudgeMatch[1].trim();
                 if(newAction) {
                     c.botNudgeText = newAction;
-                    c.history.push({role: 'system_sum', content: `<span style="display:none;">[系统记录：你已将用户拍你时的系统提示语修改为"${newAction}"]</span>`});
+                    c.history.push({role: 'system_sum', content: `<span style="display:none;">[系统记录：你修改了自己被拍时的动作为"${newAction}"]</span>`});
                 }
             }
             rawReply = rawReply.replace(setNudgeRegex, '').trim();
