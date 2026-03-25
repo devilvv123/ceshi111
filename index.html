@@ -7940,13 +7940,16 @@
             content = `我${botAction}${hintExt}`;
             aiPrompt = `[系统动作通报：这是聊天软件自带的线上互动玩法！用户刚刚在界面上点击了你的头像，屏幕上显示“我${botAction}”。这只是一个线上的虚拟动作，并非现实中的真实肢体接触！
 【互动最高指令】：
-1. 请完全基于你的人设性格给出符合逻辑的自然聊天反应，不要带入任何刻板的固定情绪。
+1. 请完全基于你的人设性格给出符合逻辑的自然聊天反应。
 2. 如果你也想在线上回拍用户，请在回复中直接输出 <nudge> 标签。
-3. 【自定义特权】：如果你对用户拍你的动作或部位不满意，你可以随时强行修改它！
-   【格式最高警告】：必须且只能使用严格的 XML 标签格式 <set_nudge text="动作文案"> ！！！绝对不允许使用星号包裹，也不允许写成其他格式！
-   ✅正确示范：<set_nudge text="捏了捏「${botName}」的脸">
-   ❌错误示范：*捏了捏你的脸* 或 <set_nudge>捏脸</set_nudge>
-   修改后，下次用户再拍你就会直接显示新文案！请尽情发挥你的人设和占有欲来修改它吧！]`;
+3. 【修改拍一拍特权 - 极其重要】：如果你对用户拍你的动作或部位不满意，你可以强行修改它！
+   【防混淆警告】：你修改的是“用户对你做的动作”！这段文字将直接接在“我(用户)”字后面显示，所以【必须以动词开头】，且必须包含你的名字或代词！
+   【格式最高警告】：必须且只能使用严格的 XML 标签 <set_nudge text="动作文案">！
+   ✅正确示范（带动词）：<set_nudge text="狠狠捏了捏「${botName}」的脸"> （UI将显示：我狠狠捏了捏...）
+   ✅正确示范（带动词）：<set_nudge text="小心翼翼地戳了戳「${botName}」">
+   ❌错误示范（缺动词/只写部位）：<set_nudge text="脸"> （UI会变成错乱的“我脸”）
+   ❌错误示范（搞错主语）：<set_nudge text="我捏了捏你的脸"> （UI会变成错乱的“我我捏了捏你的脸”）
+   请尽情发挥你的人设和占有欲来修改它吧！]`;
         }
 
         const newMsg = { role: 'system_sum', content: `<div style="text-align:center; width:100%;"><div style="color:var(--c-gray-dark); font-size:10px; font-weight:700; background:rgba(0,0,0,0.03); padding:4px 10px; border-radius:10px; display:inline-block;">${content}</div></div>\n<span style="display:none;">${aiPrompt}</span>` };
@@ -9087,7 +9090,7 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
    - 🧾 专柜狂购/甩出长条小票（★霸气清空购物车专用） ➔ <send_gift store="店名" item="商品名" price="数字"> (【绝对注意】：这是“购物账单/外卖小票”！仅当用户明确要求你“买买买”或你想展现“霸道包场”时才用！【最高红线】：若要一次买多件商品印在同一张小票上，必须像这样紧挨着连写：<send_gift...><send_gift...>，标签之间【绝对禁止】加任何标点、空格或换行！否则系统将崩溃！)
    - 发照片/定位/听歌 ➔ <send_photo desc="照片描述"> / <send_location name="地名" desc="描述"> / <send_sync title="曲名">
    - 强行面基(破屏) ➔ <override mode="fatal"或"gentle"> (内部含<q1><q2><q3><force>)
-- 拍一拍互动 ➔ 穿插 <nudge> 来回拍用户。穿插 <set_nudge text="动作词"> 来修改用户拍你时弹出的动作词缀（【最高警告】：必须严格使用该带有 text 属性的 XML 格式，绝对禁止用星号或纯文字代替！正确示范：<set_nudge text="狠狠咬了一口">）。`;
+- 拍一拍互动 ➔ 穿插 <nudge> 来回拍用户。穿插 <set_nudge text="动作文案"> 来修改用户拍你时弹出的提示（【防错警告】：修改的是“用户对你做的动作”，文案将直接接在“我”字后面，所以【必须以动词开头】，绝对不能只写名词！✅正确示范：<set_nudge text="捏了捏脸"> ❌错误示范：<set_nudge text="脸">）。`;
 
         // 暴力拼接：找到上下文数组里的最后一条消息，把刀架在脖子上，占据 100% 的注意力
         if (apiMessages.length > 0) {
