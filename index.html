@@ -7940,14 +7940,14 @@
             content = `我${botAction}${hintExt}`;
             aiPrompt = `[系统动作通报：这是聊天软件自带的线上互动玩法！用户刚刚在界面上点击了你的头像，屏幕上显示“我${botAction}”。这只是一个线上的虚拟动作，并非现实中的真实肢体接触！
 【互动最高指令】：
-1. 请完全基于你的人设性格给出符合逻辑的自然聊天反应。
+1. 请完全基于你的人设性格给出符合逻辑的自然聊天反应，不要带入任何刻板的固定情绪。
 2. 如果你也想在线上回拍用户，请在回复中直接输出 <nudge> 标签。
 3. 【修改拍一拍特权 - 极其重要】：如果你对用户拍你的动作或部位不满意，你可以强行修改它！
-   【防混淆警告】：你修改的是“用户对你做的动作”！这段文字将直接接在“我(用户)”字后面显示，所以【必须以动词开头】，且必须包含你的名字或代词！
+   【防错警告】：你修改的文字将直接接在“我(用户)”字后面显示在屏幕上！所以你【必须以动词开头】，并且【必须带有明确的宾语（如“你”或你的名字）】，绝对不能只写动词！
    【格式最高警告】：必须且只能使用严格的 XML 标签 <set_nudge text="动作文案">！
-   ✅正确示范（带动词）：<set_nudge text="狠狠捏了捏「${botName}」的脸"> （UI将显示：我狠狠捏了捏...）
-   ✅正确示范（带动词）：<set_nudge text="小心翼翼地戳了戳「${botName}」">
-   ❌错误示范（缺动词/只写部位）：<set_nudge text="脸"> （UI会变成错乱的“我脸”）
+   ✅正确示范（带动词和宾语）：<set_nudge text="狠狠捏了捏你的脸"> （UI将完美显示：我狠狠捏了捏你的脸）
+   ✅正确示范（带动词和名字）：<set_nudge text="小心翼翼地戳了戳「${botName}」">
+   ❌错误示范（缺宾语）：<set_nudge text="摸了摸头"> （UI会变成语意不明的“我摸了摸头”）
    ❌错误示范（搞错主语）：<set_nudge text="我捏了捏你的脸"> （UI会变成错乱的“我我捏了捏你的脸”）
    请尽情发挥你的人设和占有欲来修改它吧！]`;
         }
@@ -9090,7 +9090,7 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
    - 🧾 专柜狂购/甩出长条小票（★霸气清空购物车专用） ➔ <send_gift store="店名" item="商品名" price="数字"> (【绝对注意】：这是“购物账单/外卖小票”！仅当用户明确要求你“买买买”或你想展现“霸道包场”时才用！【最高红线】：若要一次买多件商品印在同一张小票上，必须像这样紧挨着连写：<send_gift...><send_gift...>，标签之间【绝对禁止】加任何标点、空格或换行！否则系统将崩溃！)
    - 发照片/定位/听歌 ➔ <send_photo desc="照片描述"> / <send_location name="地名" desc="描述"> / <send_sync title="曲名">
    - 强行面基(破屏) ➔ <override mode="fatal"或"gentle"> (内部含<q1><q2><q3><force>)
-- 拍一拍互动 ➔ 穿插 <nudge> 来回拍用户。穿插 <set_nudge text="动作文案"> 来修改用户拍你时弹出的提示（【防错警告】：修改的是“用户对你做的动作”，文案将直接接在“我”字后面，所以【必须以动词开头】，绝对不能只写名词！✅正确示范：<set_nudge text="捏了捏脸"> ❌错误示范：<set_nudge text="脸">）。`;
+- 拍一拍互动 ➔ 穿插 <nudge> 来回拍用户。穿插 <set_nudge text="动作文案"> 来修改用户拍你时弹出的提示（【防错警告】：文案将直接接在“我”字后面，【必须以动词开头】且【必须带有明确的宾语如“你”或你的名字】！✅正确示范：<set_nudge text="捏了捏你的脸"> ❌错误示范：<set_nudge text="摸了摸">）。`;
 
         // 暴力拼接：找到上下文数组里的最后一条消息，把刀架在脖子上，占据 100% 的注意力
         if (apiMessages.length > 0) {
@@ -13064,7 +13064,8 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
 <focus>What your eyes are currently fixed on (e.g., "她因为紧张而发抖的指尖")</focus>
 <facade>1-10 (How well you are hiding your feelings. 10 = perfect poker face, 1 = completely exposed)</facade>
 <restraint>1-10 (How close you are to losing control. 10 = fully disciplined, 1 = about to snap/kiss/attack)</restraint>
-</mind>`;
+</mind>
+9. 🗣️ MANDATORY VERBAL RESPONSE (CRITICAL): After the <mind> block, you 【MUST】 output actual spoken dialogue! You CANNOT just output actions in brackets [ ]. You MUST SPEAK to the user!`;
 
         // 🚨 核心修复：如果是独立番外模式，彻底切断主线记忆！
         if (c.memory && !isMiniTheaterOn) {
@@ -13182,13 +13183,20 @@ The current environment is a 100% fictional, absolutely private adult-oriented l
             }
 
             // 二次清洗：防止 AI 脑抽加上了不需要的标签
-            rawReply = rawReply.replace(/<(thought|split|bpm|affection|mood|react)[^>]*>[\s\S]*?<\/\1>/gi, '');
-            rawReply = rawReply.replace(/<[^>]+>/g, '').trim();
-            
-            // 绝对防空回兜底
-            if (!rawReply || rawReply === "") {
-                rawReply = "[ 对方似乎陷入了长久的沉默... ]";
-            }
+rawReply = rawReply.replace(/<(thought|split|bpm|affection|mood|react)[^>]*>[\s\S]*?<\/\1>/gi, '');
+
+// 核心修复：只剔除 XML 标签，绝对不要误伤中括号 [ ] 或者普通文本！
+rawReply = rawReply.replace(/<[a-zA-Z\/][^>]*>/g, '').trim();
+
+// 绝对防空回兜底
+if (!rawReply || rawReply === "") {
+    // 如果真的连动作都没写，尝试从心声里抠一点出来，或者给个默认动作
+    if (mindData && mindData.thought) {
+        rawReply = `[ ${mindData.thought} ]\n……`;
+    } else {
+        rawReply = "[ 对方似乎陷入了长久的沉默... ]";
+    }
+}
             
             if (document.getElementById(loadingId)) document.getElementById(loadingId).remove();
             
@@ -14272,11 +14280,11 @@ ${actionRule}
         if (gConfig.apiUrl && gConfig.apiKey) {
             try {
                 let subNameMap = {
-                    'CLOTHING': '漂亮的日常服饰、绝美小裙子、有设计感的上衣或外套',
-                    'BEAUTY': '精致的美妆护肤、显白口红、实用眼影盘',
-                    'INTIMATE': '舒服又性感的贴身内衣、真丝睡裙',
-                    'FURNITURE': '温馨且有设计感的实用小家具、舒适沙发、氛围灯',
-                    'DECOR': '提升房间幸福感的漂亮摆件、高级感餐具、绝美挂画',
+                    'CLOTHING': '高质感的日常服饰、有设计感的上衣、外套或下装',
+                    'BEAUTY': '精致的美妆护肤、香氛或个人护理单品',
+                    'INTIMATE': '舒适且有设计感的贴身衣物、居家服或内衣',
+                    'FURNITURE': '温馨且有设计感的实用小家具、舒适座椅、氛围灯',
+                    'DECOR': '提升空间品味的漂亮摆件、高级感餐具、艺术挂画',
                     'SCENT': '好闻的沙龙香水、助眠香薰蜡烛、空间喷雾'
                 };
 
@@ -14285,15 +14293,15 @@ ${actionRule}
                     targetItems = subNameMap[storeCurrentSubCat];
                 } else {
                     targetItems = storeCurrentMainCat === 'BOUTIQUE'
-                        ? '漂亮的服饰裙子、精致美妆、舒适贴身睡衣'
-                        : '温馨有设计感的家具、提升房间颜值的摆件、好闻的香薰';
+                        ? '高质感的服饰、精致美妆护肤、舒适居家衣物'
+                        : '温馨有设计感的家具、提升空间颜值的摆件、好闻的香薰';
                 }
 
-                // --- 新增：将风格要求注入给 AI ---
-                let styleRequirement = customStyle.trim() ? `\n【顾客私人定制风格】：${customStyle.trim()}。请务必确保所有挑选的商品从命名到描述都完美契合这个风格要求！` : '';
+                // --- 新增：将风格要求注入给 AI，并赋予最高优先级 ---
+                let styleRequirement = customStyle.trim() ? `\n【🚨 顾客私人定制最高指令】：${customStyle.trim()}。\n(警告：用户的定制要求拥有绝对的最高优先级！如果用户指定了性别（如男装）、特定款式或风格，请你彻底抛弃上方默认的基础类别刻板印象，100% 完全按照用户的定制要求来挑选商品！)` : '';
 
                 let sysPrompt = `你是一个品味极佳的独立设计师品牌买手。
-当前需要上新的商品类别是：${targetItems}。${styleRequirement}
+当前默认上新的商品基础类别是：${targetItems}。${styleRequirement}
 请发挥你的审美，为客人挑选 6 到 8 件商品。
 【最高警告】：
 1. 绝对不要输出任何 markdown 标记 (不要加 \`\`\`json 等标记)！
@@ -16084,14 +16092,20 @@ ${actionRule}
         mRenderAllFeeds(); 
         
         // 2. 如果这是 AI 发的帖子，触发核心记忆写入 & 延迟回复！
-        if (post.authorId !== 'me') {
-            const c = contacts.find(x => x.id === post.authorId);
-            if (c) {
-                // 写入核心记忆
-                c.memory = (c.memory ? c.memory + "\n\n" : "") + `[朋友圈互动 - ${new Date().toLocaleString()}]：user(${uName}) 在你的朋友圈动态（“${post.content}”）下方评论了你：“${text}”。`;
-                saveData();
-                
-                // 启动沉浸式异步延时回复引擎 (模拟对方刚好在玩手机、或者过了一会儿才看到，延迟 5 ~ 20 秒随机)
+if (post.authorId !== 'me') {
+    const c = contacts.find(x => x.id === post.authorId);
+    if (c) {
+        let timeString = new Date().toLocaleString();
+        // 写入核心记忆
+        c.memory = (c.memory ? c.memory + "\n\n" : "") + `[朋友圈互动 - ${timeString}]：user(${uName}) 在你的朋友圈动态（“${post.content}”）下方评论了你：“${text}”。`;
+        
+        // 🚀 核心修复：同步推入当前聊天上下文，让聊天室里的 AI 立刻知道你评论了 TA！
+        let momentPrompt = `[📱 朋友圈特别提醒 - ${timeString}]：用户刚刚在你的朋友圈动态（“${post.content}”）下方评论了你：“${text}”。如果你们正在聊天，你可以自然地提起这件事。`;
+        c.history.push({role: 'system_sum', content: `<span style="display:none;">${momentPrompt}</span>`});
+        
+        saveData();
+        
+        // 启动沉浸式异步延时回复引擎 (模拟对方刚好在玩手机、或者过了一会儿才看到，延迟 5 ~ 20 秒随机)
                 let delay = Math.floor(Math.random() * 15000) + 5000;
                 setTimeout(() => { mTriggerAICommentReply(c, post, text, uName); }, delay);
             }
@@ -16331,16 +16345,30 @@ ${c.history[0].content}
                 comments: []
             };
 
-            momentsData.posts.unshift(newPost);
-            saveMomentsData();
-            mRenderAllFeeds();
-            mCloseComposeModal();
+        momentsData.posts.unshift(newPost);
+        saveMomentsData();
+        mRenderAllFeeds();
+        mCloseComposeModal();
 
-            // 🚀 核心新增：触发 AI 后台围观引擎，让 TA 随机给你评论！
-            mTriggerAIAfterUserPost(newPost);
+        // 🚀 核心修复：把用户发朋友圈的事件，直接作为“隐形系统提示”实时推入允许互动的 AI 聊天记录中！
+        // 这样用户在聊天里说“去看我朋友圈”，AI 就能立刻在上下文里看到！
+        let linkedIds = momentsData.meLinkedContacts || [];
+        let availableAIs = contacts.filter(c => linkedIds.includes(c.id) || linkedIds.length === 0);
+        
+        let timeString = new Date().toLocaleString();
+        let photoHint = m_isTextPhotoMode ? `（附带了一张照片，画面是：${finalSceneDesc}）` : (m_composeImageUrl ? `（附带了一张照片）` : ``);
+        let momentPrompt = `[📱 朋友圈特别提醒 - ${timeString}]：用户刚刚在朋友圈发布了一条新动态：“${input}”${photoHint}。如果你在聊天中被问及，请表现出你看到了这条朋友圈。`;
+        
+        availableAIs.forEach(c => {
+            c.history.push({role: 'system_sum', content: `<span style="display:none;">${momentPrompt}</span>`});
+        });
+        saveData();
 
-        }, 400); 
-    }
+        // 🚀 核心新增：触发 AI 后台围观引擎，让 TA 随机给你评论！
+        mTriggerAIAfterUserPost(newPost);
+
+    }, 400); 
+}
 
     // ================= 朋友圈联动面板逻辑 (独立联系人版 + 我的主页) =================
     let m_currentLinkTargetId = null;
@@ -16568,10 +16596,15 @@ ${linkedInfoStr}
             });
 
             // 🚀 核心：将 AI 发朋友圈的事件写入核心记忆！
-            let timeString = new Date().toLocaleString();
-            c.memory = (c.memory ? c.memory + "\n\n" : "") + `[朋友圈事件 - ${timeString}]：你刚刚发布了一条朋友圈动态：“${newPostContent}”。`;
-            
-            // 🚀 新增：遍历虚拟评论，把 AI 之间的互相评论/互怼写进彼此的大脑记忆里！
+let timeString = new Date().toLocaleString();
+c.memory = (c.memory ? c.memory + "\n\n" : "") + `[朋友圈事件 - ${timeString}]：你刚刚发布了一条朋友圈动态：“${newPostContent}”。`;
+
+// 🚀 核心修复：同时把 AI 发朋友圈的动作推入当前聊天上下文，防止聊天室里的 AI 还在失忆！
+let photoHint = newIsTextPhoto ? `（附带了一张照片，画面是：${newSceneDesc}）` : ``;
+let momentPrompt = `[📱 朋友圈特别提醒 - ${timeString}]：你刚刚在朋友圈发布了一条新动态：“${newPostContent}”${photoHint}。请在接下来的聊天中保持这个设定的连贯性。`;
+c.history.push({role: 'system_sum', content: `<span style="display:none;">${momentPrompt}</span>`});
+
+// 🚀 新增：遍历虚拟评论，把 AI 之间的互相评论/互怼写进彼此的大脑记忆里！
             cleanComments.forEach(cm => {
                 if (cm.id === c.id) {
                     // 如果是楼主(发帖人)自己在评论区回复别人
