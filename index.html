@@ -17079,7 +17079,7 @@ contacts.forEach(c => {
             const c = contacts.find(x => x.id === cm.id);
             if (c) cmName = c.momentName || c.name;
         }
-        commentsHtml += `<div class="m-comment-item" onmousedown="mCommentDown('${p.id}', ${cIdx})" onmouseup="mCommentUp(event, '${p.id}', ${cIdx}, '${cmName}', '${cm.id}')" ontouchstart="mCommentDown('${p.id}', ${cIdx})" ontouchend="mCommentUp(event, '${p.id}', ${cIdx}, '${cmName}', '${cm.id}')" style="cursor: pointer;" title="点击回复，长按删除"><span class="m-comment-author">${cmName}：</span><span>${cm.text}</span></div>`;
+        commentsHtml += `<div class="m-comment-item" onmousedown="mCommentDown('${p.id}', ${cIdx})" onmouseup="mCommentUp(event, this, '${p.id}', ${cIdx}, '${cmName}', '${cm.id}')" ontouchstart="mCommentDown('${p.id}', ${cIdx})" ontouchend="mCommentUp(event, this, '${p.id}', ${cIdx}, '${cmName}', '${cm.id}')" style="cursor: pointer;" title="点击回复，长按删除"><span class="m-comment-author">${cmName}：</span><span>${cm.text}</span></div>`;
     });
 }
 
@@ -17247,13 +17247,21 @@ contacts.forEach(c => {
     if(!post) return;
     
     let uName = momentsData.meName || gConfig.meName || '我';
+    let replyTargetId = inputEl.dataset.replyId;
+    let replyTargetName = inputEl.dataset.replyName;
+    
+    // 如果是在回复某个人，系统自动在前面拼接“回复 xxx：”
+    if (replyTargetId && replyTargetName) {
+        text = `回复 ${replyTargetName}：${text}`;
+    }
     
     post.comments.push({ id: 'me', name: uName, text: text });
     saveMomentsData();
     
-    let replyTargetId = inputEl.dataset.replyId;
     inputEl.value = '';
+    inputEl.placeholder = '留下一丝痕迹...';
     inputEl.dataset.replyId = ''; 
+    inputEl.dataset.replyName = ''; 
     mRenderAllFeeds(); 
     
     let targetId = replyTargetId ? replyTargetId : post.authorId;
@@ -17357,25 +17365,26 @@ function mCommentDown(postId, cIdx) {
     }, 600);
 }
 
-function mCommentUp(event, postId, cIdx, authorName, authorId) {
+function mCommentUp(event, el, postId, cIdx, authorName, authorId) {
     if (m_commentPressTimer) clearTimeout(m_commentPressTimer);
     if (!m_commentIsLongPress) {
         if(event) event.preventDefault();
-        mReplyToComment(postId, cIdx, authorName, authorId);
+        mReplyToComment(el, postId, cIdx, authorName, authorId);
     }
 }
 
-function mReplyToComment(postId, cIdx, authorName, authorId) {
+function mReplyToComment(el, postId, cIdx, authorName, authorId) {
     if (authorId === 'me') return; // 不回复自己
-    let postEl = document.getElementById('post-' + postId);
+    let postEl = el.closest('.m-post'); // 精准抓取用户当前正在看的那个帖子节点
     if (!postEl) return;
     let commentSection = postEl.querySelector('.m-comments-section');
     if (commentSection) {
         if (!commentSection.classList.contains('show')) commentSection.classList.add('show');
         let input = commentSection.querySelector('.m-comment-input');
         if (input) {
-            input.value = `回复 ${authorName}：`;
+            input.placeholder = `回复 ${authorName}：`;
             input.dataset.replyId = authorId;
+            input.dataset.replyName = authorName; // 记录名字用于发送时拼接
             input.focus();
         }
     }
