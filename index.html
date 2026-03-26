@@ -1574,8 +1574,8 @@
         #app-music .sp-btn:hover { opacity: 0.8; transform: scale(0.98); }
 /* --- 神圣组件 (桌面 2x1) --- */
 .sacred-widget {
-    position: absolute; top: 31%; left: 50%; transform: translateX(-50%);
-    width: 180px; height: 90px; background: #ffffff; border-radius: 16px;
+    position: absolute; top: calc(31% + 0.5px); left: 50%; transform: translateX(-50%);
+    width: 200px; height: 90px; background: #ffffff; border-radius: 16px;
     box-shadow: 0 10px 25px rgba(160, 150, 140, 0.15), inset 0 0 0 0.5px rgba(255, 255, 255, 0.8);
     overflow: hidden; display: flex; align-items: center; padding: 0 12px; box-sizing: border-box;
     cursor: pointer; transition: transform 0.2s; z-index: 10;
@@ -1599,11 +1599,11 @@
 .sw-arch-photo.has-image .sw-upload-hint { display: none; }
 .sw-arch-photo::after { content: ''; position: absolute; inset: 0; background-color: rgba(240, 235, 225, 0.1); mix-blend-mode: overlay; pointer-events: none; }
 .sw-ampersand {
-    position: absolute; left: 58px; top: 50%; transform: translateY(-50%);
+    position: absolute; left: 65px; top: 50%; transform: translateY(-50%);
     font-family: "Palatino Linotype", "Book Antiqua", serif; font-size: 42px; font-style: italic; color: #f4f1ed;
     z-index: 1; pointer-events: none; user-select: none;
 }
-.sw-content-area { margin-left: 20px; display: flex; flex-direction: column; justify-content: center; z-index: 2; font-family: "Palatino Linotype", "Book Antiqua", serif; }
+.sw-content-area { margin-left: 28px; display: flex; flex-direction: column; justify-content: center; z-index: 2; font-family: "Palatino Linotype", "Book Antiqua", serif; }
 .sw-rings { position: relative; width: 18px; height: 11px; margin-bottom: 6px; }
 .sw-rings::before, .sw-rings::after { content: ''; position: absolute; width: 10px; height: 10px; border: 0.5px solid #b5a898; border-radius: 50%; top: 0; }
 .sw-rings::before { left: 0; } .sw-rings::after { right: 0; }
@@ -8133,47 +8133,96 @@ if(gConfig.swPhoto) { document.getElementById('sw-photo-data').value = gConfig.s
     function enterDragMode() { closeCurrentApps(); isDragMode = true; document.getElementById('drag-save-bar').style.display = 'flex'; }
     function exitDragMode() { isDragMode = false; document.getElementById('drag-save-bar').style.display = 'none'; saveGlobal(); }
     function initDraggable() {
-        const grid = document.getElementById('desktop-grid'); let dragApp = null; let oX = 0, oY = 0;
-        function startDrag(e) { if (!isDragMode) return; const t = e.target.closest('.draggable-app'); if(!t) return; e.preventDefault(); dragApp = t; dragApp.style.transition = 'none'; const rRect = dragApp.getBoundingClientRect(); const cx = e.touches ? e.touches[0].clientX : e.clientX; const cy = e.touches ? e.touches[0].clientY : e.clientY; oX = cx - rRect.left; oY = cy - rRect.top; }
-        function doDrag(e) { if (!dragApp || !isDragMode) return; e.preventDefault(); const cRect = grid.getBoundingClientRect(); const cx = e.touches ? e.touches[0].clientX : e.clientX; const cy = e.touches ? e.touches[0].clientY : e.clientY; let x = cx - cRect.left - oX; let y = cy - cRect.top - oY; let px = (x / cRect.width) * 100; let py = (y / cRect.height) * 100; dragApp.style.left = px + '%'; dragApp.style.top = py + '%'; }
-        function endDrag(e) { 
-            if (!dragApp || !isDragMode) return; 
-            let l = parseFloat(dragApp.style.left) || 0;
-            let t = parseFloat(dragApp.style.top) || 0;
-            let col = Math.round((l - 6) / 26);
-            let row = Math.round((t - 5) / 28);
-            col = Math.max(0, Math.min(col, 3));
-            
-            // 🛡️ 核心防线：严格限制图标最多只能拖到第 2 行，绝对禁止掉入第 3 行（Dock黑洞区）！
-            row = Math.max(0, Math.min(row, 2)); 
-            
-            dragApp.style.left = (6 + col * 26) + '%'; 
-            dragApp.style.top = (5 + row * 28) + '%';
-            dragApp.style.transition = 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), left 0.3s, top 0.3s'; 
-            
-            gConfig.appPos[dragApp.id] = { l: dragApp.style.left, t: dragApp.style.top }; 
-            saveData(); 
-            dragApp = null; 
-        }
-        grid.addEventListener('touchstart', startDrag, {passive:false}); grid.addEventListener('touchmove', doDrag, {passive:false}); grid.addEventListener('touchend', endDrag); grid.addEventListener('mousedown', startDrag); document.addEventListener('mousemove', doDrag); document.addEventListener('mouseup', endDrag);
+    const grid = document.getElementById('desktop-grid'); let dragApp = null; let oX = 0, oY = 0;
+    let dragOrigCol = 0, dragOrigRow = 0;
+    function startDrag(e) { 
+        if (!isDragMode) return; const t = e.target.closest('.draggable-app'); if(!t) return; e.preventDefault(); dragApp = t; dragApp.style.transition = 'none'; 
+        const rRect = dragApp.getBoundingClientRect(); const cx = e.touches ? e.touches[0].clientX : e.clientX; const cy = e.touches ? e.touches[0].clientY : e.clientY; 
+        oX = cx - rRect.left; oY = cy - rRect.top; 
+        let l = parseFloat(dragApp.style.left) || 5; let top = parseFloat(dragApp.style.top) || 5;
+        dragOrigCol = Math.round((l - 5) / 24); dragOrigRow = Math.round((top - 5) / 28);
     }
+    function doDrag(e) { 
+        if (!dragApp || !isDragMode) return; e.preventDefault(); const cRect = grid.getBoundingClientRect(); const cx = e.touches ? e.touches[0].clientX : e.clientX; const cy = e.touches ? e.touches[0].clientY : e.clientY; 
+        let x = cx - cRect.left - oX; let y = cy - cRect.top - oY; let px = (x / cRect.width) * 100; let py = (y / cRect.height) * 100; 
+        dragApp.style.left = px + '%'; dragApp.style.top = py + '%'; 
+    }
+    function endDrag(e) { 
+        if (!dragApp || !isDragMode) return; 
+        let l = parseFloat(dragApp.style.left) || 0; let t = parseFloat(dragApp.style.top) || 0;
+        let col = Math.round((l - 5) / 24); let row = Math.round((t - 5) / 28);
+        
+        col = Math.max(0, Math.min(col, 3)); row = Math.max(0, Math.min(row, 2)); 
+        
+        // 🛡️ 绝对领域：神圣组件占据了第2行的中间两列 (row: 1, col: 1 和 2)
+        if (row === 1 && (col === 1 || col === 2)) {
+            col = dragOrigCol; row = dragOrigRow; // 撞墙，强行弹回原位
+        }
+
+        // 🔄 图标互换引擎：检测目标位置是否已有其他图标
+        const allAppIds = ['app-g1','app-g2','app-twitter-icon','app-g3'];
+        let swapApp = null;
+        for (let id of allAppIds) {
+            if (id === dragApp.id) continue;
+            let el = document.getElementById(id);
+            if (!el) continue;
+            let elCol = Math.round((parseFloat(el.style.left) - 5) / 24);
+            let elRow = Math.round((parseFloat(el.style.top) - 5) / 28);
+            if (elCol === col && elRow === row) { swapApp = el; break; }
+        }
+
+        if (swapApp) {
+            // 将被撞的图标瞬间移到拖拽起点的空位，实现完美互换
+            let targetL = (5 + dragOrigCol * 24) + '%'; let targetT = (5 + dragOrigRow * 28) + '%';
+            swapApp.style.transition = 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), left 0.3s, top 0.3s';
+            swapApp.style.left = targetL; swapApp.style.top = targetT;
+            gConfig.appPos[swapApp.id] = { l: targetL, t: targetT };
+        }
+        
+        // 落下当前拖拽的图标
+        let myL = (5 + col * 24) + '%'; let myT = (5 + row * 28) + '%';
+        dragApp.style.transition = 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), left 0.3s, top 0.3s'; 
+        dragApp.style.left = myL; dragApp.style.top = myT;
+        gConfig.appPos[dragApp.id] = { l: myL, t: myT }; 
+        
+        saveData(); dragApp = null; 
+    }
+    grid.addEventListener('touchstart', startDrag, {passive:false}); grid.addEventListener('touchmove', doDrag, {passive:false}); grid.addEventListener('touchend', endDrag); grid.addEventListener('mousedown', startDrag); document.addEventListener('mousemove', doDrag); document.addEventListener('mouseup', endDrag);
+}
     
     function alignApps() { 
-    // 🚑 终极救援模式：放弃原位计算，直接将所有图标强制按顺序“吸回”屏幕最顶部最安全的 4 个位置！
-    const safePositions = [
-        { l: '5%', t: '5%' },   // 第1个槽位
-        { l: '29%', t: '5%' },  // 第2个槽位
-        { l: '53%', t: '5%' },  // 第3个槽位
-        { l: '77%', t: '5%' }   // 第4个槽位
-    ];
-    
-    ['app-g1','app-g2','app-twitter-icon','app-g3'].forEach((id, index) => { 
+    // 智能对齐模式：读取当前图标位置，就近吸附到标准网格上
+    let occupied = {}; // 记录已被占用的网格
+    ['app-g1','app-g2','app-twitter-icon','app-g3'].forEach((id) => { 
         const el = document.getElementById(id); 
         if(el) { 
+            let l = parseFloat(el.style.left) || 0;
+            let t = parseFloat(el.style.top) || 0;
+            let col = Math.round((l - 5) / 24);
+            let row = Math.round((t - 5) / 28);
+            col = Math.max(0, Math.min(col, 3));
+            row = Math.max(0, Math.min(row, 2)); 
+            
+            // 防御神圣组件禁区
+            if (row === 1 && (col === 1 || col === 2)) {
+                col = 0; row = 2; // 默认挤到左下角空位
+            }
+            
+            // 简单防重叠：如果格子被占了，往右挪
+            while(occupied[`${col}-${row}`]) {
+                col++; if(col > 3) { col = 0; row++; }
+                if(row > 2) row = 0;
+                if (row === 1 && (col === 1 || col === 2)) col = 3;
+            }
+            occupied[`${col}-${row}`] = true;
+
+            let targetL = (5 + col * 24) + '%';
+            let targetT = (5 + row * 28) + '%';
+            
             el.style.transition = 'left 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), top 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)'; 
-            el.style.left = safePositions[index].l; 
-            el.style.top = safePositions[index].t; 
-            gConfig.appPos[id] = { l: safePositions[index].l, t: safePositions[index].t }; 
+            el.style.left = targetL; 
+            el.style.top = targetT; 
+            gConfig.appPos[id] = { l: targetL, t: targetT }; 
             setTimeout(() => el.style.transition = 'transform 0.2s', 400); 
         } 
     }); 
