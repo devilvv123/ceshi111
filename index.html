@@ -1572,45 +1572,44 @@
         #app-music .sp-btn { flex: 1; padding: 14px; border-radius: 4px; text-align: center; cursor: pointer; font-family: "Courier New", monospace; font-size: 10px; font-weight: 800; letter-spacing: 2px; transition: 0.3s; border: 1px solid var(--c-dyn-line); }
         #app-music .sp-btn.primary { background: var(--c-dyn-text); color: var(--c-dyn-bg); border-color: transparent; }
         #app-music .sp-btn:hover { opacity: 0.8; transform: scale(0.98); }
-        /* ============================================================= */
-        /* --- 神圣组件 (桌面 2x1) --- */
-        .sacred-widget {
-            position: absolute; top: 28%; left: 50%; transform: translateX(-50%);
-            width: 160px; height: 80px; background: #ffffff; border-radius: 14px;
-            box-shadow: 0 10px 25px rgba(160, 150, 140, 0.15), inset 0 0 0 0.5px rgba(255, 255, 255, 0.8);
-            overflow: hidden; display: flex; align-items: center; padding: 0 10px; box-sizing: border-box;
-            cursor: pointer; transition: transform 0.2s; z-index: 10;
-        }
-        .sacred-widget:active { transform: translateX(-50%) scale(0.96); }
-        .sacred-widget::before {
-            content: ''; position: absolute; top: -25px; left: -25px; width: 100px; height: 100px;
-            background: radial-gradient(circle, rgba(212, 200, 184, 0.2) 0%, rgba(255,255,255,0) 70%); pointer-events: none;
-        }
-        .sw-arch-wrapper {
-            position: relative; width: 45px; height: 60px; border: 0.5px solid #eae5df;
-            border-radius: 22px 22px 0 0; padding: 2px; box-sizing: border-box; z-index: 10;
-        }
-        .sw-arch-photo {
-            width: 100%; height: 100%; border-radius: 20px 20px 0 0; background-color: #f7f5f2;
-            background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center;
-            overflow: hidden; position: relative;
-        }
-        .sw-arch-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .sw-upload-hint { font-family: sans-serif; font-size: 12px; color: #cbbbae; font-weight: 100; }
-        .sw-arch-photo.has-image .sw-upload-hint { display: none; }
-        .sw-arch-photo::after { content: ''; position: absolute; inset: 0; background-color: rgba(240, 235, 225, 0.1); mix-blend-mode: overlay; pointer-events: none; }
-        .sw-ampersand {
-            position: absolute; left: 52px; top: 50%; transform: translateY(-50%);
-            font-family: "Palatino Linotype", "Book Antiqua", serif; font-size: 36px; font-style: italic; color: #f4f1ed;
-            z-index: 1; pointer-events: none; user-select: none;
-        }
-        .sw-content-area { margin-left: 18px; display: flex; flex-direction: column; justify-content: center; z-index: 2; font-family: "Palatino Linotype", "Book Antiqua", serif; }
-        .sw-rings { position: relative; width: 16px; height: 10px; margin-bottom: 6px; }
-        .sw-rings::before, .sw-rings::after { content: ''; position: absolute; width: 9px; height: 9px; border: 0.5px solid #b5a898; border-radius: 50%; top: 0; }
-        .sw-rings::before { left: 0; } .sw-rings::after { right: 0; }
-        .sw-title { font-size: 8px; letter-spacing: 2px; color: #4a443e; text-transform: uppercase; margin-bottom: 2px; font-weight: bold;}
-        .sw-subtitle { font-family: sans-serif; font-size: 6px; letter-spacing: 0.5px; color: #a89d90; font-weight: 300; white-space: nowrap; transform: scale(0.9); transform-origin: left;}
-        .sw-deco-line { width: 12px; height: 0.5px; background: #d4c8b8; margin-top: 6px; }
+/* --- 神圣组件 (桌面 2x1) --- */
+.sacred-widget {
+    position: absolute; top: 31%; left: 50%; transform: translateX(-50%);
+    width: 180px; height: 90px; background: #ffffff; border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(160, 150, 140, 0.15), inset 0 0 0 0.5px rgba(255, 255, 255, 0.8);
+    overflow: hidden; display: flex; align-items: center; padding: 0 12px; box-sizing: border-box;
+    cursor: pointer; transition: transform 0.2s; z-index: 10;
+}
+.sacred-widget:active { transform: translateX(-50%) scale(0.96); }
+.sacred-widget::before {
+    content: ''; position: absolute; top: -25px; left: -25px; width: 110px; height: 110px;
+    background: radial-gradient(circle, rgba(212, 200, 184, 0.2) 0%, rgba(255,255,255,0) 70%); pointer-events: none;
+}
+.sw-arch-wrapper {
+    position: relative; width: 50px; height: 68px; border: 0.5px solid #eae5df;
+    border-radius: 25px 25px 0 0; padding: 2px; box-sizing: border-box; z-index: 10;
+}
+.sw-arch-photo {
+    width: 100%; height: 100%; border-radius: 23px 23px 0 0; background-color: #f7f5f2;
+    background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center;
+    overflow: hidden; position: relative;
+}
+.sw-arch-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sw-upload-hint { font-family: sans-serif; font-size: 14px; color: #cbbbae; font-weight: 100; }
+.sw-arch-photo.has-image .sw-upload-hint { display: none; }
+.sw-arch-photo::after { content: ''; position: absolute; inset: 0; background-color: rgba(240, 235, 225, 0.1); mix-blend-mode: overlay; pointer-events: none; }
+.sw-ampersand {
+    position: absolute; left: 58px; top: 50%; transform: translateY(-50%);
+    font-family: "Palatino Linotype", "Book Antiqua", serif; font-size: 42px; font-style: italic; color: #f4f1ed;
+    z-index: 1; pointer-events: none; user-select: none;
+}
+.sw-content-area { margin-left: 20px; display: flex; flex-direction: column; justify-content: center; z-index: 2; font-family: "Palatino Linotype", "Book Antiqua", serif; }
+.sw-rings { position: relative; width: 18px; height: 11px; margin-bottom: 6px; }
+.sw-rings::before, .sw-rings::after { content: ''; position: absolute; width: 10px; height: 10px; border: 0.5px solid #b5a898; border-radius: 50%; top: 0; }
+.sw-rings::before { left: 0; } .sw-rings::after { right: 0; }
+.sw-title { font-size: 9px; letter-spacing: 2px; color: #4a443e; text-transform: uppercase; margin-bottom: 2px; font-weight: bold;}
+.sw-subtitle { font-family: sans-serif; font-size: 7px; letter-spacing: 0.5px; color: #a89d90; font-weight: 300; white-space: nowrap; transform: scale(0.9); transform-origin: left;}
+.sw-deco-line { width: 14px; height: 0.5px; background: #d4c8b8; margin-top: 6px; }
     </style>
 </head>
     
@@ -3392,8 +3391,7 @@ html body .iphone-frame #app-twitter.dark textarea { color: #E7E9EA !important; 
 <div class="app-window light" id="app-twitter" style="padding: 0; background: transparent;">
     <div class="tw-wrapper bg-mono-50 dark:bg-mono-900 text-mono-600 dark:text-mono-950 font-sans h-full w-full overflow-hidden flex justify-center no-scrollbar transition-colors duration-500 relative text-[15px]">
         <!-- 全局图片上传表单 -->
-        <input type="file" id="global-image-upload" class="hidden" accept="image/*" onchange="handleImageUpload(event)">
-
+<input type="file" id="global-image-upload" class="hidden" accept="image/*" onchange="twHandleImageUpload(event)">
         <!-- ================= 随机星星底纹层 ================= -->
         <div id="star-bg" class="absolute inset-0 pointer-events-none z-[0] overflow-hidden transition-opacity duration-500"></div>
 
@@ -18810,32 +18808,35 @@ const aiFeedHTML = `
         document.getElementById('global-image-upload').click();
     }
 
-    function handleImageUpload(event) {
-        const file = event.target.files[0];
-        if (file && currentImageTarget) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const newSrc = e.target.result;
-                
-                if (currentImageType && currentImageId) {
-                    document.querySelectorAll(`[data-${currentImageType}="${currentImageId}"]`).forEach(img => {
-                        img.src = newSrc;
-                    });
+    function twHandleImageUpload(event) {
+    const file = event.target.files[0];
+    if (file && currentImageTarget) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const newSrc = e.target.result;
+            
+            // 如果这图片属于某个角色，则全网所有该角色的头像或背景同步更新
+            if (currentImageType && currentImageId) {
+                document.querySelectorAll(`[data-${currentImageType}="${currentImageId}"]`).forEach(img => {
+                    img.src = newSrc;
+                });
 
-                    if (currentImageId !== 'user' && userProfiles[currentImageId]) {
-                        userProfiles[currentImageId][currentImageType] = newSrc;
-                    }
-
-                } else {
-                    currentImageTarget.src = newSrc;
+                // 更新缓存，保证切换页面时图片仍在
+                if (currentImageId !== 'user' && userProfiles[currentImageId]) {
+                    userProfiles[currentImageId][currentImageType] = newSrc;
                 }
-                
-                document.querySelectorAll('.camera-overlay').forEach(o => o.classList.add('opacity-0', 'pointer-events-none'));
+
+            } else {
+                currentImageTarget.src = newSrc;
             }
-            reader.readAsDataURL(file);
+            
+            // 隐藏覆盖层
+            document.querySelectorAll('.camera-overlay').forEach(o => o.classList.add('opacity-0', 'pointer-events-none'));
         }
-        event.target.value = '';
+        reader.readAsDataURL(file);
     }
+    event.target.value = ''; // 清空选择，支持重复选择同一文件
+}
 
     let currentReplyTargetHandle = '@elonmusk';
     let currentReplyTargetElement = null;
