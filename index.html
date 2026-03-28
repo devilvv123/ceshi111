@@ -11583,8 +11583,12 @@ if (textOnlyCheck && seg !== "…") {
          }
          
          function closeStudio() {
-             document.getElementById('studio-modal').classList.remove('active');
-         }
+    document.getElementById('studio-modal').classList.remove('active');
+    const previewStyle = document.getElementById('studio-preview-style');
+    if (previewStyle) {
+        previewStyle.remove();
+    }
+}
          
          function updateStudioPreview() {
              const cssText = document.getElementById('studio-css').value;
@@ -19515,27 +19519,33 @@ ${userInfo}
 ${trendingInfo}
          
          【任务】：
-         请生成 2 到 4 条来自不同人的推特动态（像是随手发的吐槽、心情、生活碎片或梗）。
-         如果有熟人列表，请务必包含 1~2 条熟人的动态，其余的完全随机捏造身份各异的“纯路人网友”。
-         
-         🚨 熟人发推核心限制：熟人知道这是在推特里，没有人知道TA的真实身份（除非TA想暴露）。TA可以在里面写烦恼、暗恋、或者针对【近期与用户的聊天回忆】进行吐槽、隐晦表达情感。
-         
-         要求：
-         1. 语气极简、口语化，符合推特风格。
-         2. 绝对不要加任何动作描写或标签。
-         3. 必须返回严格的 JSON 数组格式，不要有 markdown 标记！
-         格式如下：
-         [
-         {
-         "name": "网名",
-         "handle": "@username", // 英文加数字下划线空格
-         "text": "推文正文内容",
-         "hasMedia": true, // 随机决定是否带配图(true或false)
-         "sceneDesc": "如果hasMedia为true，请根据推文内容详细描写一张真实照片的画面；如果为false，填 null",
-         "tags": ["标签1", "标签2"], // 数组格式，不需要带#号，没有填空数组 []
-         "mentions": ["@username"] // 数组格式，要带@号，如果没有提及任何人则填空数组 []
-         }
-         ]`;
+请生成 2 到 4 条来自不同人的推特动态（像是随手发的吐槽、心情、生活碎片或梗）。
+如果有熟人列表，请务必包含 1~2 条熟人的动态，其余的完全随机捏造身份各异的“纯路人网友”。
+
+🚨 熟人发推核心限制：熟人知道这是在推特里，没有人知道TA的真实身份（除非TA想暴露）。TA可以在里面写烦恼、暗恋、或者针对【近期与用户的聊天回忆】进行吐槽、隐晦表达情感。
+
+要求：
+1. 语气极简、口语化，符合推特风格。
+2. 绝对不要加任何动作描写或标签。
+3. 必须返回严格的 JSON 数组格式，不要有 markdown 标记！
+
+【🚨 关于 @提及 (mentions) 的绝对铁律】：
+1. 如果你想在推文中提及某人（互动、吃瓜、暗恋等），必须在 JSON 的 "mentions" 数组中填入TA的完整 Handle（必须包含 @ 符号，例如 "@soap_user"）。
+2. 只能提及上方【熟人列表】或【关于用户】中提供的真实 Handle！绝对禁止凭空捏造不存在的 @ 账号！
+3. 如果没有提及任何人，请务必返回空数组 []，绝对不要返回 null 或省略该字段！
+
+格式如下：
+[
+{
+"name": "网名",
+"handle": "@username", // 英文加数字下划线空格，必须带@
+"text": "推文正文内容",
+"hasMedia": true, // 随机决定是否带配图(true或false)
+"sceneDesc": "如果hasMedia为true，请详细描写画面；如果为false，填 null",
+"tags": ["标签1", "标签2"], // 数组格式，不需要带#号，没有填空数组 []
+"mentions": ["@username"] // 严格遵守上方铁律，必须带@号，没有则填 []
+}
+]`;
          
              try {
                  const res = await fetch(`${gConfig.apiUrl}/v1/chat/completions`, {
@@ -19611,11 +19621,11 @@ postsArray.forEach((postObj, idx) => {
     }
 
     // 核心桥接：让 AI 知道自己在推特广场上发了帖子
-    if (matchedContact) {
-        let timeString = new Date().toLocaleString();
-        let momentPrompt = `[📱 跨平台记忆同步 - ${timeString}]：你刚刚在推特(Twitter)上发布了一条新动态：“${postData.content}”。请在后续的聊天中自然地保留这段记忆。`;
-        matchedContact.history.push({role: 'system_sum', content: `<span style="display:none;">${momentPrompt}</span>`, wid: wid});
-    }
+if (matchedContact) {
+    let timeString = new Date().toLocaleString();
+    let momentPrompt = `[📱 跨平台记忆同步 - ${timeString}]：你刚刚在推特(Twitter)上发布了一条新动态：“${postData.content}”。请在后续的聊天中自然地保留这段记忆。`;
+    matchedContact.history.push({role: 'system_sum', content: `<i>✧ 对方在推特发布了一条新动态</i>\n<span style="display:none;">${momentPrompt}</span>`, wid: wid});
+}
 });
 
 saveTwData();
@@ -19907,15 +19917,15 @@ availableAIs.forEach(c => {
         targetContact = c;
         // 1. 如果 AI 是被直接回复（艾特）的人 (切断写入全局 memory)
         let momentPrompt = `[📱 推特互动同步 - ${timeString}]：用户刚刚在推特(Twitter)上回复/艾特了你的小号：“${text}”。\n【🚨 核心设定】：注意，这是在推特上的匿名互动，用户可能并不知道这个号就是你（除非你故意掉马甲）。请结合你的人设（如暗恋、吃醋、傲娇、烦恼等），在接下来的聊天中隐晦地试探、暗示或者提起这件事！`;
-        c.history.push({role: 'system_sum', content: `<span style="display:none;">${momentPrompt}</span>`, wid: wid});
+        c.history.push({role: 'system_sum', content: `<i>✧ 你在推特上回复了对方</i>\n<span style="display:none;">${momentPrompt}</span>`, wid: wid});
     } else if (isPostAuthor) {
         // 2. 如果 AI 是楼主，但用户是在回复别人
         let momentPrompt = `[📱 推特互动同步 - ${timeString}]：用户刚刚在你的推特(Twitter)小号帖子下，回复了别人：“${text}”。\n【🚨 核心设定】：注意，这是在推特上的匿名互动。你可以暗中观察，或者在聊天室里隐晦地吃醋和试探用户。`;
-        c.history.push({role: 'system_sum', content: `<span style="display:none;">${momentPrompt}</span>`, wid: wid});
+        c.history.push({role: 'system_sum', content: `<i>✧ 你在对方的推特下进行了回复</i>\n<span style="display:none;">${momentPrompt}</span>`, wid: wid});
     } else {
         // 3. 其他吃瓜 AI
         let momentPrompt = `[📱 推特八卦同步 - ${timeString}]：用户刚刚在推特(Twitter)上活跃，发了一条评论：“${text}”。如果语境合适，你可以根据人设在聊天里八卦或随口一提。`;
-        c.history.push({role: 'system_sum', content: `<span style="display:none;">${momentPrompt}</span>`, wid: wid});
+        c.history.push({role: 'system_sum', content: `<i>✧ 你在推特上发表了评论</i>\n<span style="display:none;">${momentPrompt}</span>`, wid: wid});
     }
 });
 
@@ -20061,7 +20071,7 @@ addTwNotification('reply', c.id, replyText.substring(0, 30) + (replyText.length 
 // 写入带 wid 标签的上下文，切断全局记忆污染
 let timeString = new Date().toLocaleString();
 let currentWid = gConfig.currentWorldviewId || 'default';
-c.history.push({role: 'system_sum', content: `<span style="display:none;">[推特互动 - ${timeString}]：你在推特上回复了 ${uName} 的评论：“${replyText}”。</span>`, wid: currentWid});
+c.history.push({role: 'system_sum', content: `<i>✧ 对方在推特上回复了你</i>\n<span style="display:none;">[推特互动 - ${timeString}]：你在推特上回复了 ${uName} 的评论：“${replyText}”。</span>`, wid: currentWid});
 saveData();
 
         // 如果当前正好停在推特详情页面，重绘让新评论冒出来！
@@ -20800,15 +20810,18 @@ let currentWid = gConfig.currentWorldviewId || 'default';
 availableAIs.forEach(c => {
     let isMentioned = mentionedContactIds.includes(c.id);
     let momentPrompt = "";
+    let uiText = "";
     
     if (isMentioned) {
         momentPrompt = `[📱 推特特别提醒 - ${timeString}]：用户刚刚在推特(Twitter)上发布了一条新动态：“${text}”，并且特意 @提及 了你！请在后续聊天中自然地提起这件事（可以调侃、开心或傲娇）。`;
+        uiText = `<i>✧ 你在推特发布了新动态并 @ 了对方</i>`;
     } else {
         momentPrompt = `[📱 推特特别提醒 - ${timeString}]：用户刚刚在推特(Twitter)上发布了一条新动态：“${text}”。请在后续的聊天中自然地保留这段记忆。`;
+        uiText = `<i>✧ 你在推特发布了一条新动态</i>`;
     }
     
     // 核心修复：增加 twPostId 绑定，方便删除时精准狙击！
-    c.history.push({role: 'system_sum', content: `<span style="display:none;">${momentPrompt}</span>`, wid: currentWid, twPostId: newPost.id});
+    c.history.push({role: 'system_sum', content: `${uiText}\n<span style="display:none;">${momentPrompt}</span>`, wid: currentWid, twPostId: newPost.id});
 });
 saveData(); // 保存历史记录
 
@@ -21251,13 +21264,19 @@ ${mainHistoryText || '暂无。'}
      2. 🚨 内容导向：请务必结合上方你和用户的近期聊天记录，在推特上发泄你的烦恼、暗恋、吐槽或感慨。你可以隐晦地提到用户，或者发泄在聊天中没说出口的话。
      3. 语气要极简、口语化，符合推特风格。绝对不要加任何动作描写或标签。
      4. 必须返回严格的 JSON 格式，不要有 markdown 标记！
+     
+     【🚨 关于 @提及 (mentions) 的绝对铁律】：
+     1. 如果你发的这条动态是想对用户说的、或者与用户有关，请一定要在 "mentions" 数组里准确无误地填入 "${myHandle}"！
+     2. 必须包含 @ 符号！绝对不要捏造假的账号！
+     3. 如果没有提及用户，请务必返回空数组 []。
+
      格式如下：
      {
      "text": "推文正文内容",
      "hasMedia": true, // 随机决定是否带配图(true或false)
      "sceneDesc": "如果hasMedia为true，请根据推文内容详细描写一张真实照片的画面；如果为false，填 null",
      "tags": ["标签1", "标签2"], // 数组格式，不需要带#号，没有填空数组 []
-     "mentions": ["${myHandle}"] // 数组格式，要带@号，没有填空数组 []
+     "mentions": ["${myHandle}"] // 严格遵守上方铁律，必须带@号，没有则填 []
      }`;
      
          try {
@@ -21326,7 +21345,7 @@ ${mainHistoryText || '暂无。'}
 let timeString = new Date().toLocaleString();
 let momentPrompt = `[📱 跨平台记忆同步 - ${timeString}]：你刚刚在推特(Twitter)上发布了一条新动态：“${postData.content}”。请在后续的聊天中自然地保留这段记忆。`;
 let currentWid = gConfig.currentWorldviewId || 'default';
-c.history.push({role: 'system_sum', content: `<span style="display:none;">${momentPrompt}</span>`, wid: currentWid, twPostId: postData.id});
+c.history.push({role: 'system_sum', content: `<i>✧ 对方在推特发布了一条新动态</i>\n<span style="display:none;">${momentPrompt}</span>`, wid: currentWid, twPostId: postData.id});
 saveData();
 
 const aiPostHtml = generateTwPostHtml(postData);
@@ -21855,19 +21874,19 @@ function flushTwSyncToMainChat() {
     });
 
     if (validIds.length > 0) {
-    let promptText = `[📱 跨平台记忆同步：以下是你们刚刚在推特(Twitter)私信里的交流记录（请严格区分【用户】和【你】的发言，绝不能混淆！）：\n${chatLogPlain}请在后续的主线聊天中自然地保留这段记忆。]`;
-    let contentHtml = `<div style="text-align:center; margin-bottom:6px; font-weight:800; color:var(--c-gray-dark);">✧ 刚刚在推特私信的交流记录 ✧</div><div style="color:var(--c-black); font-size:12px; line-height:1.5; text-align:left; background:rgba(0,0,0,0.03); padding:12px; border-radius:12px; border:1px solid rgba(0,0,0,0.05);">${chatLogHtml}</div><span style="display:none;">${promptText}</span>`;
+        let promptText = `[📱 跨平台记忆同步：以下是你们刚刚在推特(Twitter)私信里的交流记录（请严格区分【用户】和【你】的发言，绝不能混淆！）：\n${chatLogPlain}请在后续的主线聊天中自然地保留这段记忆。]`;
+        let contentHtml = `<i>✧ 你们在推特私信中进行了交流</i>\n<span style="display:none;">${promptText}</span>`;
 
-    let currentWid = gConfig.currentWorldviewId || 'default';
-    c.history.push({
-        role: 'system_sum',
-        content: contentHtml,
-        isTwSyncNode: true,
-        twIds: validIds,
-        wid: currentWid
-    });
-    saveData();
-}
+        let currentWid = gConfig.currentWorldviewId || 'default';
+        c.history.push({
+            role: 'system_sum',
+            content: contentHtml,
+            isTwSyncNode: true,
+            twIds: validIds,
+            wid: currentWid
+        });
+        saveData();
+    }
     window.twSessionUnsynced = [];
 }
 
@@ -21904,7 +21923,7 @@ function syncTwUpdateToMainChat(contactId) {
                 changed = true;
             } else {
                 let promptText = `[📱 跨平台记忆同步：以下是你们刚刚在推特(Twitter)私信里的交流记录（请严格区分【用户】和【你】的发言，绝不能混淆！）：\n${chatLogPlain}请在后续的主线聊天中自然地保留这段记忆。]`;
-                let contentHtml = `<div style="text-align:center; margin-bottom:6px; font-weight:800; color:var(--c-gray-dark);">✧ 刚刚在推特私信的交流记录 ✧</div><div style="color:var(--c-black); font-size:12px; line-height:1.5; text-align:left; background:rgba(0,0,0,0.03); padding:12px; border-radius:12px; border:1px solid rgba(0,0,0,0.05);">${chatLogHtml}</div><span style="display:none;">${promptText}</span>`;
+                let contentHtml = `<i>✧ 你们在推特私信中进行了交流</i>\n<span style="display:none;">${promptText}</span>`;
                 if (node.content !== contentHtml) {
                     node.content = contentHtml;
                     changed = true;
