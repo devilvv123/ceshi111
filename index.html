@@ -3320,7 +3320,7 @@
       <div class="flex items-center space-x-3 w-full pr-4">
          <div class="w-10 h-10 shrink-0 rounded-full bg-mono-100 dark:bg-mono-800 flex items-center justify-center text-[16px]"><i class="fa-solid fa-fire"></i></div>
          <div class="flex-1 min-w-0">
-            <input type="text" id="tw-trending-topic" value="# 突发事件 / 剧情风暴" class="font-bold text-[15px] bg-transparent border-none outline-none w-full text-mono-600 dark:text-mono-950 p-0 m-0" placeholder="自定义热议话题..." onclick="event.stopPropagation()" onchange="if(typeof gConfig !== 'undefined'){gConfig.twTrendingTopic = this.value; saveData();}">
+            <input type="text" id="tw-trending-topic" value="# Daily Vibes ★" class="font-bold text-[15px] bg-transparent border-none outline-none w-full text-mono-600 dark:text-mono-950 p-0 m-0" placeholder="自定义热议话题..." onclick="event.stopPropagation()" onchange="if(typeof gConfig !== 'undefined'){gConfig.twTrendingTopic = this.value; saveData();}">
             <p class="text-[13px] text-mono-500 mt-0.5 topic-status-text">观测中</p>
          </div>
       </div>
@@ -3640,35 +3640,35 @@
    <!-- 搜索结果区 -->
    <div id="explore-search-results" class="hidden pb-10"></div>
    
-   <!-- 默认探索内容区 -->
-   <div id="explore-default-content">
-      <div class="relative w-full h-48 sm:h-[300px] cursor-pointer">
-         <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover">
-         <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-4 flex flex-col justify-end">
-            <p class="text-white font-bold text-[22px]">极简设计的归宿</p>
-            <p class="text-white/80 text-[13px] mt-1">设计趋势</p>
-         </div>
-      </div>
-      <div class="border-t border-mono-200 dark:border-mono-700">
-         <h3 class="font-bold text-[20px] px-4 py-3">趋势</h3>
-         <div class="hover:bg-mono-100/50 dark:hover:bg-mono-800/50 transition px-4 py-3 cursor-pointer" onclick="searchTwitter('# 突发事件')">
-            <div class="flex justify-between items-center">
-               <p class="text-[13px] text-mono-500">全站热议 · 趋势</p>
-               <i class="fa-solid fa-ellipsis text-mono-500"></i>
-            </div>
-            <p class="font-bold mt-0.5 text-[15px]"># 突发事件 / 剧情风暴</p>
-            <p class="text-[13px] text-mono-500 mt-1">10.5万 发帖</p>
-         </div>
-         <div class="hover:bg-mono-100/50 dark:hover:bg-mono-800/50 transition px-4 py-3 cursor-pointer rounded-b-2xl" onclick="searchTwitter('推特')">
-            <div class="flex justify-between items-center">
-               <p class="text-[13px] text-mono-500">系统 · 流行趋势</p>
-               <i class="fa-solid fa-ellipsis text-mono-500"></i>
-            </div>
-            <p class="font-bold mt-0.5 text-[15px]">推特布局还原</p>
-            <p class="text-[13px] text-mono-500 mt-1">8,230 发帖</p>
-         </div>
-      </div>
+<!-- 默认探索内容区 -->
+<div id="explore-default-content">
+   <div class="relative w-full h-48 sm:h-[300px] cursor-pointer">
+      <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover">
+      <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-4 flex flex-col justify-end">
+   <p class="text-white font-bold text-[22px]">Trust the timing of your life.</p>
+   <p class="text-white/80 text-[13px] mt-1">Daily Inspiration</p>
+</div>
    </div>
+   <div class="border-t border-mono-200 dark:border-mono-700">
+      <h3 class="font-bold text-[20px] px-4 py-3">Trends for you</h3>
+      <div class="hover:bg-mono-100/50 dark:hover:bg-mono-800/50 transition px-4 py-3 cursor-pointer" onclick="searchTwitter('# Daily Vibes')">
+         <div class="flex justify-between items-center">
+            <p class="text-[13px] text-mono-500">Trending Worldwide</p>
+            <i class="fa-solid fa-ellipsis text-mono-500"></i>
+         </div>
+         <p class="font-bold mt-0.5 text-[15px]"># Daily Vibes ★</p>
+         <p class="text-[13px] text-mono-500 mt-1">105K posts</p>
+      </div>
+      <div class="hover:bg-mono-100/50 dark:hover:bg-mono-800/50 transition px-4 py-3 cursor-pointer rounded-b-2xl" onclick="searchTwitter('# Midnight Thoughts')">
+   <div class="flex justify-between items-center">
+      <p class="text-[13px] text-mono-500">Night · Trending</p>
+      <i class="fa-solid fa-ellipsis text-mono-500"></i>
+   </div>
+   <p class="font-bold mt-0.5 text-[15px]"># Midnight Thoughts ✧</p>
+   <p class="text-[13px] text-mono-500 mt-1">8,230 posts</p>
+</div>
+   </div>
+</div>
    <div class="h-20 sm:hidden"></div>
 </div>
                      <!-- 视图 4：通知 (Notifications) -->
@@ -3885,24 +3885,24 @@
       </div>
    </div>
                      <div class="bg-mono-50 dark:bg-mono-900 rounded-2xl pt-4 border border-mono-200 dark:border-mono-700">
-                        <h3 class="font-bold text-[20px] px-4 mb-3">有什么新鲜事</h3>
-                        <div class="hover:bg-mono-100 dark:hover:bg-mono-800 transition px-4 py-3 cursor-pointer">
-                           <div class="flex justify-between items-center">
-                              <p class="text-[13px] text-mono-500">设计 · 流行趋势</p>
-                              <i class="fa-solid fa-ellipsis text-mono-500"></i>
-                           </div>
-                           <p class="font-bold mt-0.5 text-[15px]"># 去除宋体</p>
-                           <p class="text-[13px] text-mono-500 mt-1">1.5万 发帖</p>
-                        </div>
-                        <div class="hover:bg-mono-100 dark:hover:bg-mono-800 transition px-4 py-3 cursor-pointer rounded-b-2xl">
-                           <div class="flex justify-between items-center">
-                              <p class="text-[13px] text-mono-500">前端 · 流行趋势</p>
-                              <i class="fa-solid fa-ellipsis text-mono-500"></i>
-                           </div>
-                           <p class="font-bold mt-0.5 text-[15px]">推特布局还原</p>
-                           <p class="text-[13px] text-mono-500 mt-1">8,230 发帖</p>
-                        </div>
-                     </div>
+   <h3 class="font-bold text-[20px] px-4 mb-3">What's happening</h3>
+   <div class="hover:bg-mono-100 dark:hover:bg-mono-800 transition px-4 py-3 cursor-pointer">
+      <div class="flex justify-between items-center">
+         <p class="text-[13px] text-mono-500">Life · Trending</p>
+         <i class="fa-solid fa-ellipsis text-mono-500"></i>
+      </div>
+      <p class="font-bold mt-0.5 text-[15px]"># Mood Board ✩</p>
+      <p class="text-[13px] text-mono-500 mt-1">15K posts</p>
+   </div>
+   <div class="hover:bg-mono-100 dark:hover:bg-mono-800 transition px-4 py-3 cursor-pointer rounded-b-2xl">
+   <div class="flex justify-between items-center">
+      <p class="text-[13px] text-mono-500">Night · Trending</p>
+      <i class="fa-solid fa-ellipsis text-mono-500"></i>
+   </div>
+   <p class="font-bold mt-0.5 text-[15px]"># Midnight Thoughts ✧</p>
+   <p class="text-[13px] text-mono-500 mt-1">8,230 posts</p>
+</div>
+</div>
                   </aside>
                </div>
             </div>
@@ -5341,15 +5341,15 @@
                            </div>
                            <div class="cm-text">揭开真心</div>
                         </div>
-                        <!-- 【新增】：黑金礼盒入口 -->
-                        <div class="cm-item" onclick="sendUserLuxuryBox()">
-                           <div class="cm-icon-box" style="background: linear-gradient(135deg, #141517, #2c2d30); color: #e1b333; box-shadow: 0 8px 20px rgba(0,0,0,0.3); border: 1px solid rgba(225,179,51,0.3);">
-                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                              </svg>
-                           </div>
-                           <div class="cm-text">送出高定</div>
-                        </div>
+                        <!-- 【新增】：礼物入口 -->
+<div class="cm-item" onclick="sendUserLuxuryBox()">
+   <div class="cm-icon-box" style="background: linear-gradient(135deg, #141517, #2c2d30); color: #E0E4EB; box-shadow: 0 8px 20px rgba(0,0,0,0.3); border: 1px solid rgba(224,228,235,0.3);">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+      </svg>
+   </div>
+   <div class="cm-text">礼物</div>
+</div>
                      </div>
                   </div>
                </div>
@@ -5882,22 +5882,27 @@
                <div class="modal-title">自定义桌面图标</div>
                <div style="font-size:12px; color:var(--c-gray-dark); text-align:center; margin-bottom:20px; font-weight:600;">点击框内直接上传替换</div>
                <div class="icon-upload-grid">
-                  <div class="ic-box" onclick="document.getElementById('ic-g1-file').click()">
-                     <div class="ic-prev" id="ic-g1-prev"></div>
-                     <div class="ic-label">App 1</div>
-                     <input type="file" id="ic-g1-file" hidden accept="image/*" onchange="handleImageUpload(event, 'ic-g1-prev', 'ic-g1-data')"><input type="hidden" id="ic-g1-data">
-                  </div>
-                  <div class="ic-box" onclick="document.getElementById('ic-g2-file').click()">
-                     <div class="ic-prev" id="ic-g2-prev"></div>
-                     <div class="ic-label">App 2</div>
-                     <input type="file" id="ic-g2-file" hidden accept="image/*" onchange="handleImageUpload(event, 'ic-g2-prev', 'ic-g2-data')"><input type="hidden" id="ic-g2-data">
-                  </div>
-                  <div class="ic-box" onclick="document.getElementById('ic-g3-file').click()">
-                     <div class="ic-prev" id="ic-g3-prev"></div>
-                     <div class="ic-label">App 3</div>
-                     <input type="file" id="ic-g3-file" hidden accept="image/*" onchange="handleImageUpload(event, 'ic-g3-prev', 'ic-g3-data')"><input type="hidden" id="ic-g3-data">
-                  </div>
-               </div>
+   <div class="ic-box" onclick="document.getElementById('ic-g1-file').click()">
+      <div class="ic-prev" id="ic-g1-prev"></div>
+      <div class="ic-label">App 1</div>
+      <input type="file" id="ic-g1-file" hidden accept="image/*" onchange="handleImageUpload(event, 'ic-g1-prev', 'ic-g1-data')"><input type="hidden" id="ic-g1-data">
+   </div>
+   <div class="ic-box" onclick="document.getElementById('ic-g2-file').click()">
+      <div class="ic-prev" id="ic-g2-prev"></div>
+      <div class="ic-label">App 2</div>
+      <input type="file" id="ic-g2-file" hidden accept="image/*" onchange="handleImageUpload(event, 'ic-g2-prev', 'ic-g2-data')"><input type="hidden" id="ic-g2-data">
+   </div>
+   <div class="ic-box" onclick="document.getElementById('ic-g3-file').click()">
+      <div class="ic-prev" id="ic-g3-prev"></div>
+      <div class="ic-label">App 3</div>
+      <input type="file" id="ic-g3-file" hidden accept="image/*" onchange="handleImageUpload(event, 'ic-g3-prev', 'ic-g3-data')"><input type="hidden" id="ic-g3-data">
+   </div>
+   <div class="ic-box" onclick="document.getElementById('ic-twitter-file').click()">
+      <div class="ic-prev" id="ic-twitter-prev"></div>
+      <div class="ic-label">Twitter</div>
+      <input type="file" id="ic-twitter-file" hidden accept="image/*" onchange="handleImageUpload(event, 'ic-twitter-prev', 'ic-twitter-data')"><input type="hidden" id="ic-twitter-data">
+   </div>
+</div>
                <div class="icon-upload-grid">
                   <div class="ic-box" onclick="document.getElementById('ic-d1-file').click()">
                      <div class="ic-prev" id="ic-d1-prev" style="border:none; background:transparent; box-shadow:none;"></div>
@@ -7206,7 +7211,7 @@
          const SVG_MSG = `<svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`;
          const SVG_MUSIC = `<svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`;
          
-         const defaultGlobal = { apiUrl: '', apiKey: '', model: '', bubbleCss: '', chatBottomBarColor: '', fontUrl: '', font: 'inherit', globalFontSize: 10, homeBg: '', swPhoto: '', meName: '我', meAvatar: '', showBubbleName: false, chatNavRounded: false, apps: { g1: '', g2: '', g3: '', d1: '', d2: '', d3: '' }, appPos: { 'app-g1': {l:'5%',t:'5%'}, 'app-g2': {l:'29%',t:'5%'}, 'app-twitter-icon': {l:'53%',t:'5%'}, 'app-g3': {l:'77%',t:'5%'} }, sumPrompts: [ { label: '情感总结', text: '以第三人称详细总结上述对话核心，保留人物情感。' }, { label: '核心事件', text: '提取关键事件和设定，忽略无关闲聊。' }, { label: '极简客观', text: '客观记录对话重点。' } ], stickers: [{ group: '默认组', items: [] }], bubblePresets: [], apiPresets: [], worldviews: [{ id: 'default', name: 'SOAP.OS 主宇宙', prompt: '这是一个极简、克制、注重排版与秩序感的现代社交平台。' }], currentWorldviewId: 'default' };
+         const defaultGlobal = { apiUrl: '', apiKey: '', model: '', bubbleCss: '', chatBottomBarColor: '', fontUrl: '', font: 'inherit', globalFontSize: 10, homeBg: '', swPhoto: '', meName: '我', meAvatar: '', showBubbleName: false, chatNavRounded: false, apps: { g1: '', g2: '', g3: '', twitter: '', d1: '', d2: '', d3: '' }, appPos: { 'app-g1': {l:'5%',t:'5%'}, 'app-g2': {l:'29%',t:'5%'}, 'app-twitter-icon': {l:'53%',t:'5%'}, 'app-g3': {l:'77%',t:'5%'} }, sumPrompts: [ { label: '情感总结', text: '以第三人称详细总结上述对话核心，保留人物情感。' }, { label: '核心事件', text: '提取关键事件和设定，忽略无关闲聊。' }, { label: '极简客观', text: '客观记录对话重点。' } ], stickers: [{ group: '默认组', items: [] }], bubblePresets: [], apiPresets: [], worldviews: [{ id: 'default', name: 'SOAP.OS 主宇宙', prompt: '这是一个极简、克制、注重排版与秩序感的现代社交平台。' }], currentWorldviewId: 'default' };
 let gConfig = { ...defaultGlobal };
          let currentSmGroup = '默认组'; // 新增：当前管理的贴纸组
          let currentChatStGroup = '默认组'; // 新增：聊天面板当前选择的贴纸组
@@ -8321,12 +8326,18 @@ document.getElementById('setting-lockscreen').checked = gConfig.enableLockScreen
          }
          
          function renderDesktopApps() { 
-             ['g1','g2','g3','d1','d2','d3'].forEach(k => { const el = document.getElementById(`icon-${k}`); if(el) { if(gConfig.apps[k] && (gConfig.apps[k].startsWith('data:') || gConfig.apps[k].startsWith('http'))) el.classList.add('has-img'); else el.classList.remove('has-img'); } });
-             document.getElementById('icon-g1').innerHTML = renderIconHTML(gConfig.apps.g1, SVG_BOOK); document.getElementById('icon-g2').innerHTML = renderIconHTML(gConfig.apps.g2, SVG_PHOTO); document.getElementById('icon-g3').innerHTML = renderIconHTML(gConfig.apps.g3, SVG_SET); if(gConfig.apps.g3) { document.getElementById('icon-g3').classList.remove('dark'); document.getElementById('icon-g3').style.border='none'; } document.getElementById('icon-d1').innerHTML = renderIconHTML(gConfig.apps.d1, SVG_PHONE); document.getElementById('icon-d2').innerHTML = renderIconHTML(gConfig.apps.d2, SVG_MSG); if(gConfig.apps.d2) document.getElementById('icon-d2').classList.remove('dark'); document.getElementById('icon-d3').innerHTML = renderIconHTML(gConfig.apps.d3, SVG_MUSIC); 
-         }
-         function openAppIconEditor() { ['g1','g2','g3','d1','d2','d3'].forEach(k => { document.getElementById(`ic-${k}-data`).value = gConfig.apps[k] || ''; document.getElementById(`ic-${k}-prev`).innerHTML = renderIconHTML(gConfig.apps[k], '选择'); }); document.getElementById('app-icons-modal').classList.add('active'); }
-         function saveAppIcons() { ['g1','g2','g3','d1','d2','d3'].forEach(k => { gConfig.apps[k] = document.getElementById(`ic-${k}-data`).value || gConfig.apps[k]; }); saveData(); renderDesktopApps(); document.getElementById('app-icons-modal').classList.remove('active'); }
-         function resetAppIcons() { if(!confirm('确定恢复所有应用默认图标吗？')) return; gConfig.apps = { g1:'', g2:'', g3:'', d1:'', d2:'', d3:'' }; saveData(); renderDesktopApps(); document.getElementById('app-icons-modal').classList.remove('active'); }
+    ['g1','g2','g3','twitter','d1','d2','d3'].forEach(k => { const el = document.getElementById(`icon-${k}`); if(el) { if(gConfig.apps[k] && (gConfig.apps[k].startsWith('data:') || gConfig.apps[k].startsWith('http'))) el.classList.add('has-img'); else el.classList.remove('has-img'); } });
+    document.getElementById('icon-g1').innerHTML = renderIconHTML(gConfig.apps.g1, SVG_BOOK); 
+    document.getElementById('icon-g2').innerHTML = renderIconHTML(gConfig.apps.g2, SVG_PHOTO); 
+    document.getElementById('icon-g3').innerHTML = renderIconHTML(gConfig.apps.g3, SVG_SET); if(gConfig.apps.g3) { document.getElementById('icon-g3').classList.remove('dark'); document.getElementById('icon-g3').style.border='none'; } 
+    document.getElementById('icon-twitter').innerHTML = renderIconHTML(gConfig.apps.twitter, '<i class="fa-brands fa-twitter" style="font-size:30px;"></i>');
+    document.getElementById('icon-d1').innerHTML = renderIconHTML(gConfig.apps.d1, SVG_PHONE); 
+    document.getElementById('icon-d2').innerHTML = renderIconHTML(gConfig.apps.d2, SVG_MSG); if(gConfig.apps.d2) document.getElementById('icon-d2').classList.remove('dark'); 
+    document.getElementById('icon-d3').innerHTML = renderIconHTML(gConfig.apps.d3, SVG_MUSIC); 
+}
+function openAppIconEditor() { ['g1','g2','g3','twitter','d1','d2','d3'].forEach(k => { document.getElementById(`ic-${k}-data`).value = gConfig.apps[k] || ''; document.getElementById(`ic-${k}-prev`).innerHTML = renderIconHTML(gConfig.apps[k], '选择'); }); document.getElementById('app-icons-modal').classList.add('active'); }
+function saveAppIcons() { ['g1','g2','g3','twitter','d1','d2','d3'].forEach(k => { gConfig.apps[k] = document.getElementById(`ic-${k}-data`).value || gConfig.apps[k]; }); saveData(); renderDesktopApps(); document.getElementById('app-icons-modal').classList.remove('active'); }
+function resetAppIcons() { if(!confirm('确定恢复所有应用默认图标吗？')) return; gConfig.apps = { g1:'', g2:'', g3:'', twitter:'', d1:'', d2:'', d3:'' }; saveData(); renderDesktopApps(); document.getElementById('app-icons-modal').classList.remove('active'); }
          
          function enterDragMode() { closeCurrentApps(); isDragMode = true; document.getElementById('drag-save-bar').style.display = 'flex'; }
          function exitDragMode() { isDragMode = false; document.getElementById('drag-save-bar').style.display = 'none'; saveGlobal(); }
@@ -19493,10 +19504,10 @@ let recentText = c.history.filter(m => m.role !== 'system' && !m.isRevoked && (!
     let wvPrompt = currentWv ? currentWv.prompt : '这是一个极简、克制、注重排版与秩序感的现代社交平台。';
 
     let trendingInfo = "";
-    if (gConfig.twTrendingEnabled !== false) {
-        let topic = gConfig.twTrendingTopic || "# 突发事件 / 剧情风暴";
-        trendingInfo = `\n【🔥 全站置顶热议话题】：${topic}\n请让你生成的这几条推文中，至少有 1~2 条是围绕这个热议话题展开的（可以是吃瓜、锐评、玩梗或亲身经历）。`;
-    }
+if (gConfig.twTrendingEnabled !== false) {
+    let topic = gConfig.twTrendingTopic || "# Daily Vibes ★";
+    trendingInfo = `\n【🔥 全站置顶热议话题】：${topic}\n请让你生成的这几条推文中，至少有 1~2 条是围绕这个热议话题展开的（可以是吃瓜、锐评、玩梗或亲身经历）。`;
+}
 
     let linkedInstruction = linkedInfo ? `\n【熟人列表与近期聊天回忆】：\n${linkedInfo}\n(⚠️ 警告：无论聊天回忆里的内容多么现代或不符合当前世界观，你都必须将其【自动脑补/转化为符合当前世界观的事件】！绝不能破坏世界观的沉浸感！)` : "你现在需要完全随机捏造身份各异的『纯路人网友』。";
 
@@ -21965,10 +21976,10 @@ recentMain.forEach(m => {
     });
 
     let trendingInfo = "";
-    if (gConfig.twTrendingEnabled !== false) {
-        let topic = gConfig.twTrendingTopic || "# 突发事件 / 剧情风暴";
-        trendingInfo = `\n【🔥 当前推特全站热议话题】：${topic}\n如果语境合适，你可以极其自然地随口提一句这个热议话题（比如吃瓜、吐槽），让聊天更具真实网感。`;
-    }
+if (gConfig.twTrendingEnabled !== false) {
+    let topic = gConfig.twTrendingTopic || "# Daily Vibes ★";
+    trendingInfo = `\n【🔥 当前推特全站热议话题】：${topic}\n如果语境合适，你可以极其自然地随口提一句这个热议话题（比如吃瓜、吐槽），让聊天更具真实网感。`;
+}
 
     const sysPrompt = `你是一个拥有独立灵魂的真实人物（网名：${c.name}），正在推特 (Twitter) 的私信里和用户聊天。
 【你的人设背景】：
